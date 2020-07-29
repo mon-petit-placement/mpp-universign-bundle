@@ -1,0 +1,32 @@
+{
+    "name": "mpp/universign-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony Universign Bundle",
+    "keywords": ["referential", "json", "yaml", "api"],
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Louis-Arnaud CATOIRE",
+        "email": "la.catoire@itefficience.com",
+        "homepage": "https://www.itefficience.com"
+      }
+    ],
+    "require": {
+      "php": ">=7.3",
+      "symfony/dependency-injection": "^4.0",
+      "symfony/framework-bundle": "^4.0",
+      "ext-json": "*"
+    },
+    "autoload":{
+      "psr-4":{
+        "Mpp\\ReferentialBundle\\": ""
+      },
+      "exclude-from-classmap": [
+        "Resources/",
+        "Tests/"
+      ]
+    },
+    "require-dev": {
+      "phpunit/phpunit": "7"
+    }
+  }
