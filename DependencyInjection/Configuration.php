@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpp\UniversignBunlde\DependencyInjection;
+namespace Mpp\UniversignBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -17,7 +17,11 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-                ->arrayNode('data')->end()
+                ->scalarNode('host')->isRequired()->end()
+                ->scalarNode('scheme')->isRequired()->end()
+                ->scalarNode('url_path')->isRequired()->end()
+                ->scalarNode('user_email')->isRequired()->end()
+                ->scalarNode('user_password')->isRequired()->end()
             ->end()
         ;
 

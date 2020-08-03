@@ -2,7 +2,7 @@
     "name": "mpp/universign-bundle",
     "type": "symfony-bundle",
     "description": "Symfony Universign Bundle",
-    "keywords": ["referential", "json", "yaml", "api"],
+    "keywords": ["json", "yaml", "api"],
     "license": "MIT",
     "authors": [
       {
@@ -15,11 +15,12 @@
       "php": ">=7.3",
       "symfony/dependency-injection": "^4.0",
       "symfony/framework-bundle": "^4.0",
+      "laminas/laminas-xmlrpc": "^2.0",
       "ext-json": "*"
     },
     "autoload":{
       "psr-4":{
-        "Mpp\\UniversignBunlde\\": ""
+        "Mpp\\UniversignBundle\\": ""
       },
       "exclude-from-classmap": [
         "Resources/",
