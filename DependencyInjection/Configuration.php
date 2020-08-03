@@ -17,11 +17,11 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-                ->scalarNode('host')->isRequired()->end()
-                ->scalarNode('scheme')->isRequired()->end()
-                ->scalarNode('url_path')->isRequired()->end()
-                ->scalarNode('user_email')->isRequired()->end()
-                ->scalarNode('user_password')->isRequired()->end()
+                ->arrayNode('entrypoint')
+                    ->children()
+                        ->scalarNode('url')->isRequired()->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
