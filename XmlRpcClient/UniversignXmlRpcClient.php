@@ -5,7 +5,11 @@ namespace Mpp\UniversignBundle\XmlRpcClient;
 use DateTimeInterface;
 use Laminas\XmlRpc\Client;
 use Laminas\XmlRpc\AbstractValue;
+use Laminas\XmlRpc\Value\Base64;
 use Namshi\JOSE\Base64\Base64UrlSafeEncoder;
+use PhpParser\Node\Scalar\MagicConst\File;
+use Symfony\Component\Mime\Encoder\Base64ContentEncoder;
+use Symfony\Component\Mime\Encoder\Base64Encoder;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -79,7 +83,7 @@ class UniversignXmlRpcClient
             })
             ->setDefined('status')->setAllowedTypes('status', ['int'])
             ->setDefined('withAffiliated')->setAllowedTypes('withAffiliated', ['bool'])
-                ;
+            ;
             })
         ;
     }
@@ -110,9 +114,11 @@ class UniversignXmlRpcClient
             ->setRequired('bic')->setAllowedTypes('bic', ['string'])
             ->setRequired('recurring')->setAllowedTypes('recurring', ['bool'])
             ->setRequired('debtor')->setAllowedTypes('debtor', ['array'])->setNormalizer('debtor', function (Options $option, $value) {
+
                return $this->resolveThirdParty($value);
             })
             ->setRequired('creditor')->setAllowedTypes('creditor', ['array'])->setNormalizer('creditor', function (Options $option, $value) {
+
                return $this->resolveThirdParty($value);
             })
         ;
@@ -167,13 +173,24 @@ class UniversignXmlRpcClient
                 $resolver = new OptionsResolver();
 
                 $resolver
-                    ->setDefined('documents')->setAllowedTypes('documents', ['array'])
+                    ->setDefined('documents')->setAllowedTypes('documents', ['array'])->setNormalizer('documents', function (Options $option, $values) {
+                        $b64Array = [];
+
+                        foreach($values as $value) {
+                            $file = file_get_contents($value);
+                            $b64 =  new \Laminas\XmlRpc\Value\Base64($file);
+                            array_push($b64Array, $b64);
+                        }
+
+                        return $b64Array;
+                    })
                     ->setDefined('type')->setAllowedTypes('type', ['string'])
                 ;
 
                 return $resolver->resolve($value);
             })
         ;
+
         $resolvedParameter = [];
 
         foreach ($values as $value) {
@@ -185,29 +202,29 @@ class UniversignXmlRpcClient
 
     /**
      * @param array<mixed> $values
-     * @return array<mixed><
+     * @return array<mixed>
      */
     private function resolveDocuments($values)
     {
         $resolver = new OptionsResolver();
 
         $resolver
+            ->setDefined('title')->setAllowedTypes('title', ['string'])
             ->setDefined('documentType')->setAllowedTypes('documentType', ['string'])
             ->setDefined('content')->setAllowedTypes('content', ['string'])->setNormalizer('content', function(Options $option, $value) {
-                $tmp = file_get_contents($value);
-                $b64 = base64_encode($tmp);
-                xmlrpc_set_type($b64, 'base64');
-                $byte = [
-                    $b64
-                ];
-                return $byte;
+                $file = file_get_contents($value);
+                $b64 =  new \Laminas\XmlRpc\Value\Base64($file);
+                return $b64;
             })
+            ->setDefined('checkBoxTexts')->setAllowedTypes('checkBoxTexts', ['array'])
             ->setDefined('url')->setAllowedTypes('url', ['string'])
             ->setDefined('fileName')->setAllowedTypes('fileName', ['string'])
             ->setDefined('DocSignatureField')->setAllowedTypes('DocSignatureField', ['array'])->setNormalizer('DocSignatureField', function (Options $option, $value) {
+
                 return $this->resolveDocSignatureField($value);
             })
             ->setDefined('SEPAData')->setAllowedTypes('SEPAData', ['array'])->setNormalizer('SEPAData', function (Options $option, $value) {
+
                 return $this->resolveSepaData($value);
             })
         ;
@@ -235,6 +252,7 @@ class UniversignXmlRpcClient
                 return $this->resolveDocuments($values);
             })
             ->setDefined('finalDocSent')->setAllowedTypes('finalDocSent', ['bool'])
+            ->setDefined('profile')->setAllowedTypes('profile', ['string'])
             ->setDefined('finalDocRequesterSent')->setAllowedTypes('finalDocRequesterSent', ['bool'])
             ->setDefined('mustContactFirstSigner')->setAllowedTypes('mustContactFirstSigner', ['bool'])
             ->setDefined('finalDocObserverSent')->setAllowedTypes('finalDocObserverSent', ['bool'])
@@ -245,7 +263,39 @@ class UniversignXmlRpcClient
             ->setDefined('chainingMode')->setAllowedTypes('chainingMode', ['string'])
             ->setDefined('finalDocCCeMails')->setAllowedTypes('finalDocCCeMails', ['array'])
             ->setDefined('twoStepsRegistration')->setAllowedTypes('twoStepsRegistration', ['bool'])
-            ;
+        ;
+    }
+
+    /**
+     * @param OptionResolver $resolver
+     */
+    private function resolveValidationRequest($resolver)
+    {
+        $resolver
+            ->setRequired('idDocument')->setAllowedTypes('idDocument', ['array'])->setNormalizer('idDocument', function(Options $option, $values) {
+                $resolver = new OptionsResolver();
+
+                $resolver
+                    ->setRequired('photos')->setAllowedTypes('photos', ['array'])
+                    ->setRequired('type')->setAllowedTypes('type', ['int'])
+                ;
+
+                return $resolver->resolve($values);
+            })
+            ->setRequired('PersonalInfo')->setAllowedTypes('PersonalInfo', ['array'])->setNormalizer('PersonalInfo', function (Options $option, $values) {
+                $resolver = new OptionsResolver();
+
+                $resolver
+                    ->setRequired('firstname')->setAllowedTypes('firstname', ['string'])
+                    ->setRequired('lastname')->setAllowedTypes('lastname', ['string'])
+                    ->setRequired('birthDate')->setAllowedTypes('birthDate', ['string'])
+                ;
+
+                return $resolver->resolve($values);
+            })
+            ->setDefined('allowManual')->setAllowedTypes('allowManual', ['bool'])
+            ->setDefined('callbackURL')->setAllowedTypes('callbackURL', ['bool'])
+        ;
     }
 
     /**
@@ -273,18 +323,75 @@ class UniversignXmlRpcClient
         $this->resolveMatching($resolver);
         $resolvedMatchingFilter = $resolver->resolve($matchingFilter);
 
+        return $this->xmlrpcClient->call(
+            'matcher.matchAccount', [
+                $resolvedMatchingFilter
+            ]
+        );
+    }
 
+    /**
+     * @param string $userEmail
+     * @return array<mixed>
+     */
+    public function getCertificatAgreement($userEmail)
+    {
+        return $this->xmlrpcClient
+            ->call('ra.getCertificateAgreement', [
+                $userEmail
+            ]
+        );
+    }
+
+    /**
+     * @param string userEmail
+     */
+    public function revokeCertificate($userEmail)
+    {
+        return $this->xmlrpcClient
+            ->call('ra.revokeCertificate', [
+                $userEmail
+            ]
+        );
+    }
+
+    /**
+     * @param string validationSessionId
+     */
+    public function getValidationResult($validationSessionId)
+    {
+        return $this->xmlrpcClient
+            ->call('validator.getResult', [
+                $validationSessionId
+            ]
+        );
+    }
+
+    /**
+     * @param array<mixed> $validationRequest
+     */
+    public function validateCertificate($validationRequest)
+    {
+        $resolver = new OptionsResolver();
+        $this->resolveValidationRequest($resolver);
+        $resolvedValidationRequest = $resolver->resolve($validationRequest);
+
+
+        return $this->xmlrpcClient
+            ->call('validator.validate',
+                $resolvedValidationRequest
+        );
     }
 
     /**
      * @param string $transactionId
      * @return array<mixed>
      */
-    public function getDocumentsTransaction($transactionId, $filename)
+    public function getDocumentsTransaction($transactionId)
     {
         if(!empty($transactionId)) {
 
-            $filename =  $this
+            return  $this
                 ->xmlrpcClient
                 ->call(
                     'requester.getDocuments', [
@@ -292,8 +399,6 @@ class UniversignXmlRpcClient
                     ]
                 )
             ;
-
-            return $filename;
         }
 
         return null;
@@ -368,20 +473,19 @@ class UniversignXmlRpcClient
 
     /**
      * @param string
-     * @return string
+     * @return mixed
      */
     public function signDocuments($path) {
-        $document = file_get_contents($path);
 
-        $b64 = base64_encode($document);
 
-        xmlrpc_set_type($b64, 'base64');
+        $file = file_get_contents($path);
+        $b64 =  new \Laminas\XmlRpc\Value\Base64($file);
 
         return $this
             ->xmlrpcClient
             ->call(
                 'signer.sign', [
-                     $b64
+                    $b64
                 ]
             )
         ;
@@ -419,13 +523,15 @@ class UniversignXmlRpcClient
         $this->configureSignatureParameters($resolver);
         $resolvedParameters = $resolver->resolve($parameters);
 
-        return $this
+        file_put_contents('test.xml', xmlrpc_encode($resolvedParameters));
+        $value =  $this
             ->xmlrpcClient
             ->call(
-                'requester.requestTransaction', [
-                     $resolvedParameters
-                ]
+                'requester.requestTransaction',
+                     array($resolvedParameters)
             )
         ;
+
+        return $value;
     }
 }
