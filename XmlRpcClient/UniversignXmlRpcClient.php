@@ -2,14 +2,7 @@
 
 namespace Mpp\UniversignBundle\XmlRpcClient;
 
-use DateTimeInterface;
 use Laminas\XmlRpc\Client;
-use Laminas\XmlRpc\AbstractValue;
-use Laminas\XmlRpc\Value\Base64;
-use Namshi\JOSE\Base64\Base64UrlSafeEncoder;
-use PhpParser\Node\Scalar\MagicConst\File;
-use Symfony\Component\Mime\Encoder\Base64ContentEncoder;
-use Symfony\Component\Mime\Encoder\Base64Encoder;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,7 +25,6 @@ class UniversignXmlRpcClient
         $this->xmlrpcClient = new Client($this->getURL());
     }
 
-
     /**
      * @return string;
      */
@@ -43,6 +35,7 @@ class UniversignXmlRpcClient
 
     /**
      * @param OptionResolver $resolver
+     *
      * @return array<mixed>
      */
     private function configureFilter($resolver)
@@ -51,7 +44,7 @@ class UniversignXmlRpcClient
             ->setDefined('TransactionFilter')->setAllowedTypes('TransactionFilter', ['array'])->setNormalizer('TransactionFilter', function (Options $option, $values) {
                 $resolver = new OptionsResolver();
 
-        $resolver
+                $resolver
             ->setDefined('requesterEmail')->setAllowedTypes('requesterEmail', ['string'])
             ->setDefined('profile')->setAllowedTypes('profile', ['string'])
             ->setDefined('notBefore')->setAllowedTypes('notBefore', ['DateTime'])->setNormalizer('notBefore', function (Options $option, $value) {
@@ -114,16 +107,14 @@ class UniversignXmlRpcClient
             ->setRequired('bic')->setAllowedTypes('bic', ['string'])
             ->setRequired('recurring')->setAllowedTypes('recurring', ['bool'])
             ->setRequired('debtor')->setAllowedTypes('debtor', ['array'])->setNormalizer('debtor', function (Options $option, $value) {
-
-               return $this->resolveThirdParty($value);
+                return $this->resolveThirdParty($value);
             })
             ->setRequired('creditor')->setAllowedTypes('creditor', ['array'])->setNormalizer('creditor', function (Options $option, $value) {
-
-               return $this->resolveThirdParty($value);
+                return $this->resolveThirdParty($value);
             })
         ;
 
-            return $resolver->resolve($value);
+        return $resolver->resolve($value);
     }
 
     private function resolveDocSignatureField($value)
@@ -142,6 +133,7 @@ class UniversignXmlRpcClient
 
     /**
      * @param array<mixed> $values
+     *
      * @return array<mixed> $values
      */
     private function resolveSigners($values)
@@ -157,9 +149,6 @@ class UniversignXmlRpcClient
             ->setDefined('profile')->setAllowedTypes('profile', ['string'])
             ->setDefined('language')->setAllowedTypes('language', ['string'])
             ->setDefined('role')->setAllowedTypes('role', ['string'])
-            ->setDefined('failURL')->setAllowedTypes('failURL', ['string'])
-            ->setDefined('cancelURL')->setAllowedTypes('cancelURL', ['string'])
-            ->setDefined('successURL')->setAllowedTypes('successURL', ['string'])
             ->setDefined('validationSessionId')->setAllowedTypes('validationSessionId', ['string'])
             ->setDefined('birthDate')->setAllowedTypes('birthDate', ['DateTime'])->setNormalizer('birthDate', function (Options $option, $value) {
                 $value = $value->format('Ymd\TH:i:s');
@@ -176,9 +165,9 @@ class UniversignXmlRpcClient
                     ->setDefined('documents')->setAllowedTypes('documents', ['array'])->setNormalizer('documents', function (Options $option, $values) {
                         $b64Array = [];
 
-                        foreach($values as $value) {
+                        foreach ($values as $value) {
                             $file = file_get_contents($value);
-                            $b64 =  new \Laminas\XmlRpc\Value\Base64($file);
+                            $b64 = new \Laminas\XmlRpc\Value\Base64($file);
                             array_push($b64Array, $b64);
                         }
 
@@ -202,6 +191,7 @@ class UniversignXmlRpcClient
 
     /**
      * @param array<mixed> $values
+     *
      * @return array<mixed>
      */
     private function resolveDocuments($values)
@@ -211,20 +201,19 @@ class UniversignXmlRpcClient
         $resolver
             ->setDefined('title')->setAllowedTypes('title', ['string'])
             ->setDefined('documentType')->setAllowedTypes('documentType', ['string'])
-            ->setDefined('content')->setAllowedTypes('content', ['string'])->setNormalizer('content', function(Options $option, $value) {
+            ->setDefined('content')->setAllowedTypes('content', ['string'])->setNormalizer('content', function (Options $option, $value) {
                 $file = file_get_contents($value);
-                $b64 =  new \Laminas\XmlRpc\Value\Base64($file);
+                $b64 = new \Laminas\XmlRpc\Value\Base64($file);
+
                 return $b64;
             })
             ->setDefined('checkBoxTexts')->setAllowedTypes('checkBoxTexts', ['array'])
             ->setDefined('url')->setAllowedTypes('url', ['string'])
             ->setDefined('fileName')->setAllowedTypes('fileName', ['string'])
             ->setDefined('DocSignatureField')->setAllowedTypes('DocSignatureField', ['array'])->setNormalizer('DocSignatureField', function (Options $option, $value) {
-
                 return $this->resolveDocSignatureField($value);
             })
             ->setDefined('SEPAData')->setAllowedTypes('SEPAData', ['array'])->setNormalizer('SEPAData', function (Options $option, $value) {
-
                 return $this->resolveSepaData($value);
             })
         ;
@@ -238,8 +227,21 @@ class UniversignXmlRpcClient
         return $resolvedParameter;
     }
 
+    private function configureRedirectionCallback($values)
+    {
+        $resolver = new OptionsResolver();
+
+        $resolver
+            ->setDefined('URL')->setAllowedTypes('URL', ['string'])
+            ->setDefined('displayName')->setAllowedTYpes('displayNames', ['string'])
+        ;
+
+        return $resolver->resolve($values);
+    }
+
     /**
      * @param OptionsResolver $resolver
+     *
      * @return array<mixed>
      */
     private function configureSignatureParameters($resolver)
@@ -260,9 +262,19 @@ class UniversignXmlRpcClient
             ->setDefined('certificateType')->setAllowedTypes('certificateType', ['string'])
             ->setDefined('language')->setAllowedTypes('language', ['string'])
             ->setDefined('handwrittenSignatureMode')->setAllowedTypes('handwrittenSignatureMode', ['int'])
+            ->setDefined('failRedirection')->setAllowedTypes('failRedirection', ['array'])->setNormalizer('failRedirection', function(Options $option, $values) {
+                return $this->configureRedirectionCallback($values);
+            })
+            ->setDefined('cancelRedirection')->setAllowedTypes('cancelRedirection', ['array'])->setNormalizer('cancelRedirection', function(Options $option, $values) {
+                return $this->configureRedirectionCallback($values);
+            })
+            ->setDefined('successRedirection')->setAllowedTypes('successRedirection', ['array'])->setNormalizer('successRedirection', function(Options $option, $values) {
+                return $this->configureRedirectionCallback($values);
+            })
             ->setDefined('chainingMode')->setAllowedTypes('chainingMode', ['string'])
             ->setDefined('finalDocCCeMails')->setAllowedTypes('finalDocCCeMails', ['array'])
             ->setDefined('twoStepsRegistration')->setAllowedTypes('twoStepsRegistration', ['bool'])
+            ->setDefined('registrationCallbackURL')->setAllowedTypes('registrationCallbackURL', ['string'])
         ;
     }
 
@@ -272,7 +284,7 @@ class UniversignXmlRpcClient
     private function resolveValidationRequest($resolver)
     {
         $resolver
-            ->setRequired('idDocument')->setAllowedTypes('idDocument', ['array'])->setNormalizer('idDocument', function(Options $option, $values) {
+            ->setRequired('idDocument')->setAllowedTypes('idDocument', ['array'])->setNormalizer('idDocument', function (Options $option, $values) {
                 $resolver = new OptionsResolver();
 
                 $resolver
@@ -300,21 +312,22 @@ class UniversignXmlRpcClient
 
     /**
      * @param OptionsResolver $resolver
+     *
      * @return array<mixed>
      */
     private function resolveMatching($resolver)
     {
-         $resolver
+        $resolver
             ->setRequired('lastname')->setAllowedTypes('lastname', ['string'])
             ->setRequired('firstname')->setAllowedTypes('firstname', ['string'])
             ->setDefined('mobile')->setAllowedTypes('mobile', ['string'])
             ->setDefined('email')->setAllowedTypes('email', ['string'])
         ;
-
     }
 
     /**
      * @param array<mixed> $matchingFilter
+     *
      * @return array<mixed>
      */
     public function matchAccount($matchingFilter)
@@ -325,20 +338,21 @@ class UniversignXmlRpcClient
 
         return $this->xmlrpcClient->call(
             'matcher.matchAccount', [
-                $resolvedMatchingFilter
+                $resolvedMatchingFilter,
             ]
         );
     }
 
     /**
      * @param string $userEmail
+     *
      * @return array<mixed>
      */
     public function getCertificatAgreement($userEmail)
     {
         return $this->xmlrpcClient
             ->call('ra.getCertificateAgreement', [
-                $userEmail
+                $userEmail,
             ]
         );
     }
@@ -350,7 +364,7 @@ class UniversignXmlRpcClient
     {
         return $this->xmlrpcClient
             ->call('ra.revokeCertificate', [
-                $userEmail
+                $userEmail,
             ]
         );
     }
@@ -362,7 +376,7 @@ class UniversignXmlRpcClient
     {
         return $this->xmlrpcClient
             ->call('validator.getResult', [
-                $validationSessionId
+                $validationSessionId,
             ]
         );
     }
@@ -376,7 +390,6 @@ class UniversignXmlRpcClient
         $this->resolveValidationRequest($resolver);
         $resolvedValidationRequest = $resolver->resolve($validationRequest);
 
-
         return $this->xmlrpcClient
             ->call('validator.validate',
                 $resolvedValidationRequest
@@ -385,17 +398,17 @@ class UniversignXmlRpcClient
 
     /**
      * @param string $transactionId
+     *
      * @return array<mixed>
      */
     public function getDocumentsTransaction($transactionId)
     {
-        if(!empty($transactionId)) {
-
+        if (!empty($transactionId)) {
             return  $this
                 ->xmlrpcClient
                 ->call(
                     'requester.getDocuments', [
-                         $transactionId
+                         $transactionId,
                     ]
                 )
             ;
@@ -406,17 +419,17 @@ class UniversignXmlRpcClient
 
     /**
      * @param string $transactionId
+     *
      * @return bool
      */
     public function relaunchTransaction($transactionId)
     {
-        if(!empty($transactionId)) {
-
+        if (!empty($transactionId)) {
             $this
                 ->xmlrpcClient
                 ->call(
                     'requester.relaunchTransaction', [
-                         $transactionId
+                         $transactionId,
                     ]
                 )
             ;
@@ -429,17 +442,17 @@ class UniversignXmlRpcClient
 
     /**
      * @param string $transactionId
+     *
      * @return bool
      */
     public function cancelTransaction($transactionId)
     {
-        if(!empty($transactionId)) {
-
+        if (!empty($transactionId)) {
             $this
                 ->xmlrpcClient
                 ->call(
                     'requester.cancelTransaction', [
-                         $transactionId
+                         $transactionId,
                     ]
                 )
             ;
@@ -452,17 +465,17 @@ class UniversignXmlRpcClient
 
     /**
      * @param string $transactionId
+     *
      * @return array<mixed>
      */
     public function getTransactionInfo($transactionId)
     {
-        if(!empty($transactionId)) {
-
+        if (!empty($transactionId)) {
             return $this
                 ->xmlrpcClient
                 ->call(
                     'requester.getTransactionInfo', [
-                         $transactionId
+                         $transactionId,
                     ]
                 )
             ;
@@ -473,19 +486,19 @@ class UniversignXmlRpcClient
 
     /**
      * @param string
+     *
      * @return mixed
      */
-    public function signDocuments($path) {
-
-
+    public function signDocuments($path)
+    {
         $file = file_get_contents($path);
-        $b64 =  new \Laminas\XmlRpc\Value\Base64($file);
+        $b64 = new \Laminas\XmlRpc\Value\Base64($file);
 
         return $this
             ->xmlrpcClient
             ->call(
                 'signer.sign', [
-                    $b64
+                    $b64,
                 ]
             )
         ;
@@ -493,11 +506,11 @@ class UniversignXmlRpcClient
 
     /**
      * @param array<mixed> $filter
+     *
      * @return array<mixed>
      */
     public function listTransaction($filter)
     {
-
         $resolver = new OptionsResolver();
         $this->configureFilter($resolver);
         $resolvedParameters = $resolver->resolve($filter);
@@ -506,7 +519,7 @@ class UniversignXmlRpcClient
             ->xmlrpcClient
             ->call(
                 'requester.requestTransaction', [
-                     $resolvedParameters
+                     $resolvedParameters,
                 ]
             )
         ;
@@ -514,6 +527,7 @@ class UniversignXmlRpcClient
 
     /**
      * @param array<mixed> $parameters
+     *
      * @return string
      */
     public function initTransaction($parameters)
@@ -524,7 +538,7 @@ class UniversignXmlRpcClient
         $resolvedParameters = $resolver->resolve($parameters);
 
         file_put_contents('test.xml', xmlrpc_encode($resolvedParameters));
-        $value =  $this
+        $value = $this
             ->xmlrpcClient
             ->call(
                 'requester.requestTransaction',
