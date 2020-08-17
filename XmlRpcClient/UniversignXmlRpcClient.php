@@ -211,9 +211,11 @@ class UniversignXmlRpcClient
             ->setDefined('url')->setAllowedTypes('url', ['string'])
             ->setDefined('fileName')->setAllowedTypes('fileName', ['string'])
             ->setDefined('DocSignatureField')->setAllowedTypes('DocSignatureField', ['array'])->setNormalizer('DocSignatureField', function (Options $option, $value) {
+
                 return $this->resolveDocSignatureField($value);
             })
             ->setDefined('SEPAData')->setAllowedTypes('SEPAData', ['array'])->setNormalizer('SEPAData', function (Options $option, $value) {
+
                 return $this->resolveSepaData($value);
             })
         ;
@@ -248,9 +250,11 @@ class UniversignXmlRpcClient
     {
         $resolver
             ->setRequired('signers')->setAllowedTypes('signers', ['array'])->setNormalizer('signers', function (Options $option, $values) {
+                
                 return $this->resolveSigners($values);
             })
             ->setRequired('documents')->setAllowedTypes('documents', ['array'])->setNormalizer('documents', function (Options $option, $values) {
+
                 return $this->resolveDocuments($values);
             })
             ->setDefined('finalDocSent')->setAllowedTypes('finalDocSent', ['bool'])
@@ -263,12 +267,15 @@ class UniversignXmlRpcClient
             ->setDefined('language')->setAllowedTypes('language', ['string'])
             ->setDefined('handwrittenSignatureMode')->setAllowedTypes('handwrittenSignatureMode', ['int'])
             ->setDefined('failRedirection')->setAllowedTypes('failRedirection', ['array'])->setNormalizer('failRedirection', function(Options $option, $values) {
+
                 return $this->configureRedirectionCallback($values);
             })
             ->setDefined('cancelRedirection')->setAllowedTypes('cancelRedirection', ['array'])->setNormalizer('cancelRedirection', function(Options $option, $values) {
+
                 return $this->configureRedirectionCallback($values);
             })
             ->setDefined('successRedirection')->setAllowedTypes('successRedirection', ['array'])->setNormalizer('successRedirection', function(Options $option, $values) {
+
                 return $this->configureRedirectionCallback($values);
             })
             ->setDefined('chainingMode')->setAllowedTypes('chainingMode', ['string'])
