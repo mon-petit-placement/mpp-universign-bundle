@@ -1,6 +1,6 @@
 services:
 
-    Mpp\UniversignBundle\XmlRpcClient\UniversignXmlRpcClient:
+    Mpp\UniversignBundle\Requester\XmlRpcRequester:
         arguments:
             - '%mpp_universign.entrypoint_url%'
             - 'toto'

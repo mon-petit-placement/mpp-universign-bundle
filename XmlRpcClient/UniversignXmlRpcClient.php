@@ -28,7 +28,7 @@ class UniversignXmlRpcClient
     /**
      * @return string;
      */
-    private function getUrl()
+    private function getUrl(): string
     {
         return $this->url;
     }

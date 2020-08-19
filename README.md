@@ -12,12 +12,56 @@ $ composer require mpp/universign-bundle
 How to use:
 -------------
 
+First, you have to send a transaction to universign services.
+
+```php
+
+    $transaction = $this->container->get('universign.requester')->initiateTransaction();
+    $transaction
+        ->addSigner([
+            'firstname' => 'john',
+            'lastname' => 'doe',
+            'organization' => 'dummy company',
+            'emailAddress' => 'john.doe@dummy-company.com',
+            'phoneNum' => '+0122334455',
+            'language' => 'fr',
+            'role' => \Mpp\UniversignBundle\Model\Signer::ROLE_SIGNER,
+            'birthDate' => new \DateTime::createFromFormat('Y-m-d', '2000-01-01'),
+            'certificateType' =>  \Mpp\UniversignBundle\Model\CertificateType::SIMPLE,
+        ])
+        ->addDocument([
+            'documentType' => 'pdf',
+            'fileName' => 'contract_test.pdf',
+            'DocSignatureField' => [
+                'name' => 'Client:',
+                'page' => 2,
+                'signerIndex' => 0,
+            ],
+        ])
+        ->setFinalDocSent(true)
+        ...
+    ;
+
+
+    $transactionResponse = $this->container->get('universign.requester')->requestTransaction($transaction);
+```
+
+/!!\ definir service
+/!!\ expliquer les retour de call
+/!!\expliquer aussi comment fonctionne signature field
+
+Then once you have send your transaction, if you want to get the signed documents: 
+```php
+    $documents = $this->container->get('universign.requester')->getDocuments($uidTransaction);
+
+```
+
 To use the Universign Bundle, you need to create a array with the data needed to create a numeric signature demand.
 For example to send signatory information and documents, you must create a request of this type:
 
 ```php
 
-        $request = [
+        $data = [
             'signers' => [
                 [
                     'firstname' => $faker->firstName,
@@ -70,7 +114,6 @@ For example to send signatory information and documents, you must create a reque
             'language' => 'fr',
         ];
 
-    return this->universignBundle->sendRequestTransaction($request);
 
 ```
 
