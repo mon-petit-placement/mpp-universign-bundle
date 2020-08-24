@@ -52,27 +52,22 @@ class SepaThirdParty
         $resolver = new OptionsResolver();
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
-        dump($resolvedData);
 
-        $sepaThirdParty = new SepaThirdParty();
-
-        $sepaThirdParty
+        return (new SepaThirdParty())
             ->setName($resolvedData['name'])
             ->setAddress($resolvedData['address'])
             ->setPostalCode($resolvedData['postalCode'])
             ->setCity($resolvedData['city'])
             ->setCountry($resolvedData['country'])
         ;
-
-        return $sepaThirdParty;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      *
      * @return self
      */
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -80,19 +75,19 @@ class SepaThirdParty
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $address
+     * @param string|null $address
      *
      * @return self
      */
-    public function setAddress(string $address): self
+    public function setAddress(?string $address): self
     {
         $this->address = $address;
 
@@ -100,19 +95,19 @@ class SepaThirdParty
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAddress(): string
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
     /**
-     * @param string $postalCode
+     * @param string|null $postalCode
      *
      * @return self
      */
-    public function setPostalCode(string $postalCode): self
+    public function setPostalCode(?string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
@@ -120,19 +115,19 @@ class SepaThirdParty
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPostalCode(): string
+    public function getPostalCode(): ?string
     {
         return $this->postalCode;
     }
 
     /**
-     * @param string $city
+     * @param string|null $city
      *
      * @return self
      */
-    public function setCity(string $city): self
+    public function setCity(?string $city): self
     {
         $this->city = $city;
 
@@ -140,19 +135,19 @@ class SepaThirdParty
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
     /**
-     * @param string $country
+     * @param string|null $country
      *
      * @return self
      */
-    public function setCountry(string $country): self
+    public function setCountry(?string $country): self
     {
         $this->country = $country;
 
@@ -160,9 +155,9 @@ class SepaThirdParty
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->country;
     }

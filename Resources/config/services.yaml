@@ -3,4 +3,5 @@ services:
     Mpp\UniversignBundle\Requester\XmlRpcRequester:
         arguments:
             - '%mpp_universign.entrypoint_url%'
-            - 'toto'
+
+    Mpp\UniversignBundle\Requester\RequesterInterface: '@Mpp\UniversignBundle\Requester\XmlRpcRequester'

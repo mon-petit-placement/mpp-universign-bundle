@@ -135,7 +135,13 @@ class Signer
             ->setDefault('profile', null)->setAllowedTypes('profile', ['string', 'null'])
             ->setDefault('language', null)->setAllowedTypes('language', ['string', 'null'])
             ->setDefault('role', 'signer')->setAllowedValues('role', ['signer', 'observer'])
-            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', 'null'])
+            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', 'null'])->setNormalizer('birthDate', function(Options $options, $value): ?\Laminas\XmlRpc\Value\DateTime {
+                if (null === $value) {
+                    return null;
+                }
+
+                return new \Laminas\XmlRpc\Value\DateTime($value);
+            })
             ->setDefault('universignId', null)->setAllowedTypes('universignId', ['string', 'null'])
             ->setDefault('successRedirection', null)->setAllowedTypes('successRedirection', ['array', 'null'])
             ->setDefault('cancelRedirection', null)->setAllowedTypes('cancelRedirection', ['array', 'null'])
@@ -145,7 +151,7 @@ class Signer
             ->setDefault('certificateType', null)->setAllowedTypes('certificateType', ['string', 'null'])
             ->setDefault('redirectPolicy', 'dashboard')->setAllowedValues('redirectPolicy', ['dashboard', 'quick'])
             ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])
-            ->setDefault('autoSendAgreements', true)->setAllowedTypes('autoSendAgreements', ['bool'])
+            ->setDefault('autoSendAgreements', false)->setAllowedTypes('autoSendAgreements', ['bool'])
             ->setDefault('invitationMessage', null)->setAllowedTypes('invitationMessage', ['string', 'null'])
         ;
     }
@@ -191,7 +197,7 @@ class Signer
      *
      * @return self
      */
-    public function setFirstname(string $firstname = null): self
+    public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
 
@@ -211,7 +217,7 @@ class Signer
      *
      * @return self
      */
-    public function setLastname(string $lastname = null): self
+    public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
 
@@ -231,7 +237,7 @@ class Signer
      *
      * @return self
      */
-    public function setOrganization(string $organization = null): self
+    public function setOrganization(?string $organization): self
     {
         $this->organization = $organization;
 
@@ -239,9 +245,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getOrganization(): string
+    public function getOrganization(): ?string
     {
         return $this->organization;
     }
@@ -251,7 +257,7 @@ class Signer
      *
      * @return self
      */
-    public function setProfile(string $profile = null): self
+    public function setProfile(?string $profile): self
     {
         $this->profile = $profile;
 
@@ -259,9 +265,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getProfile(): string
+    public function getProfile(): ?string
     {
         return $this->profile;
     }
@@ -271,7 +277,7 @@ class Signer
      *
      * @return self
      */
-    public function setEmailAddress(string $emailAddress = null): self
+    public function setEmailAddress(?string $emailAddress): self
     {
         $this->emailAddress = $emailAddress;
 
@@ -279,9 +285,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEmailAddress(): string
+    public function getEmailAddress(): ?string
     {
         return $this->emailAddress;
     }
@@ -291,7 +297,7 @@ class Signer
      *
      * @return self
      */
-    public function setPhoneNum(string $phoneNum = null): self
+    public function setPhoneNum(?string $phoneNum): self
     {
         $this->phoneNum = $phoneNum;
 
@@ -299,9 +305,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPhoneNum(): string
+    public function getPhoneNum(): ?string
     {
         return $this->phoneNum;
     }
@@ -311,7 +317,7 @@ class Signer
      *
      * @return self
      */
-    public function setLanguage(string $language = null): self
+    public function setLanguage(?string $language): self
     {
         $this->language = $language;
 
@@ -319,9 +325,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLanguage(): string
+    public function getLanguage(): ?string
     {
         return $this->language;
     }
@@ -331,7 +337,7 @@ class Signer
      *
      * @return self
      */
-    public function setRole(string $role = null): self
+    public function setRole(?string $role): self
     {
         $this->role = $role;
 
@@ -339,9 +345,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRole(): string
+    public function getRole(): ?string
     {
         return $this->role;
     }
@@ -351,17 +357,17 @@ class Signer
      *
      * @return self
      */
-    public function setBirthDate(\DateTime $birthDate = null): self
+    public function setBirthDate(?\Laminas\XmlRpc\Value\DateTime $birthDate): self
     {
-        $this->birthDate =  new \Laminas\XmlRpc\Value\DateTime($birthDate);
+        $this->birthDate = $birthDate;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getBirthDate(): \Laminas\XmlRpc\Value\DateTime
+    public function getBirthDate(): ?\Laminas\XmlRpc\Value\DateTime
     {
         return $this->birthDate;
     }
@@ -371,7 +377,7 @@ class Signer
      *
      * @return self
      */
-    public function setUniversignId(string $universignId = null): self
+    public function setUniversignId(?string $universignId): self
     {
         $this->universignId = $universignId;
 
@@ -379,9 +385,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUniversignId(): string
+    public function getUniversignId(): ?string
     {
         return $this->universignId;
     }
@@ -391,7 +397,7 @@ class Signer
      *
      * @return self
      */
-    public function setSuccessRedirection(array $successRedirection = null): self
+    public function setSuccessRedirection(?array $successRedirection): self
     {
         $this->successRedirection = $successRedirection;
 
@@ -399,9 +405,9 @@ class Signer
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getSuccessRedirection(): array
+    public function getSuccessRedirection(): ?array
     {
         return $this->successRedirection;
     }
@@ -411,7 +417,7 @@ class Signer
      *
      * @return self
      */
-    public function setFailRedirection(array $failRedirection = null): self
+    public function setFailRedirection(?array $failRedirection): self
     {
         $this->failRedirection = $failRedirection;
 
@@ -419,9 +425,9 @@ class Signer
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getFailRedirection(): array
+    public function getFailRedirection(): ?array
     {
         return $this->failRedirection;
     }
@@ -431,7 +437,7 @@ class Signer
      *
      * @return self
      */
-    public function setCancelRedirection(array $cancelRedirection = null): self
+    public function setCancelRedirection(?array $cancelRedirection): self
     {
         $this->cancelRedirection = $cancelRedirection;
 
@@ -439,9 +445,9 @@ class Signer
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getCancelRedirection(): array
+    public function getCancelRedirection(): ?array
     {
         return $this->cancelRedirection;
     }
@@ -451,7 +457,7 @@ class Signer
      *
      * @return self
      */
-    public function setCertificateType(string $certificateType = null): self
+    public function setCertificateType(?string $certificateType): self
     {
         $this->certificateType = $certificateType;
 
@@ -459,9 +465,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCertificateType(): string
+    public function getCertificateType(): ?string
     {
         return $this->certificateType;
     }
@@ -471,7 +477,7 @@ class Signer
      *
      * @return self
      */
-    public function setIdDocuments(array $idDocument = null): self
+    public function setIdDocuments(?array $idDocument): self
     {
         if (null !== $idDocument) {
             $this->idDocument = RegistrationRequest::createFromArray($idDocument);
@@ -481,9 +487,9 @@ class Signer
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getIdDocument(): array
+    public function getIdDocument(): ?array
     {
         return $this->idDocument;
     }
@@ -493,7 +499,7 @@ class Signer
      *
      * @return self
      */
-    public function setValidationSessionId(string $validationSessionId = null): self
+    public function setValidationSessionId(?string $validationSessionId): self
     {
         $this->validationSessionId = $validationSessionId;
 
@@ -501,9 +507,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getValidationSessionId(): string
+    public function getValidationSessionId(): ?string
     {
         return $this->validationSessionId;
     }
@@ -513,7 +519,7 @@ class Signer
      *
      * @return self
      */
-    public function setRedirectPolicy(string $redirectPolicy = null): self
+    public function setRedirectPolicy(?string $redirectPolicy): self
     {
         $this->redirectPolicy = $redirectPolicy;
 
@@ -521,9 +527,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRedirectPolicy(): string
+    public function getRedirectPolicy(): ?string
     {
         return $this->redirectPolicy;
     }
@@ -533,7 +539,7 @@ class Signer
      *
      * @return self
      */
-    public function setRedirectWait(int $redirectWait = null): self
+    public function setRedirectWait(?int $redirectWait): self
     {
         $this->redirectWait = $redirectWait;
 
@@ -541,9 +547,9 @@ class Signer
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getRedirectWait(): int
+    public function getRedirectWait(): ?int
     {
         return $this->redirectWait;
     }
@@ -553,7 +559,7 @@ class Signer
      *
      * @return self
      */
-    public function setAutoSendAgreements(bool $autoSendAgreements = null): self
+    public function setAutoSendAgreements(?bool $autoSendAgreements): self
     {
         $this->autoSendAgreements = $autoSendAgreements;
 
@@ -561,9 +567,9 @@ class Signer
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function getAutoSendAgreements(): bool
+    public function getAutoSendAgreements(): ?bool
     {
         return $this->autoSendAgreements;
     }
@@ -573,7 +579,7 @@ class Signer
      *
      * @return self
      */
-    public function setInvitationMessage(string $invitationMessage = null): self
+    public function setInvitationMessage(?string $invitationMessage): self
     {
         $this->invitationMessage = $invitationMessage;
 
@@ -581,9 +587,9 @@ class Signer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getInvitationMessage(): string
+    public function getInvitationMessage(): ?string
     {
         return $this->invitationMessage;
     }

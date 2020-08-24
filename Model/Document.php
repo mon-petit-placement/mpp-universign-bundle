@@ -3,12 +3,12 @@
 namespace Mpp\UniversignBundle\Model;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\Options;
 
 class Document
 {
-
     /**
-     * @var long
+     * @var int
      */
     protected $id;
 
@@ -33,7 +33,7 @@ class Document
     protected $fileName;
 
     /**
-     * @var DocSignatureField
+     * @var array<DocSignatureField>
      */
     protected $signatureFields;
 
@@ -63,14 +63,42 @@ class Document
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefined('title')->setAllowedTypes('title', ['string'])
-            ->setDefined('documentType')->setAllowedTypes('documentType', ['string'])
-            ->setDefined('content')->setAllowedTypes('content', ['string'])
-            ->setDefined('checkBoxTexts')->setAllowedTypes('checkBoxTexts', ['array'])
-            ->setDefined('url')->setAllowedTypes('url', ['string'])
-            ->setDefined('fileName')->setAllowedTypes('fileName', ['string'])
-            ->setDefined('DocSignatureField')->setAllowedTypes('DocSignatureField', ['array'])
-            ->setDefined('SEPAData')->setAllowedTypes('SEPAData', ['array'])
+            ->setDefault('id', null)->setAllowedTypes('id', ['string', 'null'])
+            ->setDefault('documentType', null)->setAllowedTypes('documentType', ['string', 'null'])
+            ->setDefault('content', null)->setAllowedTypes('content', ['string', 'null'])->setNormalizer('content', function(Options $option, $value): ?\Laminas\XmlRpc\Value\Base64 {
+                if (null === $value) {
+                    return null;
+                }
+
+                $file = file_get_contents($value);
+                $b64 = new \Laminas\XmlRpc\Value\Base64($file);
+
+                return $b64;
+            })
+            ->setDefault('url', null)->setAllowedTypes('url', ['string', 'null'])
+            ->setDefault('fileName', null)->setAllowedTypes('fileName', ['string', 'null'])
+            ->setDefault('signatureFields', null)->setAllowedTypes('signatureFields', ['array', 'null'])->setNormalizer('signatureFields', function(Options $option, $values): array {
+                if (null === $values) {
+                    return [];
+                }
+
+                $signatureFields = [];
+                foreach ($values as $value) {
+                    $signatureFields[] = DocSignatureField::createFromArray($value);
+                }
+
+                return $signatureFields;
+            })
+            ->setDefault('checkBoxTexts', null)->setAllowedTypes('checkBoxTexts', ['array', 'null'])
+            ->setDefault('metaData', null)->setAllowedTypes('metaData', ['array', 'null'])
+            ->setDefault('title', null)->setAllowedTypes('title', ['string','null'])
+            ->setDefault('SEPAData', null)->setAllowedTypes('SEPAData', ['array', 'null'])->setNormalizer('SEPAData', function(Options $option, $value): ?SepaData {
+                if (null === $value) {
+                    return null;
+                }
+
+                return SepaData::createFromArray($value);
+            })
         ;
     }
 
@@ -79,170 +107,235 @@ class Document
      *
      * @return Document
      */
-    public static function createFromArray(array $documentData): Document
+    public static function createFromArray(array $data): Document
     {
-        $document = new Document();
 
-        //todo use getter setter to transform the array to a obj document
-        return $document;
+        $resolver = new OptionsResolver();
+        self::configureData($resolver);
+        $resolvedData = $resolver->resolve($data);
+
+        return (new Document())
+            ->setId($resolvedData['id'])
+            ->setDocumentType($resolvedData['documentType'])
+            ->setContent($resolvedData['content'])
+            ->setUrl($resolvedData['url'])
+            ->setFileName($resolvedData['fileName'])
+            ->setSignatureFields($resolvedData['signatureFields'])
+            ->setCheckBoxTexts($resolvedData['checkBoxTexts'])
+            ->setMetaData($resolvedData['metaData'])
+            ->setTitle($resolvedData['title'])
+            ->setSepaData($resolvedData['SEPAData'])
+        ;
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
+     *
+     * @return self
      */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param long $documentType
+     * @param string|null $documentType
+     *
+     * @return self
      */
-    public function setDocumentType($documentType)
+    public function setDocumentType(?string $documentType): self
     {
         $this->documentType = $documentType;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDocumentType(): string
+    public function getDocumentType(): ?string
     {
         return $this->documentType;
     }
 
     /**
-     * @param \Laminas\XmlRpc\Value\Base64 $content
+     * @param \Laminas\XmlRpc\Value\Base64|null $content
+     *
+     * @return self
      */
-    public function setContent($content)
+    public function setContent(?\Laminas\XmlRpc\Value\Base64 $content): self
     {
         $this->content = $content;
+
+        return $this;
     }
 
     /**
-     * @return \Laminas\XmlRpc\Value\Base64
+     * @return \Laminas\XmlRpc\Value\Base64|null
      */
-    public function getContent(): \Laminas\XmlRpc\Value\Base64
+    public function getContent(): ?\Laminas\XmlRpc\Value\Base64
     {
         return $this->content;
     }
 
     /**
-     * @param string $url
+     * @param string|null $url
+     *
+     * @return self
      */
-    public function setUrl($url)
+    public function setUrl(?string $url): self
     {
         $this->url = $url;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
     /**
-     * @param string $fileName
+     * @param string|null $fileName
+     *
+     * @return self
      */
-    public function setFileName($fileName)
+    public function setFileName(?string $fileName): self
     {
         $this->fileName = $fileName;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFileName(): string
+    public function getFileName(): ?string
     {
         return $this->fileName;
     }
 
     /**
-     * @param array $signatureFields
+     * @param SignatureField $signatureField
+     *
+     * @return self
      */
-    public function setSignatureFields(array $signatureFields)
+    public function addSignatureField(SignatureField $signatureField): self
     {
-        $this->signatureFields = DocSignatureField::createFromArray($signatureFields);
+        $this->signatureFields[] = $signatureField;
+
+        return $this;
     }
 
     /**
-     * @return DocSignatureField
+     * @param array<SignatureField>|null $signatureFields
+     *
+     * @return self
      */
-    public function getSignatureFields(): DocSignatureField
+    public function setSignatureFields(?array $signatureFields): self
+    {
+        $this->signatureFields = $signatureFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getSignatureFields(): ?array
     {
         return $this->signatureFields;
     }
 
     /**
-     * @param array $checkBoxTexts
+     * @param array|null $checkBoxTexts
+     *
+     * @return self
      */
-    public function setCheckBoxTexts($checkBoxTexts)
+    public function setCheckBoxTexts(?array $checkBoxTexts): self
     {
         $this->checkBoxTexts = $checkBoxTexts;
+
+        return $this;
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getCheckBoxTexts(): array
+    public function getCheckBoxTexts(): ?array
     {
         return $this->checkBoxTexts;
     }
 
     /**
-     * @param array $metaData
+     * @param array|null $metaData
+     *
+     * @return self
      */
-    public function setMetaData($metaData)
+    public function setMetaData(?array $metaData): self
     {
         $this->metaData = $metaData;
+
+        return $this;
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getMetaData(): array
+    public function getMetaData(): ?array
     {
         return $this->metaData;
     }
 
     /**
-     * @param string $title
+     * @param string|null $title
+     *
+     * @return self
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
     /**
-     * @param array $sepaData
+     * @param SepaData|null $sepaData
+     *
+     * @return self
      */
-    public function setSepaData($sepaData)
+    public function setSepaData(?SepaData $sepaData): self
     {
-        $this->sepaData = SepaData::createFromArray($sepaData);
+        $this->sepaData = $sepaData;
+
+        return $this;
     }
 
     /**
-     * @return SepaData
+     * @return SepaData|null
      */
-    public function getSepaData(): SepaData
+    public function getSepaData(): ?SepaData
     {
         return $this->sepaData;
     }

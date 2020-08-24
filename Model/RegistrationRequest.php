@@ -56,11 +56,11 @@ class RegistrationRequest
     }
 
     /**
-     * @param array $documents
+     * @param array|null $documents
      *
      * @return self
      */
-    public function setDocuments(array $documents): self
+    public function setDocuments(?array $documents): self
     {
         $this->documents = $documents;
 
@@ -68,19 +68,19 @@ class RegistrationRequest
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getDocuments(): array
+    public function getDocuments(): ?array
     {
         return $this->documents;
     }
 
     /**
-     * @param string $type
+     * @param string|null $type
      *
      * @return self
      */
-    public function setType(string $type = null): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
@@ -88,9 +88,9 @@ class RegistrationRequest
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
