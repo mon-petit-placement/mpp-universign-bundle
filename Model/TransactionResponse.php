@@ -7,6 +7,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionResponse
 {
+    const STATE_SUCCESS = "SUCCESS";
+    const STATE_ERROR = "ERROR";
+
     /**
      * @var string
      */
@@ -17,10 +20,22 @@ class TransactionResponse
      */
     protected $url;
 
-    public function __construct(string $id, string $url)
+    /**
+     * @var string
+     */
+    protected $state;
+
+    /**
+     * @var string
+     */
+    protected $errorMessage;
+
+    public function __construct()
     {
-        $this->id = $id;
-        $this->url = $url;
+        $this->id = null;
+        $this->url = null;
+        $this->state = null;
+        $this->errorMessage = null;
     }
 
     /**
@@ -61,5 +76,45 @@ class TransactionResponse
     public function getUrl(): ?string
     {
         return $this->url;
+    }
+
+    /**
+     * @param string|null
+     *
+     * @return self
+     */
+    public function setState(?string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string|null
+     *
+     * @return self
+     */
+    public function setErrorMessage(?string $errorMessage): self
+    {
+        $this->errorMessage = $errorMessage;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getErrorMessage(): ?string
+    {
+        return $this->errorMessage;
     }
 }

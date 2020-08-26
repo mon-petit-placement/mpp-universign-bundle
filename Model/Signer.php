@@ -4,7 +4,12 @@ namespace Mpp\UniversignBundle\Model;
 
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\OptionsResolver\Exception\AccessException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
+use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
+use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 class Signer
 {
     const ROLE_SIGNER = 'signer';
@@ -151,7 +156,7 @@ class Signer
             ->setDefault('certificateType', null)->setAllowedTypes('certificateType', ['string', 'null'])
             ->setDefault('redirectPolicy', 'dashboard')->setAllowedValues('redirectPolicy', ['dashboard', 'quick'])
             ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])
-            ->setDefault('autoSendAgreements', false)->setAllowedTypes('autoSendAgreements', ['bool'])
+            ->setDefault('autoSendAgreements', null)->setAllowedTypes('autoSendAgreements', ['bool', 'null'])
             ->setDefault('invitationMessage', null)->setAllowedTypes('invitationMessage', ['string', 'null'])
         ;
     }
@@ -160,6 +165,15 @@ class Signer
      * @param array $data
      *
      * @return self
+     *
+     * @throws UndefinedOptionsException If an option name is undefined
+     * @throws InvalidOptionsException   If an option doesn't fulfill the
+     *                                   specified validation rules
+     * @throws MissingOptionsException   If a required option is missing
+     * @throws OptionDefinitionException If there is a cyclic dependency between
+     *                                   lazy options and/or normalizers
+     * @throws NoSuchOptionException     If a lazy option reads an unavailable option
+     * @throws AccessException           If called from a lazy option or normalizer
      */
     public static function createFromArray(array $data): self
     {

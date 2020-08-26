@@ -2,8 +2,14 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\Exception\AccessException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
+use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
+use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 
 class Document
 {
@@ -66,7 +72,7 @@ class Document
             ->setDefault('id', null)->setAllowedTypes('id', ['string', 'null'])
             ->setDefault('documentType', null)->setAllowedTypes('documentType', ['string', 'null'])
             ->setDefault('content', null)->setAllowedTypes('content', ['string', 'null'])->setNormalizer('content', function(Options $option, $value): ?\Laminas\XmlRpc\Value\Base64 {
-                if (null === $value) {
+                if (null === $value || !file_exists($value)) {
                     return null;
                 }
 
@@ -106,6 +112,15 @@ class Document
      * @param array $documentData
      *
      * @return Document
+     *
+     * @throws UndefinedOptionsException If an option name is undefined
+     * @throws InvalidOptionsException   If an option doesn't fulfill the
+     *                                   specified validation rules
+     * @throws MissingOptionsException   If a required option is missing
+     * @throws OptionDefinitionException If there is a cyclic dependency between
+     *                                   lazy options and/or normalizers
+     * @throws NoSuchOptionException     If a lazy option reads an unavailable option
+     * @throws AccessException           If called from a lazy option or normalizer
      */
     public static function createFromArray(array $data): Document
     {

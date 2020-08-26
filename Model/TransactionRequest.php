@@ -175,13 +175,13 @@ class TransactionRequest
     }
 
     /**
-     * @param array $signerData
+     * @param Signer $signer
      *
      * @return self
      */
-    public function addSigner(array $signerData): self
+    public function addSigner(Signer $signer): self
     {
-        $this->signers[] = Signer::createFromArray($signerData);
+        $this->signers[] = $signer;
 
         return $this;
     }
@@ -196,13 +196,13 @@ class TransactionRequest
 
     /**
      * @param string $name
-     * @param array $documentData
+     * @param Document $document
      *
      * @return self
      */
-    public function addDocument(string $name, array $documentData): self
+    public function addDocument(string $name, Document $document): self
     {
-        $this->documents[$name] = Document::createFromArray($documentData);
+        $this->documents[$name] = $document;
 
         return $this;
     }

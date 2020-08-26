@@ -2,13 +2,20 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use \Mpp\UniversignBundle\Model\Document;
+use Mpp\UniversignBundle\Model\Document;
 use Laminas\XmlRpc\Client;
+use Psr\Log\LoggerInterface;
+use Laminas\XmlRpc\Client\Exception\FaultException;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
 
 class XmlRpcRequester implements RequesterInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     /**
      * @var string
      */
@@ -19,8 +26,9 @@ class XmlRpcRequester implements RequesterInterface
      */
     protected $xmlRpcClient;
 
-    public function __construct(string $url)
+    public function __construct(LoggerInterface $logger, string $url)
     {
+        $this->logger = $logger;
         $this->url = $url;
         $this->xmlRpcClient = new Client($this->getURL());
     }
@@ -67,7 +75,7 @@ class XmlRpcRequester implements RequesterInterface
             $property->setAccessible(true);
             $value = $property->getValue($object);
             $property->setAccessible(false);
-            if (true === $skipNullValue && (null === $value || empty($value) && 0 !== $value)) {
+            if (true === $skipNullValue && (null === $value || (is_array($value) && empty($value)))) {
                 continue;
             }
             $data[$property->getName()] = self::flatten($value, $skipNullValue);
@@ -77,7 +85,7 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * @return TransactionRequest
+     * {@inheritDoc}
      */
     public function initiateTransactionRequest(): TransactionRequest
     {
@@ -85,50 +93,83 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * @param TransactionRequest $transactionRequest
-     *
-     * @return TransactionResponse
+     * {@inheritDoc}
      */
     public function requestTransaction(TransactionRequest $transactionRequest): TransactionResponse
     {
+        $transactionResponse = new TransactionResponse();
+
         $flattenedTransactionRequest = self::flatten($transactionRequest);
         $flattenedTransactionRequest['documents'] = array_values($flattenedTransactionRequest['documents']);
-        $response = $this->xmlRpcClient->call('requester.requestTransaction', [$flattenedTransactionRequest]);
 
-        return new TransactionResponse($response['id'], $response['url']);
+        try {
+            $response = $this->xmlRpcClient->call('requester.requestTransaction', [$flattenedTransactionRequest]);
+            $this->logger->info('[Universign - requester.requestTransaction] SUCCESS');
+            $transactionResponse
+                ->setId($response['id'])
+                ->setUrl($response['url'])
+                ->setState(TransactionResponse::STATE_SUCCESS)
+            ;
+        } catch (FaultException $fe) {
+            $transactionResponse
+                ->setState(TransactionResponse::STATE_ERROR)
+                ->setErrorMessage($fe->getMessage());
+            ;
+            $this->logger->error(sprintf(
+                '[Universign - requester.requestTransaction] ERROR: %s',
+                $fe->getMessage()
+            ));
+        }
+
+        return $transactionResponse;
     }
 
     /**
-     * @param string $documentId
-     *
-     * @return array<Document>
+     * {@inheritDoc}
      */
-    public function RequestDocument(string $documentId): array
+    public function getDocuments(string $documentId): array
     {
-        $documents  =  $this->xmlRpcClient->call('requester.getDocuments', $documentId);
-        $documentsReponse = [];
-        foreach ($documents as $document) {
-            # code...
-            $documentsResponse[] = Document::createFromArray($document);
-        }
-
-        return $documentsResponse;
+        return $this->xmlRpcClient->call('requester.getDocuments', $documentId);
     }
 
     /**
-     * @param string $documentCustomId
-     *
-     * @return array<Document>
+     * {@inheritDoc}
      */
-    public function RequestDocumentByCustomId(string $documentCustomId): array
+    public function getDocumentsByCustomId(string $customId): array
     {
-        $documents  =  $this->xmlRpcClient->call('requester.getDocumentsByCustomId', $documentCustomId);
-        $documentsReponse = [];
-        foreach ($documents as $document) {
-            # code...
-            $documentsResponse[] = Document::createFromArray($document);
-        }
-
-        return $documentsResponse;
+        return  $this->xmlRpcClient->call('requester.getDocumentsByCustomId', $customId);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTransactionInfo(string $transactionId): array
+    {
+        return $this->xmlRpcClient->call('requester.getTransactionInfo', $transactionId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTransactionInfoByCustomId(string $customId): array
+    {
+        return $this->xmlRpcClient->call('requester.getTransactionInfoByCustomId', $customId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function relaunchTransaction(string $transactionId): void
+    {
+        $this->xmlRpcClient->call('requester.relaunchTransaction', $transactionId);
+    }
+
+     /**
+     * {@inheritDoc}
+     */
+    public function cancelTransaction(string $transactionId): void
+    {
+        $this->xmlRpcClient->call('requester.cancelTransaction', $transactionId);
+    }
+
 }

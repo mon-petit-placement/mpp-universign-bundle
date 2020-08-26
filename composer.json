@@ -16,6 +16,7 @@
       "symfony/dependency-injection": "^4.0",
       "symfony/framework-bundle": "^4.0",
       "laminas/laminas-xmlrpc": "^2.0",
+      "symfony/monolog-bundle": "*",
       "ext-json": "*"
     },
     "autoload":{
