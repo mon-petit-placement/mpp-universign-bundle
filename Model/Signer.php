@@ -494,7 +494,14 @@ class Signer
     public function setIdDocuments(?array $idDocument): self
     {
         if (null !== $idDocument) {
-            $this->idDocument = RegistrationRequest::createFromArray($idDocument);
+            try {
+                $this->idDocument = RegistrationRequest::createFromArray($idDocument);
+                //logger
+            }
+            catch (\Exception $e) {
+                //logger
+                $this->idDocument = new RegistrationRequest();
+            }
         }
 
         return $this;

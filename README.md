@@ -47,26 +47,26 @@ $transaction = $this
 ;
 
 $signer = Signer::createFromArray([
-        'firstname' => 'john',
-        'lastname' => 'doe',
-        'organization' => 'dummy company',
-        'emailAddress' => 'john.doe@dummy-company.com',
-        'phoneNum' => '+0122334455',
-        'language' => 'fr',
-        'role' => \Mpp\UniversignBundle\Model\Signer::ROLE_SIGNER,
-        'birthDate' => new \DateTime::createFromFormat('Y-m-d', '2000-01-01'),
-        'certificateType' =>  \Mpp\UniversignBundle\Model\CertificateType::SIMPLE,
-    ]);
+    'firstname' => 'john',
+    'lastname' => 'doe',
+    'organization' => 'dummy company',
+    'emailAddress' => 'john.doe@dummy-company.com',
+    'phoneNum' => '+0122334455',
+    'language' => 'fr',
+    'role' => \Mpp\UniversignBundle\Model\Signer::ROLE_SIGNER,
+    'birthDate' => new \DateTime::createFromFormat('Y-m-d', '2000-01-01'),
+    'certificateType' =>  \Mpp\UniversignBundle\Model\CertificateType::SIMPLE,
+]);
 
 $document = Document::createFromArray([
-        'documentType' => 'pdf',
-        'fileName' => 'contract_test.pdf',
-        'signatureField' => [
-            'name' => 'Client:',
-            'page' => 2,
-            'signerIndex' => 0,
-        ],
-    ]);
+    'documentType' => 'pdf',
+    'fileName' => 'contract_test.pdf',
+    'signatureField' => [
+        'name' => 'Client:',
+        'page' => 2,
+        'signerIndex' => 0,
+    ],
+]);
 
 $transaction
     ->addSigner($signer)
@@ -91,7 +91,6 @@ $transactionResponse = $this->container
     ->requestTransaction($transaction)
 ;
 ```
-
 Once you have send the request transaction, you will get a `TransactionResponse` object in which you will find the transaction ID and an URL.
 
 #### Transaction Response

@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Exception;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
@@ -105,8 +106,8 @@ class Document
 
                 return SepaData::createFromArray($value);
             })
-        ;
-    }
+            ;
+        }
 
     /**
      * @param array $documentData

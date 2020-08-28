@@ -3,6 +3,7 @@
 namespace Mpp\UniversignBundle\Requester;
 
 use Mpp\UniversignBundle\Model\Document;
+use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
 
@@ -37,16 +38,16 @@ interface RequesterInterface
     /**
      * @param string $transactionId
      *
-     * @return array
+     * @return TransactionInfo
      */
-    public function getTransactionInfo(string $transactionId): array;
+    public function getTransactionInfo(string $transactionId): TransactionInfo;
 
     /**
      * @param string $customId
      *
-     * @return array
+     * @return TransactionInfo
      */
-    public function getTransactionInfoByCustomId(string $customId): array;
+    public function getTransactionInfoByCustomId(string $customId): TransactionInfo;
 
     /**
      * @param string $transactionId
