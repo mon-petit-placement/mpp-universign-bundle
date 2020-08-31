@@ -89,7 +89,7 @@ class DocSignatureField extends SignatureField
     /**
      * @return string
      */
-    public function getPatternName():string
+    public function getPatternName(): string
     {
         return $this->patternName;
     }
@@ -109,7 +109,7 @@ class DocSignatureField extends SignatureField
     /**
      * @return string
      */
-    public function getLabel():string
+    public function getLabel(): string
     {
         return $this->label;
     }

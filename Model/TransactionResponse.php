@@ -1,14 +1,11 @@
 <?php
 
-
 namespace Mpp\UniversignBundle\Model;
-
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionResponse
 {
-    const STATE_SUCCESS = "SUCCESS";
-    const STATE_ERROR = "ERROR";
+    const STATE_SUCCESS = 'SUCCESS';
+    const STATE_ERROR = 'ERROR';
 
     /**
      * @var string

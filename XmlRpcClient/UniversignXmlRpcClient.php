@@ -46,10 +46,10 @@ class UniversignXmlRpcClient
             ->setDefined('requesterEmail')->setAllowedTypes('requesterEmail', ['string'])
             ->setDefined('profile')->setAllowedTypes('profile', ['string'])
             ->setDefined('notBefore')->setAllowedTypes('notBefore', ['DateTime'])->setNormalizer('notBefore', function (Options $option, DateTime $value): \Laminas\XmlRpc\Value\DateTime {
-                    $value = $value->format('Ymd\TH:i:s');
-                    $date = new \Laminas\XmlRpc\Value\DateTime($value);
+                $value = $value->format('Ymd\TH:i:s');
+                $date = new \Laminas\XmlRpc\Value\DateTime($value);
 
-                    return $date;
+                return $date;
             })
             ->setDefined('notAfter')->setAllowedTypes('notAfter', ['DateTime'])->setNormalizer('notAfter', function (Options $option, DateTime $value): \Laminas\XmlRpc\Value\DateTime {
                 $value = $value->format('Ymd\TH:i:s');
@@ -89,7 +89,6 @@ class UniversignXmlRpcClient
                 return $this->resolveTransactionFilter($values);
             })
         ;
-
     }
 
     /**
@@ -281,7 +280,7 @@ class UniversignXmlRpcClient
                 ->setAllowedTypes('signers', ['array'])
                 ->setNormalizer('signers', function (Options $option, array $values): array {
                     return $this->resolveSigners($values);
-            })
+                })
             ->setRequired('documents')->setAllowedTypes('documents', ['array'])->setNormalizer('documents', function (Options $option, array $values): array {
                 return $this->resolveDocuments($values);
             })
@@ -335,8 +334,8 @@ class UniversignXmlRpcClient
                     ->setRequired('birthDate')->setAllowedTypes('birthDate', ['string'])
                 ;
 
-                    return $resolver->resolve($values);
-                })
+                return $resolver->resolve($values);
+            })
             ->setDefined('allowManual')->setAllowedTypes('allowManual', ['bool'])
             ->setDefined('callbackURL')->setAllowedTypes('callbackURL', ['bool'])
         ;

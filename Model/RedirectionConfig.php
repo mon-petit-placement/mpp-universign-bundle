@@ -23,7 +23,6 @@ class RedirectionConfig
      */
     protected $displayName;
 
-
     /**
      * @param OptionsResolver
      */
@@ -55,7 +54,7 @@ class RedirectionConfig
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
 
-        return (new RedirectionConfig())
+        return (new self())
             ->setUrl($resolvedData['URL'])
             ->setDisplayName($resolvedData['displayName'])
         ;

@@ -35,7 +35,7 @@ class Signer
 
     /**
      * @var string
-    */
+     */
     protected $profile;
 
     /**
@@ -140,7 +140,7 @@ class Signer
             ->setDefault('profile', null)->setAllowedTypes('profile', ['string', 'null'])
             ->setDefault('language', null)->setAllowedTypes('language', ['string', 'null'])
             ->setDefault('role', 'signer')->setAllowedValues('role', ['signer', 'observer'])
-            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', 'null'])->setNormalizer('birthDate', function(Options $options, $value): ?\Laminas\XmlRpc\Value\DateTime {
+            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', 'null'])->setNormalizer('birthDate', function (Options $options, $value): ?\Laminas\XmlRpc\Value\DateTime {
                 if (null === $value) {
                     return null;
                 }
@@ -181,7 +181,7 @@ class Signer
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
 
-        return (new Signer())
+        return (new self())
             ->setFirstname($resolvedData['firstname'])
             ->setLastname($resolvedData['lastname'])
             ->setOrganization($resolvedData['organization'])
@@ -204,7 +204,6 @@ class Signer
             ->setInvitationMessage($resolvedData['invitationMessage'])
         ;
     }
-
 
     /**
      * @param string|null $firstname

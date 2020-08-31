@@ -2,9 +2,6 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 class InitiatorInfo
 {
     /**
@@ -33,7 +30,7 @@ class InitiatorInfo
             return null;
         }
 
-        return (new InitiatorInfo())
+        return (new self())
             ->setEmail($data['email'])
             ->setFirstName($data['firstName'])
             ->setLastName($data['lastName'])

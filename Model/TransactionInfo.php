@@ -2,13 +2,10 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 class TransactionInfo
 {
-    const STATE_SUCCESS = "SUCCESS";
-    const STATE_ERROR = "ERROR";
+    const STATE_SUCCESS = 'SUCCESS';
+    const STATE_ERROR = 'ERROR';
 
     /**
      * @var string

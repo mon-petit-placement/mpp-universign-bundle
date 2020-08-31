@@ -2,7 +2,6 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SepaThirdParty
@@ -57,7 +56,7 @@ class SepaThirdParty
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
 
-        return (new SepaThirdParty())
+        return (new self())
             ->setName($resolvedData['name'])
             ->setAddress($resolvedData['address'])
             ->setPostalCode($resolvedData['postalCode'])

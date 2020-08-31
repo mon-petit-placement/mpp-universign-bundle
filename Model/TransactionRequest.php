@@ -2,9 +2,6 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 class TransactionRequest
 {
     /**
@@ -18,12 +15,12 @@ class TransactionRequest
     protected $customId;
 
     /**
-     * @var array<Signer> $signers
+     * @var array<Signer>
      */
     protected $signers;
 
     /**
-     * @var array<Document> $documents
+     * @var array<Document>
      */
     protected $documents;
 
@@ -194,7 +191,7 @@ class TransactionRequest
     }
 
     /**
-     * @param string $name
+     * @param string   $name
      * @param Document $document
      *
      * @return self
@@ -427,7 +424,7 @@ class TransactionRequest
      *
      * @return self
      */
-    public function setAutoValifationRedirection(?RedirectionConfig $autoValidationRedirection):self
+    public function setAutoValifationRedirection(?RedirectionConfig $autoValidationRedirection): self
     {
         $this->autoValidationRedirection = $autoValidationRedirection;
 
@@ -462,7 +459,7 @@ class TransactionRequest
         return $this->redirectPolicy;
     }
 
-     /**
+    /**
      * @param int|null $redirectWait
      *
      * @return self
@@ -577,7 +574,7 @@ class TransactionRequest
     /**
      * @return RedirectionConfig|null
      */
-    public function getCancelRedirection():? RedirectionConfig
+    public function getCancelRedirection(): ? RedirectionConfig
     {
         return $this->cancelRedirection;
     }

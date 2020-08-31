@@ -2,9 +2,6 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 class SignerInfo
 {
     /**
@@ -79,7 +76,7 @@ class SignerInfo
      */
     public static function createFromArray(array $data): self
     {
-        return (new SignerInfo())
+        return (new self())
             ->setStatus($data['status'])
             ->setError($data['error'] ?? null)
             ->setCertificateInfo(CertificateInfo::createFromArray($data['certificateInfo']))

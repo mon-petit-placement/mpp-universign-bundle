@@ -67,7 +67,7 @@ class TransactionFilter
      */
     public function initiateTransactionFilter(): TransactionFilter
     {
-        return new TransactionFilter();
+        return new self();
     }
 
     /**
@@ -99,7 +99,7 @@ class TransactionFilter
             ->setDefault('startRange', null)->setAllowedTypes('startRange', ['int', 'null'])
             ->setDefault('stopRange', null)->setAllowedTypes('stopRange', ['int', 'null'])
             ->setDefault('signerId', null)->setAllowedTypes('signerId', ['string', 'null'])
-            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', ['DateTime', 'null'])->setNormalizer('notBeforeCompletion', function (Options $option,  $value) {
+            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', ['DateTime', 'null'])->setNormalizer('notBeforeCompletion', function (Options $option, $value) {
                 if (null === $value) {
                     return null;
                 }
@@ -207,7 +207,7 @@ class TransactionFilter
         return $this->notBefore;
     }
 
-     /**
+    /**
      * @param \Laminas\XmlRpc\Value\DateTime|null $notAfter
      *
      * @return self

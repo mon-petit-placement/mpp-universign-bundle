@@ -4,7 +4,6 @@ namespace Mpp\UniversignBundle\Requester;
 
 use Laminas\XmlRpc\Client;
 use Laminas\XmlRpc\Client\Exception\FaultException;
-use Mpp\UniversignBundle\Model\Document;
 use Mpp\UniversignBundle\Model\InitiatorInfo;
 use Mpp\UniversignBundle\Model\SignerInfo;
 use Mpp\UniversignBundle\Model\TransactionInfo;
@@ -46,7 +45,7 @@ class XmlRpcRequester implements RequesterInterface
 
     /**
      * @param mixed $data
-     * @param bool $skipNullValue
+     * @param bool  $skipNullValue
      *
      * @return mixed
      */
@@ -78,7 +77,7 @@ class XmlRpcRequester implements RequesterInterface
 
     /**
      * @param mixed $object
-     * @param bool $skipNullValue
+     * @param bool  $skipNullValue
      *
      * @return array
      */
@@ -100,7 +99,7 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function initiateTransactionRequest(): TransactionRequest
     {
@@ -108,7 +107,7 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function requestTransaction(TransactionRequest $transactionRequest): TransactionResponse
     {
@@ -129,7 +128,7 @@ class XmlRpcRequester implements RequesterInterface
             $transactionResponse
                 ->setState(TransactionResponse::STATE_ERROR)
                 ->setErrorMessage($fe->getMessage());
-            ;
+
             $this->logger->error(sprintf(
                 '[Universign - requester.requestTransaction] ERROR: %s',
                 $fe->getMessage()
@@ -140,7 +139,7 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getDocuments(string $documentId): array
     {
@@ -160,7 +159,7 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getDocumentsByCustomId(string $customId): array
     {
@@ -175,12 +174,12 @@ class XmlRpcRequester implements RequesterInterface
                 $fe->getMessage()
             ));
         }
-        return $documents;
 
+        return $documents;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTransactionInfo(string $transactionId): TransactionInfo
     {
@@ -205,7 +204,6 @@ class XmlRpcRequester implements RequesterInterface
             foreach ($response['signerInfos'] as $signerInfo) {
                 $transactionInfo->addSignerInfo(SignerInfo::createFromArray($signerInfo));
             }
-
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
                 '[Universign - requester.getTransactionInfo] ERROR: %s',
@@ -221,7 +219,7 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTransactionInfoByCustomId(string $customId): TransactionInfo
     {
@@ -257,14 +255,13 @@ class XmlRpcRequester implements RequesterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function relaunchTransaction(string $transactionId): void
     {
         try {
             $this->xmlRpcClient->call('requester.relaunchTransaction', $transactionId);
             $this->logger->info('[Universign - requester.relaunchTransaction] SUCCESS');
-
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
                 '[Universign - requester.relaunchTransaction] ERROR: %s',
@@ -273,8 +270,8 @@ class XmlRpcRequester implements RequesterInterface
         }
     }
 
-     /**
-     * {@inheritDoc}
+    /**
+     * {@inheritdoc}
      */
     public function cancelTransaction(string $transactionId): void
     {

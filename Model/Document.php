@@ -2,7 +2,6 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Exception;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -72,7 +71,7 @@ class Document
         $resolver
             ->setDefault('id', null)->setAllowedTypes('id', ['string', 'null'])
             ->setDefault('documentType', null)->setAllowedTypes('documentType', ['string', 'null'])
-            ->setDefault('content', null)->setAllowedTypes('content', ['string', 'null'])->setNormalizer('content', function(Options $option, $value): ?\Laminas\XmlRpc\Value\Base64 {
+            ->setDefault('content', null)->setAllowedTypes('content', ['string', 'null'])->setNormalizer('content', function (Options $option, $value): ?\Laminas\XmlRpc\Value\Base64 {
                 if (null === $value || !file_exists($value)) {
                     return null;
                 }
@@ -84,7 +83,7 @@ class Document
             })
             ->setDefault('url', null)->setAllowedTypes('url', ['string', 'null'])
             ->setDefault('fileName', null)->setAllowedTypes('fileName', ['string', 'null'])
-            ->setDefault('signatureFields', null)->setAllowedTypes('signatureFields', ['array', 'null'])->setNormalizer('signatureFields', function(Options $option, $values): array {
+            ->setDefault('signatureFields', null)->setAllowedTypes('signatureFields', ['array', 'null'])->setNormalizer('signatureFields', function (Options $option, $values): array {
                 if (null === $values) {
                     return [];
                 }
@@ -98,8 +97,8 @@ class Document
             })
             ->setDefault('checkBoxTexts', null)->setAllowedTypes('checkBoxTexts', ['array', 'null'])
             ->setDefault('metaData', null)->setAllowedTypes('metaData', ['array', 'null'])
-            ->setDefault('title', null)->setAllowedTypes('title', ['string','null'])
-            ->setDefault('SEPAData', null)->setAllowedTypes('SEPAData', ['array', 'null'])->setNormalizer('SEPAData', function(Options $option, $value): ?SepaData {
+            ->setDefault('title', null)->setAllowedTypes('title', ['string', 'null'])
+            ->setDefault('SEPAData', null)->setAllowedTypes('SEPAData', ['array', 'null'])->setNormalizer('SEPAData', function (Options $option, $value): ?SepaData {
                 if (null === $value) {
                     return null;
                 }
@@ -129,7 +128,7 @@ class Document
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
 
-        return (new Document())
+        return (new self())
             ->setId($resolvedData['id'])
             ->setDocumentType($resolvedData['documentType'])
             ->setContent($resolvedData['content'])

@@ -63,7 +63,7 @@ class RegistrationRequest
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
 
-        return (new RegistrationRequest())
+        return (new self())
             ->setDocuments(array_key_exists('documents', $resolvedData) ? $resolvedData['documents'] : array())
             ->setType(array_key_exists('type', $resolvedData) ? $resolvedData['type'] : null)
         ;

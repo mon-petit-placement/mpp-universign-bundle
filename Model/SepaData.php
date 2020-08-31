@@ -2,7 +2,6 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Exception;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -66,14 +65,14 @@ class SepaData
             ->setRequired('iban')->setAllowedTypes('iban', ['string'])
             ->setRequired('bic')->setAllowedTypes('bic', ['string'])
             ->setRequired('recurring')->setAllowedTypes('recurring', ['bool'])
-            ->setRequired('debtor')->setAllowedTypes('debtor', ['array', '\SepaThirdParty'])->setNormalizer('debtor', function(Options $option, $value): SepaThirdParty {
+            ->setRequired('debtor')->setAllowedTypes('debtor', ['array', '\SepaThirdParty'])->setNormalizer('debtor', function (Options $option, $value): SepaThirdParty {
                 if (is_array($value)) {
                     return SepaThirdParty::createFromArray($value);
                 }
 
                 return $value;
             })
-            ->setRequired('creditor')->setAllowedTypes('creditor', ['array', '\SepaThirdParty'])->setNormalizer('creditor', function(Options $option, $value): SepaThirdParty {
+            ->setRequired('creditor')->setAllowedTypes('creditor', ['array', '\SepaThirdParty'])->setNormalizer('creditor', function (Options $option, $value): SepaThirdParty {
                 if (is_array($value)) {
                     return SepaThirdParty::createFromArray($value);
                 }
@@ -103,7 +102,7 @@ class SepaData
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
 
-        return (new SepaData())
+        return (new self())
             ->setRum($resolvedData['rum'])
             ->setIcs($resolvedData['ics'])
             ->setIban($resolvedData['iban'])
