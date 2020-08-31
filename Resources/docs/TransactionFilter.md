@@ -1,6 +1,8 @@
 Transaction Filter
 ==================
 
+**[⬆ back to readme](../../README.md)**
+
 Requests the list of transactions matching the given filter. At most 1000
 results are returned: to have more results, use multiple requests and ranges
 in TransactionFilter.
@@ -40,5 +42,3 @@ public function __construct(RequesterInterface $requester)
 
     $transactionFilterResponse = $this->requester->requestTransactionFilter($transactionFilter);
 ```
-
-#faire une requete avec behat et recuperer le resultat pour exemple.

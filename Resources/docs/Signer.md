@@ -1,6 +1,8 @@
 Signer Structure
 ================
 
+**[⬆ back to readme](../../README.md)**
+
 The signer structure is used to add a signer.
 Before add a signer you need to create it from the array parameters with the static function `Signer::createFromArray()`.
 
