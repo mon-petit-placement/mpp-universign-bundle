@@ -39,57 +39,64 @@ First, you have to send a transaction to Universign services.
 Here is an example:
 
 ```php
+...
+use Mpp\UniversignBundle\Requester\RequesterInterface;
 
-$transaction = $this
-    ->container
-    ->get('universign.requester')
-    ->initiateTransaction()
-;
+...
+/**
+ * @var RequesterInterface;
+ */
+private $requester;
 
-$signer = Signer::createFromArray([
-    'firstname' => 'john',
-    'lastname' => 'doe',
-    'organization' => 'dummy company',
-    'emailAddress' => 'john.doe@dummy-company.com',
-    'phoneNum' => '+0122334455',
-    'language' => 'fr',
-    'role' => \Mpp\UniversignBundle\Model\Signer::ROLE_SIGNER,
-    'birthDate' => new \DateTime::createFromFormat('Y-m-d', '2000-01-01'),
-    'certificateType' =>  \Mpp\UniversignBundle\Model\CertificateType::SIMPLE,
-]);
+public function __construct(RequesterInterface $requester)
+{
+    $this->requester = $requester;
+}
 
-$document = Document::createFromArray([
-    'documentType' => 'pdf',
-    'fileName' => 'contract_test.pdf',
-    'signatureField' => [
-        'name' => 'Client:',
-        'page' => 2,
-        'signerIndex' => 0,
-    ],
-]);
+...
+    $transaction = $this->requester->initiateTransaction();
 
-$transaction
-    ->addSigner($signer)
-    ->addDocument($document)
-    ->setProfile('test')
-    ->setCustomId('Universign-0001')
-    ->setMustContactFirstSigner(true)
-    ->setFinalDocSent(true)
-    ->setFinalDocRequesterSent(true)
-    ->setFinalDocObserverSent(false)
-    ->setDescription('this is an example')
-    ->setCertificateType('simple')
-    ->setLanguage('en')
-    ->setHandwrittenSignatureMode(1)
-    ->setChainingMode('email')
-    ->setFinalDocCCeMails(true)
-    ->setRedirectPolicy('dashboard')
-;
+    $signer = Signer::createFromArray([
+        'firstname' => 'john',
+        'lastname' => 'doe',
+        'organization' => 'dummy company',
+        'emailAddress' => 'john.doe@dummy-company.com',
+        'phoneNum' => '+0122334455',
+        'language' => 'fr',
+        'role' => \Mpp\UniversignBundle\Model\Signer::ROLE_SIGNER,
+        'birthDate' => new \DateTime::createFromFormat('Y-m-d', '2000-01-01'),
+        'certificateType' =>  \Mpp\UniversignBundle\Model\CertificateType::SIMPLE,
+    ]);
 
-$transactionResponse = $this->container
-    ->get('universign.requester')
-    ->requestTransaction($transaction)
-;
+    $document = Document::createFromArray([
+        'documentType' => 'pdf',
+        'fileName' => 'contract_test.pdf',
+        'signatureField' => [
+            'name' => 'Client:',
+            'page' => 2,
+            'signerIndex' => 0,
+        ],
+    ]);
+
+    $transaction
+        ->addSigner($signer)
+        ->addDocument($document)
+        ->setProfile('test')
+        ->setCustomId('Universign-0001')
+        ->setMustContactFirstSigner(true)
+        ->setFinalDocSent(true)
+        ->setFinalDocRequesterSent(true)
+        ->setFinalDocObserverSent(false)
+        ->setDescription('this is an example')
+        ->setCertificateType('simple')
+        ->setLanguage('en')
+        ->setHandwrittenSignatureMode(1)
+        ->setChainingMode('email')
+        ->setFinalDocCCeMails(true)
+        ->setRedirectPolicy('dashboard')
+    ;
+
+    $transactionResponse = $this->requester->requestTransaction($transaction);
 ```
 Once you have send the request transaction, you will get a `TransactionResponse` object in which you will find the transaction ID and an URL.
 
@@ -110,7 +117,7 @@ The `url` value is used to sign the documents by the signers.
 After you have send your transaction request and it has been signed, send a request to get the signed documents with the previous transaction id:
 
 ```php
-$documents = $this->container->get('universign.requester')->getDocuments($transactionId);
+$documents = $this->requester->getDocuments($transactionId);
 ```
 You will get an array of `Document` object:
 

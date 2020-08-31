@@ -6,5 +6,5 @@ This request is used if the expiration date of the signature request is close to
 To restart the signature request, simply send this request with the `transactionId`.
 
 ```php
-$this->container->get('universign.requester')->relaunchTransaction($transactionId);
+$this->requester->relaunchTransaction($transactionId);
 ```
