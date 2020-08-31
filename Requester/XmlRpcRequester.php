@@ -48,9 +48,9 @@ class XmlRpcRequester implements RequesterInterface
      * @param mixed $data
      * @param bool $skipNullValue
      *
-     * @return array
+     * @return mixed
      */
-    public static function flatten($data, bool $skipNullValue = true): array
+    public static function flatten($data, bool $skipNullValue = true)
     {
         $flattenedData = [];
 
