@@ -3,14 +3,14 @@
 namespace Mpp\UniversignBundle\Model;
 
 use Exception;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Document
 {
@@ -106,8 +106,8 @@ class Document
 
                 return SepaData::createFromArray($value);
             })
-            ;
-        }
+        ;
+    }
 
     /**
      * @param array $documentData
@@ -125,7 +125,6 @@ class Document
      */
     public static function createFromArray(array $data): Document
     {
-
         $resolver = new OptionsResolver();
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
@@ -355,5 +354,4 @@ class Document
     {
         return $this->sepaData;
     }
-
 }

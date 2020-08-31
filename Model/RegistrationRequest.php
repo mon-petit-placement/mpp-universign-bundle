@@ -2,14 +2,14 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationRequest
 {
@@ -17,11 +17,11 @@ class RegistrationRequest
     const DOCTYPE_PASSPORT = 'passport_eu';
     const DOCTYPE_TITLE_STAY = 'titre_sejour';
 
-
     /**
      * @var array
      */
     protected $documents;
+
     /**
      * @var string
      */
@@ -62,12 +62,11 @@ class RegistrationRequest
         $resolver = new OptionsResolver();
         self::configureData($resolver);
         $resolvedData = $resolver->resolve($data);
-        $idDocument = new RegistrationRequest();
-            $idDocument
-                ->setDocuments(array_key_exists('documents', $resolvedData) ? $resolvedData['documents'] : array())
-                ->setType(array_key_exists('type', $resolvedData) ? $resolvedData['type'] : null)
-            ;
-        return $idDocument;
+
+        return (new RegistrationRequest())
+            ->setDocuments(array_key_exists('documents', $resolvedData) ? $resolvedData['documents'] : array())
+            ->setType(array_key_exists('type', $resolvedData) ? $resolvedData['type'] : null)
+        ;
     }
 
     /**

@@ -11,18 +11,22 @@ class SepaThirdParty
      * @var string
      */
     protected $name;
+
     /**
      * @var string
      */
     protected $address;
+
     /**
      * @var string
      */
     protected $postalCode;
+
     /**
      * @var string
      */
     protected $city;
+
     /**
      * @var string
      */

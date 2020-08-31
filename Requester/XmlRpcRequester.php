@@ -2,15 +2,15 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Mpp\UniversignBundle\Model\Document;
 use Laminas\XmlRpc\Client;
-use Psr\Log\LoggerInterface;
 use Laminas\XmlRpc\Client\Exception\FaultException;
+use Mpp\UniversignBundle\Model\Document;
+use Mpp\UniversignBundle\Model\InitiatorInfo;
+use Mpp\UniversignBundle\Model\SignerInfo;
 use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
-use Mpp\UniversignBundle\Model\SignerInfo;
-use Mpp\UniversignBundle\Model\InitiatorInfo;
+use Psr\Log\LoggerInterface;
 
 class XmlRpcRequester implements RequesterInterface
 {
@@ -44,7 +44,13 @@ class XmlRpcRequester implements RequesterInterface
         return $this->url;
     }
 
-    public static function flatten($data, bool $skipNullValue = true)
+    /**
+     * @param mixed $data
+     * @param bool $skipNullValue
+     *
+     * @return array
+     */
+    public static function flatten($data, bool $skipNullValue = true): array
     {
         $flattenedData = [];
 
@@ -70,6 +76,12 @@ class XmlRpcRequester implements RequesterInterface
         return $data;
     }
 
+    /**
+     * @param mixed $object
+     * @param bool $skipNullValue
+     *
+     * @return array
+     */
     public static function dismount($object, bool $skipNullValue = true): array
     {
         $rc = new \ReflectionClass($object);
@@ -276,5 +288,4 @@ class XmlRpcRequester implements RequesterInterface
             ));
         }
     }
-
 }

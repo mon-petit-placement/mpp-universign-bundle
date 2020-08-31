@@ -2,14 +2,14 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RedirectionConfig
 {
@@ -17,6 +17,7 @@ class RedirectionConfig
      * @var string
      */
     protected $URL;
+
     /**
      * @var string
      */
@@ -26,7 +27,8 @@ class RedirectionConfig
     /**
      * @param OptionsResolver
      */
-    public static function configureData(OptionsResolver $resolver) {
+    public static function configureData(OptionsResolver $resolver)
+    {
         $resolver
             ->setDefault('URL', null)->setAllowedTypes('URL', ['string', 'null'])
             ->setDefault('displayName', null)->setAllowedTypes('displayName', ['string', 'null'])
@@ -98,5 +100,4 @@ class RedirectionConfig
     {
         return $this->displayName;
     }
-
 }

@@ -4,8 +4,6 @@ namespace Mpp\UniversignBundle\Model;
 
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use DateTime;
-
 
 class TransactionInfo
 {
@@ -219,9 +217,9 @@ class TransactionInfo
     }
 
     /**
-     * @return DateTime|null
+     * @return \DateTime|null
      */
-    public function getCreationDate(): ?DateTime
+    public function getCreationDate(): ?\DateTime
     {
         return $this->creationDate;
     }

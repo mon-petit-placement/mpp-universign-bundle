@@ -4,11 +4,9 @@ namespace Mpp\UniversignBundle\Model;
 
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use DateTime;
 
 class SignerInfo
 {
-
     /**
      * @var string
      */
@@ -50,7 +48,7 @@ class SignerInfo
     protected $lastName;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     protected $actionDate;
 
@@ -259,11 +257,11 @@ class SignerInfo
     }
 
     /**
-     * @param DateTime|null $actionDate
+     * @param \DateTime|null $actionDate
      *
      * @return self
      */
-    public function setActionDate(?DateTime $actionDate): self
+    public function setActionDate(?\DateTime $actionDate): self
     {
         $this->actionDate = $actionDate;
 
@@ -271,9 +269,9 @@ class SignerInfo
     }
 
     /**
-     * @return DateTime|null
+     * @return \DateTime|null
      */
-    public function getActionDate(): ?DateTime
+    public function getActionDate(): ?\DateTime
     {
         return $this->actionDate;
     }

@@ -7,7 +7,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionRequest
 {
-
     /**
      * @var string
      */
@@ -622,5 +621,4 @@ class TransactionRequest
     {
         return $this->invitationMessage;
     }
-
 }

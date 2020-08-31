@@ -2,14 +2,15 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 class Signer
 {
     const ROLE_SIGNER = 'signer';
@@ -116,7 +117,6 @@ class Signer
      * @var string
      */
     protected $invitationMessage;
-
 
     public function __construct()
     {
@@ -379,7 +379,7 @@ class Signer
     }
 
     /**
-     * @return string|null
+     * @return \Laminas\XmlRpc\Value\DateTime|null
      */
     public function getBirthDate(): ?\Laminas\XmlRpc\Value\DateTime
     {
@@ -493,16 +493,7 @@ class Signer
      */
     public function setIdDocuments(?array $idDocument): self
     {
-        if (null !== $idDocument) {
-            try {
-                $this->idDocument = RegistrationRequest::createFromArray($idDocument);
-                //logger
-            }
-            catch (\Exception $e) {
-                //logger
-                $this->idDocument = new RegistrationRequest();
-            }
-        }
+        $this->idDocument = RegistrationRequest::createFromArray($idDocument);
 
         return $this;
     }

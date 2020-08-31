@@ -11,10 +11,12 @@ class CertificateInfo
      * @var string
      */
     protected $subject;
+
     /**
      * @var string
      */
     protected $issuer;
+
     /**
      * @var string
      */
