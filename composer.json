@@ -2,9 +2,14 @@
     "name": "mpp/universign-bundle",
     "type": "symfony-bundle",
     "description": "Symfony Universign Bundle",
-    "keywords": ["json", "yaml", "api"],
+    "keywords": ["json", "yaml", "api", "xmlrpc"],
     "license": "MIT",
     "authors": [
+      {
+        "name": "Gabriel BONDAZ",
+        "email": "gabriel.bondaz@idci-consulting.fr",
+        "homepage": "https://www.idci-consulting.fr"
+      },
       {
         "name": "Louis-Arnaud CATOIRE",
         "email": "la.catoire@itefficience.com",
@@ -16,6 +21,7 @@
       "symfony/dependency-injection": "^4.0",
       "symfony/framework-bundle": "^4.0",
       "laminas/laminas-xmlrpc": "^2.0",
+      "symfony/monolog-bundle": "*",
       "ext-json": "*"
     },
     "autoload":{
