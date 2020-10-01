@@ -5,11 +5,13 @@ namespace Mpp\UniversignBundle\Requester;
 use Laminas\XmlRpc\Client;
 use Laminas\XmlRpc\Client\Exception\FaultException;
 use Mpp\UniversignBundle\Model\InitiatorInfo;
+use Mpp\UniversignBundle\Model\RedirectionConfig;
 use Mpp\UniversignBundle\Model\SignerInfo;
 use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class XmlRpcRequester implements RequesterInterface
 {
@@ -19,19 +21,31 @@ class XmlRpcRequester implements RequesterInterface
     protected $logger;
 
     /**
-     * @var string
+     * @var Router
      */
-    protected $url;
+    protected $router;
+
+    /**
+     * @var array
+     */
+    protected $entrypoint;
+
+    /**
+     * @var array
+     */
+    protected $options;
 
     /**
      * @var Client
      */
     protected $xmlRpcClient;
 
-    public function __construct(LoggerInterface $logger, string $url)
+    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $options)
     {
         $this->logger = $logger;
-        $this->url = $url;
+        $this->router = $router;
+        $this->entrypoint = $entrypoint;
+        $this->options = $options;
         $this->xmlRpcClient = new Client($this->getURL());
     }
 
@@ -40,7 +54,7 @@ class XmlRpcRequester implements RequesterInterface
      */
     public function getUrl()
     {
-        return $this->url;
+        return $this->entrypoint['url'];
     }
 
     /**
@@ -103,7 +117,34 @@ class XmlRpcRequester implements RequesterInterface
      */
     public function initiateTransactionRequest(): TransactionRequest
     {
-        return new TransactionRequest();
+        $transactionRequest = new TransactionRequest();
+
+        if (null !== $this->options['registration_callback_route_name']) {
+            $transactionRequest->setRegistrationCallbackURL($this->router->generate($this->options['registration_callback_route_name']));
+        }
+
+        if (null !== $this->options['success_redirection_route_name']) {
+            $transactionRequest->setSuccessRedirection(RedirectionConfig::createFromArray([
+                'URL' => $this->router->generate($this->options['success_redirection_route_name']),
+                'displayName' => 'Success',
+            ]));
+        }
+
+        if (null !== $this->options['cancel_redirection_route_name']) {
+            $transactionRequest->setCancelRedirection(RedirectionConfig::createFromArray([
+                'URL' => $this->router->generate($this->options['cancel_redirection_route_name']),
+                'displayName' => 'Success',
+            ]));
+        }
+
+        if (null !== $this->options['fail_redirection_route_name']) {
+            $transactionRequest->setFailRedirection(RedirectionConfig::createFromArray([
+                'URL' => $this->router->generate($this->options['fail_redirection_route_name']),
+                'displayName' => 'Success',
+            ]));
+        }
+
+        return $transactionRequest;
     }
 
     /**
@@ -127,10 +168,13 @@ class XmlRpcRequester implements RequesterInterface
         } catch (FaultException $fe) {
             $transactionResponse
                 ->setState(TransactionResponse::STATE_ERROR)
-                ->setErrorMessage($fe->getMessage());
+                ->setErrorCode($fe->getCode())
+                ->setErrorMessage($fe->getMessage())
+            ;
 
             $this->logger->error(sprintf(
-                '[Universign - requester.requestTransaction] ERROR: %s',
+                '[Universign - requester.requestTransaction] ERROR (%s): %s',
+                $fe->getCode(),
                 $fe->getMessage()
             ));
         }
@@ -150,7 +194,8 @@ class XmlRpcRequester implements RequesterInterface
             $this->logger->info('[Universign - requester.getDocuments] SUCCESS');
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
-                '[Universign - requester.getDocuments] ERROR: %s',
+                '[Universign - requester.getDocuments] ERROR (%s): %s',
+                $fe->getCode(),
                 $fe->getMessage()
             ));
         }
@@ -170,7 +215,8 @@ class XmlRpcRequester implements RequesterInterface
             $this->logger->info('[Universign - requester.getDocumentsByCustomId] SUCCESS');
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
-                '[Universign - requester.getDocumentsByCustomId] ERROR: %s',
+                '[Universign - requester.getDocumentsByCustomId] ERROR (%s): %s',
+                $fe->getCode(),
                 $fe->getMessage()
             ));
         }
@@ -206,11 +252,13 @@ class XmlRpcRequester implements RequesterInterface
             }
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
-                '[Universign - requester.getTransactionInfo] ERROR: %s',
+                '[Universign - requester.getTransactionInfo] ERROR (%s): %s',
+                $fe->getCode(),
                 $fe->getMessage()
             ));
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
+                ->setErrorCode($fe->getCode())
                 ->setErrorMessage($fe->getMessage())
             ;
         }
@@ -223,66 +271,95 @@ class XmlRpcRequester implements RequesterInterface
      */
     public function getTransactionInfoByCustomId(string $customId): TransactionInfo
     {
-        $transactionInfoResponse = new TransactionInfo();
+        $transactionInfo = new TransactionInfo();
 
         try {
             $response = $this->xmlRpcClient->call('requester.getTransactionInfoByCustomId', $customId);
             $this->logger->info('[Universign - requester.getTransactionInfoByCustomId] SUCCESS');
-            $transactionInfoResponse
+            $transactionInfo
                 ->setState(TransactionInfo::STATE_SUCCESS)
-                ->setStatus($response['status'])
-                ->setCurrentSigner($response['currentSigner'])
-                ->setCreationDate(\DateTime::createFromFormat('Ymd\TH:i:s', $response['creationDate']))
-                ->setDescription($response['description'])
-                ->setInitiatorInfo(InitiatorInfo::createFromArray($response['initiatorInfo']))
-                ->setEachField($response['eachField'])
-                ->setCustomerId($response['customerId'])
-                ->setTransactionId($response['transactionId'])
-                ->setRedirectPolicy($response['redirectPolicy'])
-                ->setRedirectWait($response['redirectWait'])
+                ->setStatus($response['status'] ?? null)
+                ->setCurrentSigner($response['currentSigner'] ?? null)
+                ->setCreationDate(\DateTime::createFromFormat('Ymd\TH:i:s', $response['creationDate']) ?? null)
+                ->setDescription($response['description'] ?? null)
+                ->setInitiatorInfo(InitiatorInfo::createFromArray($response['initiatorInfo']) ?? null)
+                ->setEachField($response['eachField'] ?? null)
+                ->setCustomerId($response['customerId'] ?? null)
+                ->setTransactionId($response['transactionId'] ?? null)
+                ->setRedirectPolicy($response['redirectPolicy'] ?? null)
+                ->setRedirectWait($response['redirectWait'] ?? null)
             ;
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
-                '[Universign - requester.getTransactionInfoByCustomId] ERROR: %s',
+                '[Universign - requester.getTransactionInfoByCustomId] ERROR (%s): %s',
+                $fe->getCode(),
                 $fe->getMessage()
             ));
-            $transactionInfoResponse
+            $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
-                ->setErrorMessage($fe->getMessage());
+                ->setErrorCode($fe->getCode())
+                ->setErrorMessage($fe->getMessage())
+            ;
         }
 
-        return $transactionInfoResponse;
+        return $transactionInfo;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function relaunchTransaction(string $transactionId): void
+    public function relaunchTransaction(string $transactionId): TransactionInfo
     {
+        $transactionInfo = new TransactionInfo();
+
         try {
-            $this->xmlRpcClient->call('requester.relaunchTransaction', $transactionId);
+            $response = $this->xmlRpcClient->call('requester.relaunchTransaction', $transactionId);
             $this->logger->info('[Universign - requester.relaunchTransaction] SUCCESS');
+            $transactionInfo
+                ->setState(TransactionInfo::STATE_SUCCESS)
+            ;
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
-                '[Universign - requester.relaunchTransaction] ERROR: %s',
+                '[Universign - requester.relaunchTransaction] ERROR (%s): %s',
+                $fe->getCode(),
                 $fe->getMessage()
             ));
+            $transactionInfo
+                ->setState(TransactionInfo::STATE_ERROR)
+                ->setErrorCode($fe->getCode())
+                ->setErrorMessage($fe->getMessage())
+            ;
         }
+
+        return $transactionInfo;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function cancelTransaction(string $transactionId): void
+    public function cancelTransaction(string $transactionId): TransactionInfo
     {
+        $transactionInfo = new TransactionInfo();
+
         try {
-            $this->xmlRpcClient->call('requester.cancelTransaction', $transactionId);
+            $response = $this->xmlRpcClient->call('requester.cancelTransaction', $transactionId);
             $this->logger->info('[Universign - requester.cancelTransaction] SUCCESS');
+            $transactionInfo
+                ->setState(TransactionInfo::STATE_SUCCESS)
+            ;
         } catch (FaultException $fe) {
             $this->logger->error(sprintf(
-                '[Universign - requester.cancelTransaction] ERROR: %s',
+                '[Universign - requester.cancelTransaction] ERROR (%s): %s',
+                $fe->getCode(),
                 $fe->getMessage()
             ));
+            $transactionInfo
+                ->setState(TransactionInfo::STATE_ERROR)
+                ->setErrorCode($fe->getCode())
+                ->setErrorMessage($fe->getMessage())
+            ;
         }
+
+        return $transactionInfo;
     }
 }

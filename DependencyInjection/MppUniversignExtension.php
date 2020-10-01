@@ -23,8 +23,13 @@ class MppUniversignExtension extends Extension
         $loader->load('services.yaml');
 
         $container->setParameter(
-            sprintf('%s.entrypoint_url', Configuration::CONFIGURATION_ROOT),
-            $config['entrypoint']['url']
+            sprintf('%s.entrypoint', Configuration::CONFIGURATION_ROOT),
+            $config['entrypoint']
+        );
+
+        $container->setParameter(
+            sprintf('%s.options', Configuration::CONFIGURATION_ROOT),
+            $config['options']
         );
     }
 }

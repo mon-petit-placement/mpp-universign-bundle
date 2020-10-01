@@ -3,6 +3,8 @@ services:
     Mpp\UniversignBundle\Requester\XmlRpcRequester:
         arguments:
             - '@logger'
-            - '%mpp_universign.entrypoint_url%'
+            - '@router'
+            - '%mpp_universign.entrypoint%'
+            - '%mpp_universign.options%'
 
     Mpp\UniversignBundle\Requester\RequesterInterface: '@Mpp\UniversignBundle\Requester\XmlRpcRequester'

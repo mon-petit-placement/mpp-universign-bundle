@@ -56,7 +56,7 @@ public function __construct(RequesterInterface $requester)
 ...
     $transaction = $this->requester->initiateTransaction();
 
-    $signer = Signer::createFromArray([
+    $universignSigner = \Mpp\UniversignBundle\Model\Signer::createFromArray([
         'firstname' => 'john',
         'lastname' => 'doe',
         'organization' => 'dummy company',
@@ -68,19 +68,22 @@ public function __construct(RequesterInterface $requester)
         'certificateType' =>  \Mpp\UniversignBundle\Model\CertificateType::SIMPLE,
     ]);
 
-    $document = Document::createFromArray([
+    $universignDocument = \Mpp\UniversignBundle\Model\Document::createFromArray([
         'documentType' => 'pdf',
         'fileName' => 'contract_test.pdf',
-        'signatureField' => [
-            'name' => 'Client:',
-            'page' => 2,
-            'signerIndex' => 0,
+        'content' => '/my/contract_test.pdf',
+        'signatureFields' => [
+            [
+                'name' => 'Client:',
+                'page' => 2,
+                'signerIndex' => 0,
+            ],
         ],
     ]);
 
     $transaction
-        ->addSigner($signer)
-        ->addDocument($document)
+        ->addSigner($universignSigner)
+        ->addDocument('my_contract', $universignDocument)
         ->setProfile('test')
         ->setCustomId('Universign-0001')
         ->setMustContactFirstSigner(true)
@@ -171,6 +174,7 @@ More Informations:
 ------------------
 
  - Advanced documentation:
+   - [Configuration](./Resources/docs/Configuration.md)
    - [TransactionInfo](./Resources/docs/TransactionInfo.md)
    - [TransactionFilter](./Resources/docs/TransactionFilter.md)
    - [RelaunchTransaction](./Resources/docs/RelaunchTransaction.md)

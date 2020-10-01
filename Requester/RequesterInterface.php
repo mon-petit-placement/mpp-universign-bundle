@@ -51,11 +51,15 @@ interface RequesterInterface
 
     /**
      * @param string $transactionId
+     *
+     * @return TransactionInfo
      */
-    public function relaunchTransaction(string $transactionId): void;
+    public function relaunchTransaction(string $transactionId): TransactionInfo;
 
     /**
      * @param string $transactionId
+     *
+     * @return TransactionInfo
      */
-    public function cancelTransaction(string $transactionId): void;
+    public function cancelTransaction(string $transactionId): TransactionInfo;
 }

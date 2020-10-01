@@ -25,6 +25,11 @@ class TransactionResponse
     /**
      * @var string
      */
+    protected $errorCode;
+
+    /**
+     * @var string
+     */
     protected $errorMessage;
 
     public function __construct()
@@ -32,6 +37,7 @@ class TransactionResponse
         $this->id = null;
         $this->url = null;
         $this->state = null;
+        $this->errorCode = null;
         $this->errorMessage = null;
     }
 
@@ -93,6 +99,26 @@ class TransactionResponse
     public function getState(): ?string
     {
         return $this->state;
+    }
+
+    /**
+     * @param string|null
+     *
+     * @return self
+     */
+    public function setErrorCode(?string $errorCode): self
+    {
+        $this->errorCode = $errorCode;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getErrorCode(): ?string
+    {
+        return $this->errorCode;
     }
 
     /**

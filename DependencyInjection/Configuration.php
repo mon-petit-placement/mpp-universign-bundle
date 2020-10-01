@@ -22,6 +22,14 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('url')->isRequired()->end()
                     ->end()
                 ->end()
+                ->arrayNode('options')
+                    ->children()
+                        ->scalarNode('registration_callback_route_name')->defaultNull()->end()
+                        ->scalarNode('success_redirection_route_name')->defaultNull()->end()
+                        ->scalarNode('cancel_redirection_route_name')->defaultNull()->end()
+                        ->scalarNode('fail_redirection_route_name')->defaultNull()->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationRequest
 {
-    const DOCTYPE__ID_CARD_FR = 'id_card_fr';
+    const DOCTYPE_ID_CARD_FR = 'id_card_fr';
     const DOCTYPE_PASSPORT = 'passport_eu';
     const DOCTYPE_TITLE_STAY = 'titre_sejour';
 

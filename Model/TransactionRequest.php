@@ -107,7 +107,7 @@ class TransactionRequest
     /**
      * @var RedirectionConfig
      */
-    protected $sucessRedirection;
+    protected $successRedirection;
 
     /**
      * @var RedirectionConfig
@@ -128,6 +128,12 @@ class TransactionRequest
     {
         $this->signers = [];
         $this->documents = [];
+        $this
+            ->setMustContactFirstSigner(false)
+            ->setFinalDocSent(false)
+            ->setFinalDocRequesterSent(false)
+            ->setFinalDocObserverSent(false)
+        ;
     }
 
     /**
