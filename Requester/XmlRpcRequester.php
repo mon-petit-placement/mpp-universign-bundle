@@ -12,6 +12,7 @@ use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class XmlRpcRequester implements RequesterInterface
 {
@@ -120,26 +121,42 @@ class XmlRpcRequester implements RequesterInterface
         $transactionRequest = new TransactionRequest();
 
         if (null !== $this->options['registration_callback_route_name']) {
-            $transactionRequest->setRegistrationCallbackURL($this->router->generate($this->options['registration_callback_route_name']));
+            $transactionRequest->setRegistrationCallbackURL($this->router->generate(
+                $this->options['registration_callback_route_name'],
+                [],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ));
         }
 
         if (null !== $this->options['success_redirection_route_name']) {
             $transactionRequest->setSuccessRedirection(RedirectionConfig::createFromArray([
-                'URL' => $this->router->generate($this->options['success_redirection_route_name']),
+                'URL' => $this->router->generate(
+                    $this->options['success_redirection_route_name'],
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
                 'displayName' => 'Success',
             ]));
         }
 
         if (null !== $this->options['cancel_redirection_route_name']) {
             $transactionRequest->setCancelRedirection(RedirectionConfig::createFromArray([
-                'URL' => $this->router->generate($this->options['cancel_redirection_route_name']),
+                'URL' => $this->router->generate(
+                    $this->options['cancel_redirection_route_name'],
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
                 'displayName' => 'Success',
             ]));
         }
 
         if (null !== $this->options['fail_redirection_route_name']) {
             $transactionRequest->setFailRedirection(RedirectionConfig::createFromArray([
-                'URL' => $this->router->generate($this->options['fail_redirection_route_name']),
+                'URL' => $this->router->generate(
+                    $this->options['fail_redirection_route_name'],
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
                 'displayName' => 'Success',
             ]));
         }

@@ -1,5 +1,10 @@
 services:
 
+    Mpp\UniversignBundle\Controller\CallbackController:
+        tags: ['controller.service_arguments']
+        arguments:
+            - '@event_dispatcher'
+
     Mpp\UniversignBundle\Requester\XmlRpcRequester:
         arguments:
             - '@logger'

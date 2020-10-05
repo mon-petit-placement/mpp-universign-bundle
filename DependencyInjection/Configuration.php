@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('options')
                     ->children()
-                        ->scalarNode('registration_callback_route_name')->defaultNull()->end()
+                        ->scalarNode('registration_callback_route_name')->defaultValue('mpp_universign_callback')->cannotBeEmpty()->end()
                         ->scalarNode('success_redirection_route_name')->defaultNull()->end()
                         ->scalarNode('cancel_redirection_route_name')->defaultNull()->end()
                         ->scalarNode('fail_redirection_route_name')->defaultNull()->end()
