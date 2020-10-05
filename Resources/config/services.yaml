@@ -3,6 +3,7 @@ services:
     Mpp\UniversignBundle\Controller\CallbackController:
         tags: ['controller.service_arguments']
         arguments:
+            - '@logger'
             - '@event_dispatcher'
 
     Mpp\UniversignBundle\Requester\XmlRpcRequester:

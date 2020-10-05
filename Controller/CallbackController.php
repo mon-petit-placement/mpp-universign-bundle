@@ -2,6 +2,8 @@
 
 namespace Mpp\UniversignBundle\Controller;
 
+use Mpp\UniversignBundle\Event\UniversignCallbackEvent;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,12 +13,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class CallbackController extends AbstractController
 {
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher;
 
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(LoggerInterface $logger, EventDispatcherInterface $dispatcher)
     {
+        $this->logger = $logger;
         $this->dispatcher = $dispatcher;
     }
 
@@ -25,9 +33,19 @@ class CallbackController extends AbstractController
      */
     public function process(Request $request)
     {
-        dump($request->query->get('id'));
-        dump($request->query->get('status'));
+        $status = $request->query->get('status');
+        $transactionId = $request->query->get('id');
+        $this->logger->info(sprintf('[Universign callback] %s Transaction id: %s', $status, $transactionId));
 
-        die('ok');
+        $eventName = $event = UniversignCallbackEvent::TRANSACTION_INVALID;
+        if (UniversignCallbackEvent::VALID === $status) {
+            $eventName = UniversignCallbackEvent::TRANSACTION_VALID;
+        }
+
+        $event = new UniversignCallbackEvent($transactionId);
+
+        $this->dispatcher->dispatch($event, $eventName);
+
+        return new Response();
     }
 }
