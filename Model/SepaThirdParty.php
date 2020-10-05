@@ -52,7 +52,7 @@ class SepaThirdParty
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return SepaThirdParty
      *
@@ -65,18 +65,18 @@ class SepaThirdParty
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): SepaThirdParty
+    public static function createFromArray(array $options): SepaThirdParty
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setName($resolvedData['name'])
-            ->setAddress($resolvedData['address'])
-            ->setPostalCode($resolvedData['postalCode'])
-            ->setCity($resolvedData['city'])
-            ->setCountry($resolvedData['country'])
+            ->setName($resolvedOptions['name'])
+            ->setAddress($resolvedOptions['address'])
+            ->setPostalCode($resolvedOptions['postalCode'])
+            ->setCity($resolvedOptions['city'])
+            ->setCountry($resolvedOptions['country'])
         ;
     }
 

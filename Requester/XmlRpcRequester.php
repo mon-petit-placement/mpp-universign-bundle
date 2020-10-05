@@ -116,52 +116,56 @@ class XmlRpcRequester implements RequesterInterface
     /**
      * {@inheritdoc}
      */
-    public function initiateTransactionRequest(): TransactionRequest
+    public function initiateTransactionRequest(array $options = []): TransactionRequest
     {
-        $transactionRequest = new TransactionRequest();
+        $defaultOptions = [];
 
         if (null !== $this->options['registration_callback_route_name']) {
-            $transactionRequest->setRegistrationCallbackURL($this->router->generate(
+            $defaultOptions['registrationCallbackURL'] = $this->router->generate(
                 $this->options['registration_callback_route_name'],
                 [],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            ));
+            );
         }
 
         if (null !== $this->options['success_redirection_route_name']) {
-            $transactionRequest->setSuccessRedirection(RedirectionConfig::createFromArray([
+            $defaultOptions['successRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['success_redirection_route_name'],
                     [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Success',
-            ]));
+            ]);
         }
 
         if (null !== $this->options['cancel_redirection_route_name']) {
-            $transactionRequest->setCancelRedirection(RedirectionConfig::createFromArray([
+            $defaultOptions['cancelRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['cancel_redirection_route_name'],
                     [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Success',
-            ]));
+            ]);
         }
 
         if (null !== $this->options['fail_redirection_route_name']) {
-            $transactionRequest->setFailRedirection(RedirectionConfig::createFromArray([
+            $defaultOptions['failRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['fail_redirection_route_name'],
                     [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Success',
-            ]));
+            ]);
         }
 
-        return $transactionRequest;
+        $transaction = TransactionRequest::createFromArray(array_merge($defaultOptions, $options));
+
+        // TODO: Add redirections on signers ?
+
+        return $transaction;
     }
 
     /**

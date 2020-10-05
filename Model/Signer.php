@@ -15,8 +15,6 @@ class Signer
 {
     const ROLE_SIGNER = 'signer';
     const ROLE_OBSERVER = 'observer';
-    const REDIRECT_POLICY_DASHBOARD = 'dashboard';
-    const REDIRECT_POLICY_QUICK = 'quick';
 
     /**
      * @var string
@@ -132,14 +130,14 @@ class Signer
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefault('firstname', null)->setAllowedTypes('firstname', ['string', 'null'])
-            ->setDefault('lastname', null)->setAllowedTypes('lastname', ['string', 'null'])
-            ->setDefault('organization', null)->setAllowedTypes('organization', ['string', 'null'])
-            ->setDefault('emailAddress', null)->setAllowedTypes('emailAddress', ['string', 'null'])
-            ->setDefault('phoneNum', null)->setAllowedTypes('phoneNum', ['string', 'null'])
-            ->setDefault('profile', null)->setAllowedTypes('profile', ['string', 'null'])
-            ->setDefault('language', null)->setAllowedTypes('language', ['string', 'null'])
-            ->setDefault('role', 'signer')->setAllowedValues('role', ['signer', 'observer'])
+            ->setDefault('firstname', null)->setAllowedTypes('firstname', ['null', 'string'])
+            ->setDefault('lastname', null)->setAllowedTypes('lastname', ['null', 'string'])
+            ->setDefault('organization', null)->setAllowedTypes('organization', ['null', 'string'])
+            ->setDefault('emailAddress', null)->setAllowedTypes('emailAddress', ['null', 'string'])
+            ->setDefault('phoneNum', null)->setAllowedTypes('phoneNum', ['null', 'string'])
+            ->setDefault('profile', null)->setAllowedTypes('profile', ['null', 'string'])
+            ->setDefault('language', 'en')->setAllowedValues('language', [Language::BULGARIAN, Language::CATALAN, Language::GERMAN, Language::ENGLISH, Language::SPANISH, Language::FRENCH, Language::ITALIAN, Language::DUTCH, Language::POLISH, Language::PORTUGUESE, Language::ROMANIAN])
+            ->setDefault('role', self::ROLE_SIGNER)->setAllowedValues('role', [self::ROLE_SIGNER, self::ROLE_OBSERVER])
             ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', 'null'])->setNormalizer('birthDate', function (Options $options, $value): ?\Laminas\XmlRpc\Value\DateTime {
                 if (null === $value) {
                     return null;
@@ -147,22 +145,28 @@ class Signer
 
                 return new \Laminas\XmlRpc\Value\DateTime($value);
             })
-            ->setDefault('universignId', null)->setAllowedTypes('universignId', ['string', 'null'])
+            ->setDefault('universignId', null)->setAllowedTypes('universignId', ['null', 'string'])
             ->setDefault('successRedirection', null)->setAllowedTypes('successRedirection', ['array', 'null'])
             ->setDefault('cancelRedirection', null)->setAllowedTypes('cancelRedirection', ['array', 'null'])
             ->setDefault('failRedirection', null)->setAllowedTypes('failRedirection', ['array', 'null'])
-            ->setDefault('validationSessionId', null)->setAllowedTypes('validationSessionId', ['string', 'null'])
+            ->setDefault('certificateType', null)->setAllowedValues('certificateType', [null, CertificateType::SIMPLE, CertificateType::CERTIFIED, CertificateType::ADVANCED])
             ->setDefault('idDocuments', null)->setAllowedTypes('idDocuments', ['array', 'null'])
-            ->setDefault('certificateType', null)->setAllowedTypes('certificateType', ['string', 'null'])
-            ->setDefault('redirectPolicy', 'dashboard')->setAllowedValues('redirectPolicy', ['dashboard', 'quick'])
-            ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])
-            ->setDefault('autoSendAgreements', null)->setAllowedTypes('autoSendAgreements', ['bool', 'null'])
-            ->setDefault('invitationMessage', null)->setAllowedTypes('invitationMessage', ['string', 'null'])
+            ->setDefault('validationSessionId', null)->setAllowedTypes('validationSessionId', ['null', 'string'])
+            ->setDefault('redirectPolicy', null)->setAllowedValues('redirectPolicy', [null, 'dashboard', 'quick'])
+            ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])->setNormalizer('redirectWait', function (Options $options, $value) {
+                if ('quick' === $options['redirectPolicy']) {
+                    return null;
+                }
+
+                return $value;
+            })
+            ->setDefault('autoSendAgreements', null)->setAllowedTypes('autoSendAgreements', ['null', 'bool'])
+            ->setDefault('invitationMessage', null)->setAllowedTypes('invitationMessage', ['null', 'string'])
         ;
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      *
@@ -175,33 +179,33 @@ class Signer
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setFirstname($resolvedData['firstname'])
-            ->setLastname($resolvedData['lastname'])
-            ->setOrganization($resolvedData['organization'])
-            ->setProfile($resolvedData['profile'])
-            ->setEmailAddress($resolvedData['emailAddress'])
-            ->setPhoneNum($resolvedData['phoneNum'])
-            ->setLanguage($resolvedData['language'])
-            ->setRole($resolvedData['role'])
-            ->setBirthDate($resolvedData['birthDate'])
-            ->setUniversignId($resolvedData['universignId'])
-            ->setSuccessRedirection($resolvedData['successRedirection'])
-            ->setCancelRedirection($resolvedData['cancelRedirection'])
-            ->setFailRedirection($resolvedData['failRedirection'])
-            ->setCertificateType($resolvedData['certificateType'])
-            ->setIdDocuments($resolvedData['idDocuments'])
-            ->setValidationSessionId($resolvedData['validationSessionId'])
-            ->setRedirectPolicy($resolvedData['redirectPolicy'])
-            ->setRedirectWait($resolvedData['redirectWait'])
-            ->setAutoSendAgreements($resolvedData['autoSendAgreements'])
-            ->setInvitationMessage($resolvedData['invitationMessage'])
+            ->setFirstname($resolvedOptions['firstname'])
+            ->setLastname($resolvedOptions['lastname'])
+            ->setOrganization($resolvedOptions['organization'])
+            ->setProfile($resolvedOptions['profile'])
+            ->setEmailAddress($resolvedOptions['emailAddress'])
+            ->setPhoneNum($resolvedOptions['phoneNum'])
+            ->setLanguage($resolvedOptions['language'])
+            ->setRole($resolvedOptions['role'])
+            ->setBirthDate($resolvedOptions['birthDate'])
+            ->setUniversignId($resolvedOptions['universignId'])
+            ->setSuccessRedirection($resolvedOptions['successRedirection'])
+            ->setCancelRedirection($resolvedOptions['cancelRedirection'])
+            ->setFailRedirection($resolvedOptions['failRedirection'])
+            ->setCertificateType($resolvedOptions['certificateType'])
+            ->setIdDocuments($resolvedOptions['idDocuments'])
+            ->setValidationSessionId($resolvedOptions['validationSessionId'])
+            ->setRedirectPolicy($resolvedOptions['redirectPolicy'])
+            ->setRedirectWait($resolvedOptions['redirectWait'])
+            ->setAutoSendAgreements($resolvedOptions['autoSendAgreements'])
+            ->setInvitationMessage($resolvedOptions['invitationMessage'])
         ;
     }
 

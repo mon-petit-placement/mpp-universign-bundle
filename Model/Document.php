@@ -69,9 +69,9 @@ class Document
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefault('id', null)->setAllowedTypes('id', ['string', 'null'])
-            ->setDefault('documentType', null)->setAllowedTypes('documentType', ['string', 'null'])
-            ->setDefault('content', null)->setAllowedTypes('content', ['string', 'null'])->setNormalizer('content', function (Options $option, $value): ?\Laminas\XmlRpc\Value\Base64 {
+            ->setDefault('id', null)->setAllowedTypes('id', ['null', 'string'])
+            ->setDefault('documentType', 'pdf')->setAllowedValues('documentType', ['pdf', 'pdf-for-presentation', 'pdf-optional', 'sepa'])
+            ->setDefault('content', null)->setAllowedTypes('content', ['null', 'string'])->setNormalizer('content', function (Options $options, $value): ?\Laminas\XmlRpc\Value\Base64 {
                 if (null === $value || !file_exists($value)) {
                     return null;
                 }
@@ -81,9 +81,9 @@ class Document
 
                 return $b64;
             })
-            ->setDefault('url', null)->setAllowedTypes('url', ['string', 'null'])
-            ->setDefault('fileName', null)->setAllowedTypes('fileName', ['string', 'null'])
-            ->setDefault('signatureFields', null)->setAllowedTypes('signatureFields', ['array', 'null'])->setNormalizer('signatureFields', function (Options $option, $values): array {
+            ->setDefault('url', null)->setAllowedTypes('url', ['null', 'string'])
+            ->setDefault('fileName', null)->setAllowedTypes('fileName', ['null', 'string'])
+            ->setDefault('signatureFields', null)->setAllowedTypes('signatureFields', ['array', 'null'])->setNormalizer('signatureFields', function (Options $options, $values): array {
                 if (null === $values) {
                     return [];
                 }
@@ -95,12 +95,22 @@ class Document
 
                 return $signatureFields;
             })
-            ->setDefault('checkBoxTexts', null)->setAllowedTypes('checkBoxTexts', ['array', 'null'])
-            ->setDefault('metaData', null)->setAllowedTypes('metaData', ['array', 'null'])
-            ->setDefault('title', null)->setAllowedTypes('title', ['string', 'null'])
-            ->setDefault('SEPAData', null)->setAllowedTypes('SEPAData', ['array', 'null'])->setNormalizer('SEPAData', function (Options $option, $value): ?SepaData {
+            ->setDefault('checkBoxTexts', null)->setAllowedTypes('checkBoxTexts', ['null', 'array'])->setNormalizer('checkBoxTexts',  function (Options $options, $value) {
+                if ('pdf-for-presentation' === $options['documentType']) {
+                    return null;
+                }
+
+                return $value;
+            })
+            ->setDefault('metaData', null)->setAllowedTypes('metaData', ['null', 'array'])
+            ->setDefault('title', null)->setAllowedTypes('title', ['null', 'string'])
+            ->setDefault('SEPAData', null)->setAllowedTypes('SEPAData', ['null', 'array', SepaData::class])->setNormalizer('SEPAData', function (Options $options, $value): ?SepaData {
                 if (null === $value) {
                     return null;
+                }
+
+                if ($value instanceof SepaData) {
+                    return $value;
                 }
 
                 return SepaData::createFromArray($value);
@@ -109,7 +119,7 @@ class Document
     }
 
     /**
-     * @param array $documentData
+     * @param array $options
      *
      * @return Document
      *
@@ -122,23 +132,23 @@ class Document
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): Document
+    public static function createFromArray(array $options): Document
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setId($resolvedData['id'])
-            ->setDocumentType($resolvedData['documentType'])
-            ->setContent($resolvedData['content'])
-            ->setUrl($resolvedData['url'])
-            ->setFileName($resolvedData['fileName'])
-            ->setSignatureFields($resolvedData['signatureFields'])
-            ->setCheckBoxTexts($resolvedData['checkBoxTexts'])
-            ->setMetaData($resolvedData['metaData'])
-            ->setTitle($resolvedData['title'])
-            ->setSepaData($resolvedData['SEPAData'])
+            ->setId($resolvedOptions['id'])
+            ->setDocumentType($resolvedOptions['documentType'])
+            ->setContent($resolvedOptions['content'])
+            ->setUrl($resolvedOptions['url'])
+            ->setFileName($resolvedOptions['fileName'])
+            ->setSignatureFields($resolvedOptions['signatureFields'])
+            ->setCheckBoxTexts($resolvedOptions['checkBoxTexts'])
+            ->setMetaData($resolvedOptions['metaData'])
+            ->setTitle($resolvedOptions['title'])
+            ->setSepaData($resolvedOptions['SEPAData'])
         ;
     }
 

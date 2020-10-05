@@ -10,9 +10,11 @@ use Mpp\UniversignBundle\Model\TransactionResponse;
 interface RequesterInterface
 {
     /**
+     * @param array $options
+     *
      * @return TransactionRequest
      */
-    public function initiateTransactionRequest(): TransactionRequest;
+    public function initiateTransactionRequest(array $options = []): TransactionRequest;
 
     /**
      * @param TransactionRequest $transactionRequest

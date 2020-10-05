@@ -20,16 +20,16 @@ class CertificateInfo
     protected $serial;
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         return (new self())
-            ->setSubject($data['subject'] ?? null)
-            ->setIssuer($data['issuer'] ?? null)
-            ->setSerial($data['serial'] ?? null)
+            ->setSubject($options['subject'] ?? null)
+            ->setIssuer($options['issuer'] ?? null)
+            ->setSerial($options['serial'] ?? null)
         ;
     }
 

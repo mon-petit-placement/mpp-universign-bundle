@@ -70,26 +70,26 @@ class SignerInfo
     protected $redirectWait;
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         return (new self())
-            ->setStatus($data['status'])
-            ->setError($data['error'] ?? null)
-            ->setCertificateInfo(CertificateInfo::createFromArray($data['certificateInfo']))
-            ->setUrl($data['url'])
-            ->setId($data['id'])
-            ->setEmail($data['email'])
-            ->setFirstName($data['firstName'])
-            ->setLastName($data['lastName'])
-            ->setActionDate($data['actionDate'] ?? null)
-            ->setRefusedDocs($data['refusedDocs'] ?? null)
-            ->setRefusalComment($data['refusalComment'] ?? null)
-            ->setRedirectPolicy($data['redirectPolicy'] ?? null)
-            ->setRedirectWait($data['redirectWait'] ?? null)
+            ->setStatus($options['status'])
+            ->setError($options['error'] ?? null)
+            ->setCertificateInfo(CertificateInfo::createFromArray($options['certificateInfo']))
+            ->setUrl($options['url'])
+            ->setId($options['id'])
+            ->setEmail($options['email'])
+            ->setFirstName($options['firstName'])
+            ->setLastName($options['lastName'])
+            ->setActionDate($options['actionDate'] ?? null)
+            ->setRefusedDocs($options['refusedDocs'] ?? null)
+            ->setRefusalComment($options['refusalComment'] ?? null)
+            ->setRedirectPolicy($options['redirectPolicy'] ?? null)
+            ->setRedirectWait($options['redirectWait'] ?? null)
         ;
     }
 

@@ -2,6 +2,15 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Symfony\Component\OptionsResolver\Exception\AccessException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
+use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
+use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 class TransactionRequest
 {
     /**
@@ -128,11 +137,118 @@ class TransactionRequest
     {
         $this->signers = [];
         $this->documents = [];
-        $this
-            ->setMustContactFirstSigner(false)
-            ->setFinalDocSent(false)
-            ->setFinalDocRequesterSent(false)
-            ->setFinalDocObserverSent(false)
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public static function configureData(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setDefault('profile', null)->setAllowedTypes('profile', ['null', 'string'])
+            ->setDefault('customId', null)->setAllowedTypes('customId', ['null', 'string'])
+            ->setDefault('signers', [])->setAllowedTypes('signers', ['array'])->setNormalizer('signers', function (Options $options, $values): array {
+                $signers = [];
+                foreach ($values as $value) {
+                    $signers[] = Signer::createFromArray($value);
+                }
+
+                return $signers;
+            })
+            ->setDefault('documents', [])->setAllowedTypes('documents', ['array'])->setNormalizer('documents', function (Options $options, $values): array {
+                $documents = [];
+                foreach ($values as $name => $value) {
+                    $documents[$name] = Document::createFromArray($value);
+                }
+
+                return $documents;
+            })
+            ->setDefault('mustContactFirstSigner', false)->setAllowedTypes('mustContactFirstSigner', ['bool'])
+            ->setDefault('finalDocSent', false)->setAllowedTypes('finalDocSent', ['bool'])
+            ->setDefault('finalDocRequesterSent', false)->setAllowedTypes('finalDocRequesterSent', ['bool'])
+            ->setDefault('finalDocObserverSent', false)->setAllowedTypes('finalDocObserverSent', ['bool'])
+            ->setDefault('description', null)->setAllowedTypes('description', ['null', 'string'])
+            ->setDefault('certificateType', CertificateType::SIMPLE)->setAllowedValues('certificateType', [null, CertificateType::SIMPLE, CertificateType::CERTIFIED, CertificateType::ADVANCED])
+            ->setDefault('language', 'en')->setAllowedValues('language', [Language::BULGARIAN, Language::CATALAN, Language::GERMAN, Language::ENGLISH, Language::SPANISH, Language::FRENCH, Language::ITALIAN, Language::DUTCH, Language::POLISH, Language::PORTUGUESE, Language::ROMANIAN])
+            ->setDefault('handwrittenSignatureMode', null)->setAllowedValues('handwrittenSignatureMode', [null, "0", "1", "2"])
+            ->setDefault('chainingMode', 'email')->setAllowedValues('chainingMode', ['none', 'email', 'web'])
+            ->setDefault('finalDocCCeMails', null)->setAllowedTypes('finalDocCCeMails', ['null', 'string'])
+            ->setDefault('autoValidationRedirection', null)->setAllowedTypes('autoValidationRedirection', ['null', RedirectionConfig::class])
+            ->setDefault('redirectPolicy', 'dashboard')->setAllowedValues('redirectPolicy', ['dashboard', 'quick'])
+            ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])->setNormalizer('redirectWait', function (Options $options, $value) {
+                if ('quick' === $options['redirectPolicy']) {
+                    return null;
+                }
+
+                return $value;
+            })
+            ->setDefault('autoSendAgreements', null)->setAllowedTypes('autoSendAgreements', ['null', 'bool'])
+            ->setDefault('operator', null)->setAllowedTypes('operator', ['null', 'string'])->setNormalizer('operator', function (Options $options, $value) {
+                if (CertificateType::ADVANCED !== $options['certificateType']) {
+                    return null;
+                }
+
+                return $value;
+            })
+            ->setDefault('registrationCallbackURL', null)->setAllowedTypes('registrationCallbackURL', ['null', 'string'])->setNormalizer('registrationCallbackURL', function (Options $options, $value) {
+                if (CertificateType::ADVANCED !== $options['certificateType']) {
+                    return null;
+                }
+
+                return $value;
+            })
+            ->setDefault('successRedirection', null)->setAllowedTypes('successRedirection', ['null', RedirectionConfig::class])
+            ->setDefault('cancelRedirection', null)->setAllowedTypes('cancelRedirection', ['null', RedirectionConfig::class])
+            ->setDefault('failRedirection', null)->setAllowedTypes('failRedirection', ['null', RedirectionConfig::class])
+            ->setDefault('invitationMessage', null)->setAllowedTypes('invitationMessage', ['null', 'string'])
+        ;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return self
+     *
+     * @throws UndefinedOptionsException If an option name is undefined
+     * @throws InvalidOptionsException   If an option doesn't fulfill the
+     *                         language          specified validation rules
+     * @throws MissingOptionsException   If a required option is missing
+     * @throws OptionDefinitionException If there is a cyclic dependency between
+     *                                   lazy options and/or normalizers
+     * @throws NoSuchOptionException     If a lazy option reads an unavailable option
+     * @throws AccessException           If called from a lazy option or normalizer
+     */
+    public static function createFromArray(array $options): self
+    {
+        $resolver = new OptionsResolver();
+        self::configureData($resolver);
+        $resolvedOptions = $resolver->resolve($options);
+
+        return (new self())
+            ->setProfile($resolvedOptions['profile'])
+            ->setCustomId($resolvedOptions['customId'])
+            ->setSigners($resolvedOptions['signers'])
+            ->setDocuments($resolvedOptions['documents'])
+            ->setMustContactFirstSigner($resolvedOptions['mustContactFirstSigner'])
+            ->setFinalDocSent($resolvedOptions['finalDocSent'])
+            ->setFinalDocRequesterSent($resolvedOptions['finalDocRequesterSent'])
+            ->setFinalDocObserverSent($resolvedOptions['finalDocObserverSent'])
+            ->setDescription($resolvedOptions['description'])
+            ->setCertificateType($resolvedOptions['certificateType'])
+            ->setLanguage($resolvedOptions['language'])
+            ->setHandwrittenSignatureMode($resolvedOptions['handwrittenSignatureMode'])
+            ->setChainingMode($resolvedOptions['chainingMode'])
+            ->setFinalDocCCeMails($resolvedOptions['finalDocCCeMails'])
+            ->setAutoValidationRedirection($resolvedOptions['autoValidationRedirection'])
+            ->setRedirectPolicy($resolvedOptions['redirectPolicy'])
+            ->setRedirectWait($resolvedOptions['redirectWait'])
+            ->setAutoSendAgreements($resolvedOptions['autoSendAgreements'])
+            ->setOperator($resolvedOptions['operator'])
+            ->setRegistrationCallbackURL($resolvedOptions['registrationCallbackURL'])
+            ->setSuccessRedirection($resolvedOptions['successRedirection'])
+            ->setCancelRedirection($resolvedOptions['cancelRedirection'])
+            ->setFailRedirection($resolvedOptions['failRedirection'])
+            ->setInvitationMessage($resolvedOptions['invitationMessage'])
         ;
     }
 
@@ -189,6 +305,18 @@ class TransactionRequest
     }
 
     /**
+     * @param array<Signer> $signers
+     *
+     * @return self
+     */
+    public function setSigners(array $signers): self
+    {
+        $this->signers = $signers;
+
+        return $this;
+    }
+
+    /**
      * @return array<Signer>
      */
     public function getSigners(): array
@@ -205,6 +333,18 @@ class TransactionRequest
     public function addDocument(string $name, Document $document): self
     {
         $this->documents[$name] = $document;
+
+        return $this;
+    }
+
+    /**
+     * @param array<Document> $documents
+     *
+     * @return self
+     */
+    public function setDocuments(array $documents): self
+    {
+        $this->documents = $documents;
 
         return $this;
     }
@@ -420,7 +560,7 @@ class TransactionRequest
     /**
      * @return array|null
      */
-    public function getFInalDocCCemails(): ?array
+    public function getFinalDocCCemails(): ?array
     {
         return $this->finalDocCCeMails;
     }
@@ -430,7 +570,7 @@ class TransactionRequest
      *
      * @return self
      */
-    public function setAutoValifationRedirection(?RedirectionConfig $autoValidationRedirection): self
+    public function setAutoValidationRedirection(?RedirectionConfig $autoValidationRedirection): self
     {
         $this->autoValidationRedirection = $autoValidationRedirection;
 
@@ -440,7 +580,7 @@ class TransactionRequest
     /**
      * @return RedirectionConfig|null
      */
-    public function getAutoValifationRedirection(): ?RedirectionConfig
+    public function getAutoValidationRedirection(): ?RedirectionConfig
     {
         return $this->autoValidationRedirection;
     }
@@ -530,7 +670,7 @@ class TransactionRequest
      *
      * @return self
      */
-    public function setRegistrationCallbackUrl(string $registrationCallbackURL): self
+    public function setRegistrationCallbackURL(?string $registrationCallbackURL): self
     {
         $this->registrationCallbackURL = $registrationCallbackURL;
 
@@ -540,7 +680,7 @@ class TransactionRequest
     /**
      * @return string|null
      */
-    public function getRegistrationCallbackUrl(): ?string
+    public function getRegistrationCallbackURL(): ?string
     {
         return $this->registrationCallbackURL;
     }

@@ -20,20 +20,20 @@ class InitiatorInfo
     protected $lastName;
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      */
-    public static function createFromArray(?array $data): self
+    public static function createFromArray(?array $options): self
     {
-        if (null === $data) {
+        if (null === $options) {
             return null;
         }
 
         return (new self())
-            ->setEmail($data['email'])
-            ->setFirstName($data['firstName'])
-            ->setLastName($data['lastName'])
+            ->setEmail($options['email'])
+            ->setFirstName($options['firstName'])
+            ->setLastName($options['lastName'])
         ;
     }
 

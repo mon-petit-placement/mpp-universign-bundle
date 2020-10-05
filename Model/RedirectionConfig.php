@@ -35,7 +35,7 @@ class RedirectionConfig
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      *
@@ -48,15 +48,15 @@ class RedirectionConfig
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setUrl($resolvedData['URL'])
-            ->setDisplayName($resolvedData['displayName'])
+            ->setUrl($resolvedOptions['URL'])
+            ->setDisplayName($resolvedOptions['displayName'])
         ;
     }
 

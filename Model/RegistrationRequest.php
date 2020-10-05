@@ -44,7 +44,7 @@ class RegistrationRequest
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      *
@@ -57,15 +57,15 @@ class RegistrationRequest
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setDocuments(array_key_exists('documents', $resolvedData) ? $resolvedData['documents'] : array())
-            ->setType(array_key_exists('type', $resolvedData) ? $resolvedData['type'] : null)
+            ->setDocuments(array_key_exists('documents', $resolvedOptions) ? $resolvedOptions['documents'] : array())
+            ->setType(array_key_exists('type', $resolvedOptions) ? $resolvedOptions['type'] : null)
         ;
     }
 

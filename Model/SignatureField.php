@@ -44,16 +44,16 @@ class SignatureField
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefault('name', null)->setAllowedTypes('name', ['string', 'null'])
+            ->setDefault('name', null)->setAllowedTypes('name', ['null', 'string'])
             ->setDefault('page', 1)->setAllowedTypes('page', ['int'])
-            ->setDefault('x', null)->setAllowedTypes('x', ['int', 'null'])
-            ->setDefault('y', null)->setAllowedTypes('y', ['int', 'null'])
-            ->setRequired('signerIndex', null)->setAllowedTypes('signerIndex', ['int', 'null'])
+            ->setDefault('x', null)->setAllowedTypes('x', ['null', 'int'])
+            ->setDefault('y', null)->setAllowedTypes('y', ['null', 'int'])
+            ->setRequired('signerIndex', null)->setAllowedTypes('signerIndex', ['null', 'int'])
         ;
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      *
@@ -66,18 +66,18 @@ class SignatureField
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setName($resolvedData['name'])
-            ->setPage($resolvedData['page'])
-            ->setX($resolvedData['x'])
-            ->setY($resolvedData['y'])
-            ->setSignerIndex($resolvedData['signerIndex'])
+            ->setName($resolvedOptions['name'])
+            ->setPage($resolvedOptions['page'])
+            ->setX($resolvedOptions['x'])
+            ->setY($resolvedOptions['y'])
+            ->setSignerIndex($resolvedOptions['signerIndex'])
         ;
     }
 

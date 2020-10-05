@@ -65,14 +65,14 @@ class SepaData
             ->setRequired('iban')->setAllowedTypes('iban', ['string'])
             ->setRequired('bic')->setAllowedTypes('bic', ['string'])
             ->setRequired('recurring')->setAllowedTypes('recurring', ['bool'])
-            ->setRequired('debtor')->setAllowedTypes('debtor', ['array', '\SepaThirdParty'])->setNormalizer('debtor', function (Options $option, $value): SepaThirdParty {
+            ->setRequired('debtor')->setAllowedTypes('debtor', ['array', '\SepaThirdParty'])->setNormalizer('debtor', function (Options $options, $value): SepaThirdParty {
                 if (is_array($value)) {
                     return SepaThirdParty::createFromArray($value);
                 }
 
                 return $value;
             })
-            ->setRequired('creditor')->setAllowedTypes('creditor', ['array', '\SepaThirdParty'])->setNormalizer('creditor', function (Options $option, $value): SepaThirdParty {
+            ->setRequired('creditor')->setAllowedTypes('creditor', ['array', '\SepaThirdParty'])->setNormalizer('creditor', function (Options $options, $value): SepaThirdParty {
                 if (is_array($value)) {
                     return SepaThirdParty::createFromArray($value);
                 }
@@ -83,7 +83,7 @@ class SepaData
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      *
@@ -96,20 +96,20 @@ class SepaData
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setRum($resolvedData['rum'])
-            ->setIcs($resolvedData['ics'])
-            ->setIban($resolvedData['iban'])
-            ->setBic($resolvedData['bic'])
-            ->setRecuring($resolvedData['recurring'])
-            ->setDebtor($resolvedData['debtor'])
-            ->setCreditor($resolvedData['creditor'])
+            ->setRum($resolvedOptions['rum'])
+            ->setIcs($resolvedOptions['ics'])
+            ->setIban($resolvedOptions['iban'])
+            ->setBic($resolvedOptions['bic'])
+            ->setRecuring($resolvedOptions['recurring'])
+            ->setDebtor($resolvedOptions['debtor'])
+            ->setCreditor($resolvedOptions['creditor'])
         ;
     }
 

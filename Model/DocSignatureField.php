@@ -43,7 +43,7 @@ class DocSignatureField extends SignatureField
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      *
@@ -56,21 +56,21 @@ class DocSignatureField extends SignatureField
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setName($resolvedData['name'])
-            ->setPage($resolvedData['page'])
-            ->setX($resolvedData['x'])
-            ->setY($resolvedData['y'])
-            ->setSignerIndex($resolvedData['signerIndex'])
-            ->setPatternName($resolvedData['patternName'])
-            ->setLabel($resolvedData['label'])
-            ->setImage($resolvedData['image'])
+            ->setName($resolvedOptions['name'])
+            ->setPage($resolvedOptions['page'])
+            ->setX($resolvedOptions['x'])
+            ->setY($resolvedOptions['y'])
+            ->setSignerIndex($resolvedOptions['signerIndex'])
+            ->setPatternName($resolvedOptions['patternName'])
+            ->setLabel($resolvedOptions['label'])
+            ->setImage($resolvedOptions['image'])
         ;
     }
 

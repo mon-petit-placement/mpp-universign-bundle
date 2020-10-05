@@ -93,7 +93,7 @@ class TransactionFilter
 
                 return $date;
             })
-            ->setDefault('notAfter', null)->setAllowedTypes('notAfter', ['DateTime', 'null'])->setNormalizer('notAfter', function (Options $option, $value) {
+            ->setDefault('notAfter', null)->setAllowedTypes('notAfter', ['DateTime', 'null'])->setNormalizer('notAfter', function (Options $options, $value) {
                 if (null === $value) {
                     return null;
                 }
@@ -105,7 +105,7 @@ class TransactionFilter
             ->setDefault('startRange', null)->setAllowedTypes('startRange', ['int', 'null'])
             ->setDefault('stopRange', null)->setAllowedTypes('stopRange', ['int', 'null'])
             ->setDefault('signerId', null)->setAllowedTypes('signerId', ['string', 'null'])
-            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', ['DateTime', 'null'])->setNormalizer('notBeforeCompletion', function (Options $option, $value) {
+            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', ['DateTime', 'null'])->setNormalizer('notBeforeCompletion', function (Options $options, $value) {
                 if (null === $value) {
                     return null;
                 }
@@ -114,7 +114,7 @@ class TransactionFilter
 
                 return $date;
             })
-            ->setDefault('notAfterCompletion', null)->setAllowedTypes('notAfterCompletion', ['DateTime', 'null'])->setNormalizer('notAfterCompletion', function (Options $option, $value) {
+            ->setDefault('notAfterCompletion', null)->setAllowedTypes('notAfterCompletion', ['DateTime', 'null'])->setNormalizer('notAfterCompletion', function (Options $options, $value) {
                 if (null === $value) {
                     return null;
                 }
@@ -128,7 +128,7 @@ class TransactionFilter
     }
 
     /**
-     * @param array $data
+     * @param array $options
      *
      * @return self
      *
@@ -141,24 +141,24 @@ class TransactionFilter
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(array $data): self
+    public static function createFromArray(array $options): self
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
-        $resolvedData = $resolver->resolve($data);
+        $resolvedOptions = $resolver->resolve($options);
 
         return(new self())
-            ->setRequesterEmail($resolvedData['requesterEmail'])
-            ->setProfile($resolvedData['profile'])
-            ->setNotBefore($resolvedData['notBefore'])
-            ->setNotAfter($resolvedData['notAfter'])
-            ->setStartRange($resolvedData['startRange'])
-            ->setStopRange($resolvedData['stopRange'])
-            ->setSignerId($resolvedData['signerId'])
-            ->setNotBeforeCompletion($resolvedData['notBeforeCompletion'])
-            ->setNotAfterCompletion($resolvedData['notAfterCompletion'])
-            ->setStatus($resolvedData['status'])
-            ->setWithAffiliated($resolvedData['withAffiliated'])
+            ->setRequesterEmail($resolvedOptions['requesterEmail'])
+            ->setProfile($resolvedOptions['profile'])
+            ->setNotBefore($resolvedOptions['notBefore'])
+            ->setNotAfter($resolvedOptions['notAfter'])
+            ->setStartRange($resolvedOptions['startRange'])
+            ->setStopRange($resolvedOptions['stopRange'])
+            ->setSignerId($resolvedOptions['signerId'])
+            ->setNotBeforeCompletion($resolvedOptions['notBeforeCompletion'])
+            ->setNotAfterCompletion($resolvedOptions['notAfterCompletion'])
+            ->setStatus($resolvedOptions['status'])
+            ->setWithAffiliated($resolvedOptions['withAffiliated'])
         ;
     }
 
