@@ -54,52 +54,35 @@ public function __construct(RequesterInterface $requester)
 }
 
 ...
-    $transaction = $this->requester->initiateTransaction();
-
-    $universignSigner = \Mpp\UniversignBundle\Model\Signer::createFromArray([
-        'firstname' => 'john',
-        'lastname' => 'doe',
-        'organization' => 'dummy company',
-        'emailAddress' => 'john.doe@dummy-company.com',
-        'phoneNum' => '+0122334455',
-        'language' => 'fr',
-        'role' => \Mpp\UniversignBundle\Model\Signer::ROLE_SIGNER,
-        'birthDate' => new \DateTime::createFromFormat('Y-m-d', '2000-01-01'),
-        'certificateType' =>  \Mpp\UniversignBundle\Model\CertificateType::SIMPLE,
-    ]);
-
-    $universignDocument = \Mpp\UniversignBundle\Model\Document::createFromArray([
-        'documentType' => 'pdf',
-        'fileName' => 'contract_test.pdf',
-        'content' => '/my/contract_test.pdf',
-        'signatureFields' => [
+    $transactionRequest = $this->requester->initiateTransactionRequest([
+        'signers' => [
             [
-                'name' => 'Client:',
-                'page' => 2,
-                'signerIndex' => 0,
+                'firstname' => 'john',
+                'lastname' => 'doe',
+                'organization' => 'dummy company',
+                'emailAddress' => 'john.doe@dummy-company.com',
+                'phoneNum' => '+0122334455',
+                'language' => 'fr',
+                'birthDate' => new \DateTime::createFromFormat('Y-m-d', '2000-01-01'),
             ],
         ],
+        'documents' => [
+            'mpp_contract' => [
+                'fileName' => $document->getFileName(),
+                'content' => $this->storage->resolvePath($document),
+                'signatureFields' => [
+                    [
+                        'name' => 'Signature:',
+                        'page' => 18,
+                        'signerIndex' => 0,
+                    ],
+                ],
+            ],
+        ],
+        'finalDocSent' => true,
     ]);
 
-    $transaction
-        ->addSigner($universignSigner)
-        ->addDocument('my_contract', $universignDocument)
-        ->setProfile('test')
-        ->setCustomId('Universign-0001')
-        ->setMustContactFirstSigner(true)
-        ->setFinalDocSent(true)
-        ->setFinalDocRequesterSent(true)
-        ->setFinalDocObserverSent(false)
-        ->setDescription('this is an example')
-        ->setCertificateType('simple')
-        ->setLanguage('en')
-        ->setHandwrittenSignatureMode(1)
-        ->setChainingMode('email')
-        ->setFinalDocCCeMails(true)
-        ->setRedirectPolicy('dashboard')
-    ;
-
-    $transactionResponse = $this->requester->requestTransaction($transaction);
+    $transactionResponse = $this->requester->requestTransaction($transactionRequest);
 ```
 Once you have send the request transaction, you will get a `TransactionResponse` object in which you will find the transaction ID and an URL.
 
