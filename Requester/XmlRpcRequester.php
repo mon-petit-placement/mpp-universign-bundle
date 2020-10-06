@@ -146,7 +146,7 @@ class XmlRpcRequester implements RequesterInterface
                     [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
-                'displayName' => 'Success',
+                'displayName' => 'Cancel',
             ]);
         }
 
@@ -157,7 +157,7 @@ class XmlRpcRequester implements RequesterInterface
                     [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
-                'displayName' => 'Success',
+                'displayName' => 'Fail',
             ]);
         }
 
