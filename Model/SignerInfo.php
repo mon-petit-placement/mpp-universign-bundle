@@ -85,12 +85,23 @@ class SignerInfo
             ->setEmail($options['email'])
             ->setFirstName($options['firstName'])
             ->setLastName($options['lastName'])
-            ->setActionDate($options['actionDate'] ?? null)
+            ->setActionDate(self::createDate($options['actionDate'] ?? null))
             ->setRefusedDocs($options['refusedDocs'] ?? null)
             ->setRefusalComment($options['refusalComment'] ?? null)
             ->setRedirectPolicy($options['redirectPolicy'] ?? null)
             ->setRedirectWait($options['redirectWait'] ?? null)
         ;
+    }
+
+    /**
+     * @param string|null $date
+     * @return \DateTime|null
+     */
+    private static function createDate(?string $date): ?\DateTime {
+        if (is_null($date)) {
+            return null;
+        }
+        return \DateTime::createFromFormat("Ymd\TH:i:s", $date);
     }
 
     /**
