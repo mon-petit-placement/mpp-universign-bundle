@@ -65,14 +65,14 @@ class SepaData
             ->setRequired('iban')->setAllowedTypes('iban', ['string'])
             ->setRequired('bic')->setAllowedTypes('bic', ['string'])
             ->setRequired('recurring')->setAllowedTypes('recurring', ['bool'])
-            ->setRequired('debtor')->setAllowedTypes('debtor', ['array', '\SepaThirdParty'])->setNormalizer('debtor', function (Options $options, $value): SepaThirdParty {
+            ->setRequired('debtor')->setAllowedTypes('debtor', ['array', SepaThirdParty::class])->setNormalizer('debtor', function (Options $options, $value): SepaThirdParty {
                 if (is_array($value)) {
                     return SepaThirdParty::createFromArray($value);
                 }
 
                 return $value;
             })
-            ->setRequired('creditor')->setAllowedTypes('creditor', ['array', '\SepaThirdParty'])->setNormalizer('creditor', function (Options $options, $value): SepaThirdParty {
+            ->setRequired('creditor')->setAllowedTypes('creditor', ['array', SepaThirdParty::class])->setNormalizer('creditor', function (Options $options, $value): SepaThirdParty {
                 if (is_array($value)) {
                     return SepaThirdParty::createFromArray($value);
                 }
@@ -88,11 +88,9 @@ class SepaData
      * @return self
      *
      * @throws UndefinedOptionsException If an option name is undefined
-     * @throws InvalidOptionsException   If an option doesn't fulfill the
-     *                                   specified validation rules
+     * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
-     * @throws OptionDefinitionException If there is a cyclic dependency between
-     *                                   lazy options and/or normalizers
+     * @throws OptionDefinitionException If there is a cyclic dependency between lazy options and/or normalizers
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */

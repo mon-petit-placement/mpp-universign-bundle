@@ -2,6 +2,15 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Symfony\Component\OptionsResolver\Exception\AccessException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
+use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
+use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 class SignerInfo
 {
     /**
@@ -69,38 +78,90 @@ class SignerInfo
      */
     protected $redirectWait;
 
+    public function __construct()
+    {
+        $this->refusedDocs = [];
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public static function configureData(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setDefault('status', null)->setAllowedTypes('status', ['null', 'string'])
+            ->setDefault('error', null)->setAllowedTypes('error', ['null', 'string'])
+            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['null', 'array', CertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
+                if (null === $value || $value instanceof CertificateInfo) {
+                    return $value;
+                }
+
+                return CertificateInfo::createFromArray($value);
+            })
+            ->setDefault('url', null)->setAllowedTypes('url', ['null', 'string'])
+            ->setDefault('id', null)->setAllowedTypes('id', ['null', 'string'])
+            ->setDefault('email', null)->setAllowedTypes('email', ['null', 'string'])
+            ->setDefault('firstName', null)->setAllowedTypes('firstName', ['null', 'string'])
+            ->setDefault('lastName', null)->setAllowedTypes('lastName', ['null', 'string'])
+            ->setDefault('actionDate', null)->setAllowedTypes('actionDate', ['null', 'string', \DateTime::class])->setNormalizer('actionDate', function(Options $options, $value) {
+                if (null === $value || $value instanceof \DateTime) {
+                    return $value;
+                }
+
+                return \DateTime::createFromFormat("Ymd\TH:i:s", $value);
+            })
+            ->setDefault('refusedDocs', null)->setAllowedTypes('refusedDocs', ['null', 'string'])
+            ->setDefault('refusalComment', null)->setAllowedTypes('refusalComment', ['null', 'string'])
+            ->setDefault('redirectPolicy', null)->setAllowedTypes('redirectPolicy', ['null', 'string'])
+            ->setDefault('redirectWait', null)->setAllowedTypes('redirectWait', ['null', 'int'])
+        ;
+    }
+
     /**
      * @param array $options
      *
      * @return self
+     *
+     * @throws UndefinedOptionsException If an option name is undefined
+     * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
+     * @throws MissingOptionsException   If a required option is missing
+     * @throws OptionDefinitionException If there is a cyclic dependency between lazy options and/or normalizers
+     * @throws NoSuchOptionException     If a lazy option reads an unavailable option
+     * @throws AccessException           If called from a lazy option or normalizer
      */
     public static function createFromArray(array $options): self
     {
+        $resolver = new OptionsResolver();
+        self::configureData($resolver);
+        $resolvedOptions = $resolver->resolve($options);
+
         return (new self())
-            ->setStatus($options['status'])
-            ->setError($options['error'] ?? null)
-            ->setCertificateInfo(CertificateInfo::createFromArray($options['certificateInfo']))
-            ->setUrl($options['url'])
-            ->setId($options['id'])
-            ->setEmail($options['email'])
-            ->setFirstName($options['firstName'])
-            ->setLastName($options['lastName'])
-            ->setActionDate(self::createDate($options['actionDate'] ?? null))
-            ->setRefusedDocs($options['refusedDocs'] ?? null)
-            ->setRefusalComment($options['refusalComment'] ?? null)
-            ->setRedirectPolicy($options['redirectPolicy'] ?? null)
-            ->setRedirectWait($options['redirectWait'] ?? null)
+            ->setStatus($resolvedOptions['status'])
+            ->setError($resolvedOptions['error'])
+            ->setCertificateInfo($resolvedOptions['certificateInfo'])
+            ->setUrl($resolvedOptions['url'])
+            ->setId($resolvedOptions['id'])
+            ->setEmail($resolvedOptions['email'])
+            ->setFirstName($resolvedOptions['firstName'])
+            ->setLastName($resolvedOptions['lastName'])
+            ->setActionDate($resolvedOptions['actionDate'])
+            ->setRefusedDocs($resolvedOptions['refusedDocs'])
+            ->setRefusalComment($resolvedOptions['refusalComment'])
+            ->setRedirectPolicy($resolvedOptions['redirectPolicy'])
+            ->setRedirectWait($resolvedOptions['redirectWait'])
         ;
     }
 
     /**
      * @param string|null $date
+     *
      * @return \DateTime|null
      */
     private static function createDate(?string $date): ?\DateTime {
         if (is_null($date)) {
             return null;
         }
+
         return \DateTime::createFromFormat("Ymd\TH:i:s", $date);
     }
 

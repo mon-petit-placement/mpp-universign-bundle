@@ -48,7 +48,7 @@ class SignatureField
             ->setDefault('page', 1)->setAllowedTypes('page', ['int'])
             ->setDefault('x', null)->setAllowedTypes('x', ['null', 'int'])
             ->setDefault('y', null)->setAllowedTypes('y', ['null', 'int'])
-            ->setRequired('signerIndex', null)->setAllowedTypes('signerIndex', ['null', 'int'])
+            ->setRequired('signerIndex')->setAllowedTypes('signerIndex', ['null', 'int'])
         ;
     }
 
@@ -58,11 +58,9 @@ class SignatureField
      * @return self
      *
      * @throws UndefinedOptionsException If an option name is undefined
-     * @throws InvalidOptionsException   If an option doesn't fulfill the
-     *                                   specified validation rules
+     * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
-     * @throws OptionDefinitionException If there is a cyclic dependency between
-     *                                   lazy options and/or normalizers
+     * @throws OptionDefinitionException If there is a cyclic dependency between lazy options and/or normalizers
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */

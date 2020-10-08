@@ -69,14 +69,16 @@ interface RequesterInterface
 
     /**
      * @param $document
-     * @return string
+     *
+     * @return string|null
      */
-    public function sign($document): string;
+    public function sign($document): ?string;
 
     /**
      * @param $document
      * @param SignOptions $options
-     * @return string
+     *
+     * @return string|null
      */
-    public function signWithOptions($document, SignOptions $options): string;
+    public function signWithOptions($document, SignOptions $options): ?string;
 }
