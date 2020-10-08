@@ -7,12 +7,14 @@ use Laminas\XmlRpc\Client\Exception\FaultException;
 use Mpp\UniversignBundle\Model\InitiatorInfo;
 use Mpp\UniversignBundle\Model\RedirectionConfig;
 use Mpp\UniversignBundle\Model\SignerInfo;
+use Mpp\UniversignBundle\Model\SignOptions;
 use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use \Laminas\XmlRpc\Value\Base64;
 
 class XmlRpcRequester implements RequesterInterface
 {
@@ -70,7 +72,7 @@ class XmlRpcRequester implements RequesterInterface
 
         if (is_object($data) &&
             !($data instanceof \Laminas\XmlRpc\Value\DateTime) &&
-            !($data instanceof \Laminas\XmlRpc\Value\Base64)
+            !($data instanceof Base64)
         ) {
             return self::dismount($data, $skipNullValue);
         }
@@ -382,5 +384,48 @@ class XmlRpcRequester implements RequesterInterface
         }
 
         return $transactionInfo;
+    }
+
+    public function sign($document): string
+    {
+        $file = file_get_contents($document);
+        $data = [];
+        $data['document'] = $file;
+        $data = self::flatten($data);
+        try {
+            $response = $this->xmlRpcClient->call('signer.sign', $data);
+            $this->logger->info('[Universign - requester.sign] SUCCESS');
+        } catch (FaultException $fe) {
+            $this->logger->error(sprintf(
+                '[Universign - requester.sign] ERROR (%s): %s',
+                $fe->getCode(),
+                $fe->getMessage()
+            ));
+            throw $fe;
+        }
+
+        return $response;
+    }
+
+    public function signWithOptions($document, SignOptions $options): string
+    {
+        $data = [];
+        $data['document'] = new Base64($document);
+        $data['options'] = $options;
+        $data = self::flatten($data);
+
+        try {
+            $response = $this->xmlRpcClient->call('signer.signWithOptions', $data);
+            $this->logger->info('[Universign - requester.signWithOptions] SUCCESS');
+        } catch (FaultException $fe) {
+            $this->logger->error(sprintf(
+                '[Universign - requester.signWithOptions] ERROR (%s): %s',
+                $fe->getCode(),
+                $fe->getMessage()
+            ));
+            throw $fe;
+        }
+
+        return $response;
     }
 }
