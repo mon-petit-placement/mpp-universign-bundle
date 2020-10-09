@@ -2,7 +2,9 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
+use Laminas\XmlRpc\Value\Base64;
 use Mpp\UniversignBundle\Model\Document;
+use Mpp\UniversignBundle\Model\SignOptions;
 use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
@@ -64,4 +66,19 @@ interface RequesterInterface
      * @return TransactionInfo
      */
     public function cancelTransaction(string $transactionId): TransactionInfo;
+
+    /**
+     * @param $document
+     *
+     * @return string|null
+     */
+    public function sign($document): ?string;
+
+    /**
+     * @param $document
+     * @param SignOptions $options
+     *
+     * @return string|null
+     */
+    public function signWithOptions($document, SignOptions $options): ?string;
 }

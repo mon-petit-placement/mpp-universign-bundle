@@ -38,8 +38,8 @@ class RegistrationRequest
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefined('documents')->setAllowedTypes('documents', ['array'])
-            ->setDefined('type')->setAllowedTypes('type', ['string'])
+            ->setDefined('documents', [])->setAllowedTypes('documents', ['array'])
+            ->setDefined('type', null)->setAllowedTypes('type', ['null', 'string'])
         ;
     }
 
@@ -49,11 +49,9 @@ class RegistrationRequest
      * @return self
      *
      * @throws UndefinedOptionsException If an option name is undefined
-     * @throws InvalidOptionsException   If an option doesn't fulfill the
-     *                                   specified validation rules
+     * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
-     * @throws OptionDefinitionException If there is a cyclic dependency between
-     *                                   lazy options and/or normalizers
+     * @throws OptionDefinitionException If there is a cyclic dependency between lazy options and/or normalizers
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
@@ -64,8 +62,8 @@ class RegistrationRequest
         $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setDocuments(array_key_exists('documents', $resolvedOptions) ? $resolvedOptions['documents'] : array())
-            ->setType(array_key_exists('type', $resolvedOptions) ? $resolvedOptions['type'] : null)
+            ->setDocuments($resolvedOptions['documents'])
+            ->setType($resolvedOptions['type'])
         ;
     }
 
