@@ -124,7 +124,7 @@ class XmlRpcRequester implements RequesterInterface
         if (null !== $this->options['registration_callback_route_name']) {
             $defaultOptions['registrationCallbackURL'] = $this->router->generate(
                 $this->options['registration_callback_route_name'],
-                isset($options['registration_callback_route_parameters']) ?? [],
+                $options['registration_callback_route_parameters'] ?? [],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
@@ -135,7 +135,7 @@ class XmlRpcRequester implements RequesterInterface
             $defaultOptions['successRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['success_redirection_route_name'],
-                    isset($options['success_callback_route_parameters']) ?? [],
+                    $options['success_callback_route_parameters'] ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Success',
@@ -148,7 +148,7 @@ class XmlRpcRequester implements RequesterInterface
             $defaultOptions['cancelRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['cancel_redirection_route_name'],
-                    isset($options['cancel_callback_route_parameters']) ?? [],
+                    $options['cancel_callback_route_parameters'] ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Cancel',
@@ -161,7 +161,7 @@ class XmlRpcRequester implements RequesterInterface
             $defaultOptions['failRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['fail_redirection_route_name'],
-                    isset($options['fail_callback_route_parameters']) ?? [],
+                    $options['fail_callback_route_parameters'] ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Fail',
