@@ -135,39 +135,39 @@ class XmlRpcRequester implements RequesterInterface
             $defaultOptions['successRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['success_redirection_route_name'],
-                    $options['success_callback_route_parameters'] ?? [],
+                    $options['success_redirection_route_parameters'] ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Success',
             ]);
 
-            unset($options['success_callback_route_parameters']);
+            unset($options['success_redirection_route_parameters']);
         }
 
         if (null !== $this->options['cancel_redirection_route_name']) {
             $defaultOptions['cancelRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['cancel_redirection_route_name'],
-                    $options['cancel_callback_route_parameters'] ?? [],
+                    $options['cancel_redirection_route_parameters'] ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Cancel',
             ]);
 
-            unset($options['cancel_callback_route_parameters']);
+            unset($options['cancel_redirection_route_parameters']);
         }
 
         if (null !== $this->options['fail_redirection_route_name']) {
             $defaultOptions['failRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['fail_redirection_route_name'],
-                    $options['fail_callback_route_parameters'] ?? [],
+                    $options['fail_redirection_route_parameters'] ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Fail',
             ]);
 
-            unset($options['fail_callback_route_parameters']);
+            unset($options['fail_redirection_route_parameters']);
         }
 
         $transaction = TransactionRequest::createFromArray(array_merge($defaultOptions, $options));
