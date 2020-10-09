@@ -124,42 +124,50 @@ class XmlRpcRequester implements RequesterInterface
         if (null !== $this->options['registration_callback_route_name']) {
             $defaultOptions['registrationCallbackURL'] = $this->router->generate(
                 $this->options['registration_callback_route_name'],
-                [],
+                isset($options['registration_callback_route_parameters']) ?? [],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
+
+            unset($options['registration_callback_route_parameters']);
         }
 
         if (null !== $this->options['success_redirection_route_name']) {
             $defaultOptions['successRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['success_redirection_route_name'],
-                    [],
+                    isset($options['success_callback_route_parameters']) ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Success',
             ]);
+
+            unset($options['success_callback_route_parameters']);
         }
 
         if (null !== $this->options['cancel_redirection_route_name']) {
             $defaultOptions['cancelRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['cancel_redirection_route_name'],
-                    [],
+                    isset($options['cancel_callback_route_parameters']) ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Cancel',
             ]);
+
+            unset($options['cancel_callback_route_parameters']);
         }
 
         if (null !== $this->options['fail_redirection_route_name']) {
             $defaultOptions['failRedirection'] = RedirectionConfig::createFromArray([
                 'URL' => $this->router->generate(
                     $this->options['fail_redirection_route_name'],
-                    [],
+                    isset($options['fail_callback_route_parameters']) ?? [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
                 'displayName' => 'Fail',
             ]);
+
+            unset($options['fail_callback_route_parameters']);
         }
 
         $transaction = TransactionRequest::createFromArray(array_merge($defaultOptions, $options));
