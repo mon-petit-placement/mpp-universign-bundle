@@ -64,13 +64,13 @@ class SignOptions
                     return $value;
                 }
 
-                return SignatureField::createFromArray($vvalue);
+                return SignatureField::createFromArray($value);
             })
             ->setDefault('reason', null)->setAllowedTypes('reason', ['null', 'string'])
             ->setDefault('location', null)->setAllowedTypes('location', ['null', 'string'])
             ->setDefault('signatureFormat', null)->setAllowedValues('signatureFormat', [self::SINGNATURE_FORMAT_PADES, self::SINGNATURE_FORMAT_PADES_COMP, self::SINGNATURE_FORMAT_ISO32000_1])
             ->setDefault('language', 'en')->setAllowedValues('language', [Language::BULGARIAN, Language::CATALAN, Language::GERMAN, Language::ENGLISH, Language::SPANISH, Language::FRENCH, Language::ITALIAN, Language::DUTCH, Language::POLISH, Language::PORTUGUESE, Language::ROMANIAN])
-            ->setDefault('patternName', null)->setAllowedTypes('patternName', ['null', 'string'])*
+            ->setDefault('patternName', null)->setAllowedTypes('patternName', ['null', 'string'])
         ;
     }
 
