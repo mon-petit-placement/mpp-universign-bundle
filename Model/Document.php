@@ -71,7 +71,11 @@ class Document
         $resolver
             ->setDefault('id', null)->setAllowedTypes('id', ['null', 'string'])
             ->setDefault('documentType', 'pdf')->setAllowedValues('documentType', ['pdf', 'pdf-for-presentation', 'pdf-optional', 'sepa'])
-            ->setDefault('content', null)->setAllowedTypes('content', ['null', 'string'])->setNormalizer('content', function (Options $options, $value): ?\Laminas\XmlRpc\Value\Base64 {
+            ->setDefault('content', null)->setAllowedTypes('content', ['null', 'string', \Laminas\XmlRpc\Value\Base64::class])->setNormalizer('content', function (Options $options, $value): ?\Laminas\XmlRpc\Value\Base64 {
+                if ($value instanceof \Laminas\XmlRpc\Value\Base64) {
+                    return $value;
+                }
+
                 if (null === $value || !file_exists($value)) {
                     return null;
                 }
