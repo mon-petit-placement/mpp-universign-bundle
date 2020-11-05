@@ -35,16 +35,12 @@ class CallbackController extends AbstractController
     {
         $status = $request->query->get('status');
         $transactionId = $request->query->get('id');
-        $this->logger->info(sprintf('[Universign callback] %s Transaction id: %s', $status, $transactionId));
+        $indexSigner = $request->query->get('signer');
+        $this->logger->info(sprintf('[Universign callback] Transaction "%s" with status "%s" and signer "%s"', $transactionId, $status, $indexSigner));
 
-        $eventName = $event = UniversignCallbackEvent::TRANSACTION_INVALID;
-        if (UniversignCallbackEvent::VALID === $status) {
-            $eventName = UniversignCallbackEvent::TRANSACTION_VALID;
-        }
+        $event = new UniversignCallbackEvent($transactionId, $indexSigner, $status);
 
-        $event = new UniversignCallbackEvent($transactionId);
-
-        $this->dispatcher->dispatch($event, $eventName);
+        $this->dispatcher->dispatch($event);
 
         return new Response();
     }

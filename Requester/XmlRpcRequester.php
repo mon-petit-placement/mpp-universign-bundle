@@ -4,6 +4,7 @@ namespace Mpp\UniversignBundle\Requester;
 
 use Laminas\XmlRpc\Client;
 use Laminas\XmlRpc\Client\Exception\FaultException;
+use Laminas\XmlRpc\Value\Base64;
 use Mpp\UniversignBundle\Model\InitiatorInfo;
 use Mpp\UniversignBundle\Model\RedirectionConfig;
 use Mpp\UniversignBundle\Model\SignerInfo;
@@ -61,7 +62,7 @@ class XmlRpcRequester implements RequesterInterface
 
     /**
      * @param mixed $data
-     * @param bool  $skipNullValue
+     * @param bool $skipNullValue
      *
      * @return mixed
      */
@@ -71,7 +72,7 @@ class XmlRpcRequester implements RequesterInterface
 
         if (is_object($data) &&
             !($data instanceof \Laminas\XmlRpc\Value\DateTime) &&
-            !($data instanceof \Laminas\XmlRpc\Value\Base64)
+            !($data instanceof Base64)
         ) {
             return self::dismount($data, $skipNullValue);
         }
@@ -93,7 +94,7 @@ class XmlRpcRequester implements RequesterInterface
 
     /**
      * @param mixed $object
-     * @param bool  $skipNullValue
+     * @param bool $skipNullValue
      *
      * @return array
      */
@@ -193,14 +194,12 @@ class XmlRpcRequester implements RequesterInterface
             $transactionResponse
                 ->setId($response['id'])
                 ->setUrl($response['url'])
-                ->setState(TransactionResponse::STATE_SUCCESS)
-            ;
+                ->setState(TransactionResponse::STATE_SUCCESS);
         } catch (FaultException $fe) {
             $transactionResponse
                 ->setState(TransactionResponse::STATE_ERROR)
                 ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
-            ;
+                ->setErrorMessage($fe->getMessage());
 
             $this->logger->error(sprintf('[Universign - requester.requestTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
         }
@@ -263,8 +262,7 @@ class XmlRpcRequester implements RequesterInterface
                 ->setCustomerId($response['customerId'] ?? null)
                 ->setTransactionId($response['transactionId'] ?? null)
                 ->setRedirectPolicy($response['redirectPolicy'] ?? null)
-                ->setRedirectWait($response['redirectWait'] ?? null)
-            ;
+                ->setRedirectWait($response['redirectWait'] ?? null);
             foreach ($response['signerInfos'] as $signerInfo) {
                 $transactionInfo->addSignerInfo(SignerInfo::createFromArray($signerInfo));
             }
@@ -274,8 +272,7 @@ class XmlRpcRequester implements RequesterInterface
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
                 ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
-            ;
+                ->setErrorMessage($fe->getMessage());
         }
 
         return $transactionInfo;
@@ -302,16 +299,14 @@ class XmlRpcRequester implements RequesterInterface
                 ->setCustomerId($response['customerId'] ?? null)
                 ->setTransactionId($response['transactionId'] ?? null)
                 ->setRedirectPolicy($response['redirectPolicy'] ?? null)
-                ->setRedirectWait($response['redirectWait'] ?? null)
-            ;
+                ->setRedirectWait($response['redirectWait'] ?? null);
         } catch (FaultException $fe) {
             $this->logger->error(sprintf('[Universign - requester.getTransactionInfoByCustomId] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
 
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
                 ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
-            ;
+                ->setErrorMessage($fe->getMessage());
         }
 
         return $transactionInfo;
@@ -328,16 +323,14 @@ class XmlRpcRequester implements RequesterInterface
             $response = $this->xmlRpcClient->call('requester.relaunchTransaction', $transactionId);
             $this->logger->info('[Universign - requester.relaunchTransaction] SUCCESS');
             $transactionInfo
-                ->setState(TransactionInfo::STATE_SUCCESS)
-            ;
+                ->setState(TransactionInfo::STATE_SUCCESS);
         } catch (FaultException $fe) {
             $this->logger->error(sprintf('[Universign - requester.relaunchTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
 
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
                 ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
-            ;
+                ->setErrorMessage($fe->getMessage());
         }
 
         return $transactionInfo;
@@ -354,16 +347,14 @@ class XmlRpcRequester implements RequesterInterface
             $response = $this->xmlRpcClient->call('requester.cancelTransaction', $transactionId);
             $this->logger->info('[Universign - requester.cancelTransaction] SUCCESS');
             $transactionInfo
-                ->setState(TransactionInfo::STATE_SUCCESS)
-            ;
+                ->setState(TransactionInfo::STATE_SUCCESS);
         } catch (FaultException $fe) {
             $this->logger->error(sprintf('[Universign - requester.cancelTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
 
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
                 ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
-            ;
+                ->setErrorMessage($fe->getMessage());
         }
 
         return $transactionInfo;
@@ -372,11 +363,11 @@ class XmlRpcRequester implements RequesterInterface
     /**
      * {@inheritdoc}
      */
-    public function sign($document): ?string
+    public function sign(Base64 $document): ?string
     {
         $response = null;
         $data = [
-            'document' => new \Laminas\XmlRpc\Value\Base64($document),
+            'document' => new Base64($document),
         ];
 
         try {
@@ -392,11 +383,11 @@ class XmlRpcRequester implements RequesterInterface
     /**
      * {@inheritdoc}
      */
-    public function signWithOptions($document, SignOptions $options): ?string
+    public function signWithOptions(Base64 $document, SignOptions $options): ?string
     {
         $response = null;
         $data = [
-            'document' => new \Laminas\XmlRpc\Value\Base64($document),
+            'document' => $document,
             'options' => $options,
         ];
 
