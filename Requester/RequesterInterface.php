@@ -68,17 +68,17 @@ interface RequesterInterface
     public function cancelTransaction(string $transactionId): TransactionInfo;
 
     /**
-     * @param $document
+     * @param Base64 $document
      *
      * @return string|null
      */
-    public function sign($document): ?string;
+    public function sign(Base64 $document): ?string;
 
     /**
-     * @param $document
+     * @param Base64 $document
      * @param SignOptions $options
      *
      * @return string|null
      */
-    public function signWithOptions($document, SignOptions $options): ?string;
+    public function signWithOptions(Base64 $document, SignOptions $options): ?string;
 }

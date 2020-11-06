@@ -24,6 +24,11 @@ class TransactionInfo
     protected $errorMessage;
 
     /**
+     * @var int
+     */
+    protected $errorCode;
+
+    /**
      * @var string
      */
     protected $status;
@@ -93,6 +98,7 @@ class TransactionInfo
         $this->transactionId = null;
         $this->redirectPolicy = null;
         $this->redirectWait = null;
+        $this->errorCode = 0;
     }
 
     /**
@@ -133,6 +139,26 @@ class TransactionInfo
     public function getErrorMessage(): ?string
     {
         return $this->errorMessage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getErrorCode(): int
+    {
+        return $this->errorCode;
+    }
+
+    /**
+     * @param int $errorCode
+     *
+     * @return TransactionInfo
+     */
+    public function setErrorCode(int $errorCode): TransactionInfo
+    {
+        $this->errorCode = $errorCode;
+
+        return $this;
     }
 
     /**

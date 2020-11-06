@@ -4,6 +4,8 @@ namespace Mpp\UniversignBundle\Requester;
 
 use Laminas\XmlRpc\Client;
 use Laminas\XmlRpc\Client\Exception\FaultException;
+use Laminas\XmlRpc\Value\Base64;
+use Laminas\XmlRpc\Value\DateTime;
 use Mpp\UniversignBundle\Model\InitiatorInfo;
 use Mpp\UniversignBundle\Model\RedirectionConfig;
 use Mpp\UniversignBundle\Model\SignerInfo;
@@ -61,7 +63,7 @@ class XmlRpcRequester implements RequesterInterface
 
     /**
      * @param mixed $data
-     * @param bool  $skipNullValue
+     * @param bool $skipNullValue
      *
      * @return mixed
      */
@@ -70,8 +72,8 @@ class XmlRpcRequester implements RequesterInterface
         $flattenedData = [];
 
         if (is_object($data) &&
-            !($data instanceof \Laminas\XmlRpc\Value\DateTime) &&
-            !($data instanceof \Laminas\XmlRpc\Value\Base64)
+            !($data instanceof DateTime) &&
+            !($data instanceof Base64)
         ) {
             return self::dismount($data, $skipNullValue);
         }
@@ -93,7 +95,7 @@ class XmlRpcRequester implements RequesterInterface
 
     /**
      * @param mixed $object
-     * @param bool  $skipNullValue
+     * @param bool $skipNullValue
      *
      * @return array
      */
@@ -327,9 +329,7 @@ class XmlRpcRequester implements RequesterInterface
         try {
             $response = $this->xmlRpcClient->call('requester.relaunchTransaction', $transactionId);
             $this->logger->info('[Universign - requester.relaunchTransaction] SUCCESS');
-            $transactionInfo
-                ->setState(TransactionInfo::STATE_SUCCESS)
-            ;
+            $transactionInfo->setState(TransactionInfo::STATE_SUCCESS);
         } catch (FaultException $fe) {
             $this->logger->error(sprintf('[Universign - requester.relaunchTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
 
@@ -353,9 +353,7 @@ class XmlRpcRequester implements RequesterInterface
         try {
             $response = $this->xmlRpcClient->call('requester.cancelTransaction', $transactionId);
             $this->logger->info('[Universign - requester.cancelTransaction] SUCCESS');
-            $transactionInfo
-                ->setState(TransactionInfo::STATE_SUCCESS)
-            ;
+            $transactionInfo->setState(TransactionInfo::STATE_SUCCESS);
         } catch (FaultException $fe) {
             $this->logger->error(sprintf('[Universign - requester.cancelTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
 
@@ -372,11 +370,11 @@ class XmlRpcRequester implements RequesterInterface
     /**
      * {@inheritdoc}
      */
-    public function sign($document): ?string
+    public function sign(Base64 $document): ?string
     {
         $response = null;
         $data = [
-            'document' => new \Laminas\XmlRpc\Value\Base64($document),
+            'document' => new Base64($document),
         ];
 
         try {
@@ -392,11 +390,11 @@ class XmlRpcRequester implements RequesterInterface
     /**
      * {@inheritdoc}
      */
-    public function signWithOptions($document, SignOptions $options): ?string
+    public function signWithOptions(Base64 $document, SignOptions $options): ?string
     {
         $response = null;
         $data = [
-            'document' => new \Laminas\XmlRpc\Value\Base64($document),
+            'document' => $document,
             'options' => $options,
         ];
 
