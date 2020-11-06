@@ -304,7 +304,8 @@ class XmlRpcRequester implements RequesterInterface
                 ->setCustomerId($response['customerId'] ?? null)
                 ->setTransactionId($response['transactionId'] ?? null)
                 ->setRedirectPolicy($response['redirectPolicy'] ?? null)
-                ->setRedirectWait($response['redirectWait'] ?? null);
+                ->setRedirectWait($response['redirectWait'] ?? null)
+            ;
         } catch (FaultException $fe) {
             $this->logger->error(sprintf('[Universign - requester.getTransactionInfoByCustomId] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
 
