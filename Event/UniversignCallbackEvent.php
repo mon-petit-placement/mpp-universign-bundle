@@ -10,7 +10,7 @@ class UniversignCallbackEvent
     const STATUS_CANCELED = 3;
     const STATUS_ERROR = 4;
     /**
-     * All signatories have signed BUT awaiting validation by the Universign registration authority. All signatories have signed.
+     * All signatories have signed BUT waiting for Universign registration authority validation.
      */
     const STATUS_SIGNED = 5;
 
