@@ -9,7 +9,7 @@ use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
 
-interface RequesterInterface
+interface SignerInterface
 {
     /**
      * @param array $options

@@ -13,11 +13,12 @@ $ composer require mpp/universign-bundle
 How to run:
 -----------
 
-Before run, you need to add `UNIVERSIGN_ENTRYPOINT_URL` variable in the `.env` file of your project with the url and the credentials of the universign account.
+Before run, you need to add `UNIVERSIGN_ENTRYPOINT_SIGN` and `UNIVERSIGN_ENTRYPOINT_RA` variables in the `.env` file of your project with the url and the credentials of the universign account.
 
 ```
 ###> mpp/unviversign-bundle ###
-UNIVERSIGN_ENTRYPOINT_URL=https://<LOGIN>:<PASSWORD>@sign.test.cryptolog.com/sign/rpc/
+UNIVERSIGN_ENTRYPOINT_SIGN=https://<LOGIN>:<PASSWORD>@sign.test.cryptolog.com/sign/rpc/
+UNIVERSIGN_ENTRYPOINT_RA=https://<LOGIN>:<PASSWORD>@sign.test.cryptolog.com/ra/rpc/
 ###< mpp/unviversign-bundle ###
 ```
 
@@ -40,15 +41,15 @@ Here is an example:
 
 ```php
 ...
-use Mpp\UniversignBundle\Requester\RequesterInterface;
+use Mpp\UniversignBundle\Requester\SignerInterface;
 
 ...
 /**
- * @var RequesterInterface;
+ * @var SignerInterface;
  */
 private $requester;
 
-public function __construct(RequesterInterface $requester)
+public function __construct(SignerInterface $requester)
 {
     $this->requester = $requester;
 }
