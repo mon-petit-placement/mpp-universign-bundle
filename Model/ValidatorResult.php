@@ -59,7 +59,7 @@ class ValidatorResult
             ->setRequired('status')->setAllowedValues('status', [self::STATUS_PENDING, self::STATUS_INVALID, self::STATUS_VALID])
             ->setDefault('reason', null)->setAllowedTypes('reason', ['int', 'null'])
             ->setDefault('reasonMessage', null)->setAllowedTypes('reasonMessage', ['string', 'null'])
-            ->setDefault('result', false)->setAllowedTypes('result', ['array', 'null'])
+            ->setDefault('result', null)->setAllowedTypes('result', ['array', 'null'])
         ;
     }
 
