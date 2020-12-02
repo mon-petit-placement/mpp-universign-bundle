@@ -55,7 +55,6 @@ class MatchingResult
      */
     protected $certificateInfo;
 
-
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
@@ -102,7 +101,6 @@ class MatchingResult
             ->setCertificateInfo($resolvedOptions['issuer'])
         ;
     }
-
 
     /**
      * @return string|null
