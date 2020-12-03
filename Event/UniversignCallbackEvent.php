@@ -20,7 +20,7 @@ class UniversignCallbackEvent
     private $transactionId;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $indexSigner;
 
@@ -31,10 +31,10 @@ class UniversignCallbackEvent
 
     /**
      * @param string $transactionId
-     * @param int $indexSigner
+     * @param int|null $indexSigner
      * @param int $status
      */
-    public function __construct(string $transactionId, int $indexSigner, int $status)
+    public function __construct(string $transactionId, ?int $indexSigner, int $status)
     {
         $this->transactionId = $transactionId;
         $this->indexSigner = $indexSigner;
@@ -52,7 +52,7 @@ class UniversignCallbackEvent
     /**
      * @return int
      */
-    public function getIndexSigner(): int
+    public function getIndexSigner(): ?int
     {
         return $this->indexSigner;
     }

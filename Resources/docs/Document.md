@@ -13,15 +13,15 @@ you need to add a `documentName` to identify your document.
 Here is an example:
 ```php
 ...
-use Mpp\UniversignBundle\Requester\RequesterInterface;
+use Mpp\UniversignBundle\Requester\SignerInterface;
 
 ...
 /**
- * @var RequesterInterface;
+ * @var SignerInterface;
  */
 private $requester;
 
-public function __construct(RequesterInterface $requester)
+public function __construct(SignerInterface $requester)
 {
     $this->requester = $requester;
 }

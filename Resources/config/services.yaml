@@ -6,11 +6,19 @@ services:
             - '@logger'
             - '@event_dispatcher'
 
-    Mpp\UniversignBundle\Requester\XmlRpcRequester:
+    Mpp\UniversignBundle\Requester\Signer:
         arguments:
             - '@logger'
             - '@router'
             - '%mpp_universign.entrypoint%'
             - '%mpp_universign.options%'
 
-    Mpp\UniversignBundle\Requester\RequesterInterface: '@Mpp\UniversignBundle\Requester\XmlRpcRequester'
+    Mpp\UniversignBundle\Requester\RegistrationAuthority:
+        arguments:
+            - '@logger'
+            - '@router'
+            - '%mpp_universign.entrypoint%'
+            - '%mpp_universign.options%'
+
+    Mpp\UniversignBundle\Requester\SignerInterface: '@Mpp\UniversignBundle\Requester\Signer'
+    Mpp\UniversignBundle\Requester\RegistrationAuthorityInterface: '@Mpp\UniversignBundle\Requester\RegistrationAuthority'
