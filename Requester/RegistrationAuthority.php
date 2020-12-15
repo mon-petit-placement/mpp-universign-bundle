@@ -105,6 +105,8 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
                     UrlGeneratorInterface::ABSOLUTE_URL
                 )
             );
+
+            $this->logger->info(sprintf('[Universign - validate] define default callback URL : "%s"', $validationRequest->getCallbackURL()));
         }
 
         return ValidatorResult::createFromArray($this->call('validator.validate', [$validationRequest]));
