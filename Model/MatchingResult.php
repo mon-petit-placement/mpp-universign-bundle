@@ -36,7 +36,7 @@ class MatchingResult
     protected $mobile;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $email;
 
@@ -61,7 +61,7 @@ class MatchingResult
             ->setDefault('firstname', null)->setAllowedTypes('firstname', ['null', 'string'])
             ->setDefault('lastname', null)->setAllowedTypes('lastname', ['null', 'string'])
             ->setDefault('mobile', null)->setAllowedTypes('mobile', ['null', 'string'])
-            ->setRequired('email')->setAllowedTypes('email', ['string'])
+            ->setDefault('email', null)->setAllowedTypes('email', ['string', 'null'])
             ->setDefault('certificateLevel', null)->setAllowedTypes('certificateLevel', ['string', 'null'])
             ->setDefault('certificateStatus', null)->setAllowedTypes('certificateStatus', ['string', 'null'])
             ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['array', 'null', RaCertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
@@ -164,19 +164,19 @@ class MatchingResult
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
     /**
-     * @param string $email
+     * @param string|null $email
      *
      * @return self
      */
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
