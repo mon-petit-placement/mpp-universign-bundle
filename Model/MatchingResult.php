@@ -41,17 +41,17 @@ class MatchingResult
     protected $email;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $certificateLevel;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $certificateStatus;
 
     /**
-     * @var CertificateInfo
+     * @var RaCertificateInfo|null
      */
     protected $certificateInfo;
 
@@ -62,14 +62,14 @@ class MatchingResult
             ->setDefault('lastname', null)->setAllowedTypes('lastname', ['null', 'string'])
             ->setDefault('mobile', null)->setAllowedTypes('mobile', ['null', 'string'])
             ->setRequired('email')->setAllowedTypes('email', ['string'])
-            ->setRequired('certificateLevel')->setAllowedTypes('certificateLevel', ['string'])
-            ->setRequired('certificateStatus')->setAllowedTypes('certificateStatus', ['string'])
-            ->setRequired('certificateInfo')->setAllowedTypes('certificateInfo', ['array', CertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
-                if ($value instanceof CertificateInfo) {
+            ->setDefault('certificateLevel', null)->setAllowedTypes('certificateLevel', ['string', 'null'])
+            ->setDefault('certificateStatus', null)->setAllowedTypes('certificateStatus', ['string', 'null'])
+            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['array', 'null', RaCertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
+                if (null === $value || $value instanceof RaCertificateInfo) {
                     return $value;
                 }
 
-                return CertificateInfo::createFromArray($value);
+                return RaCertificateInfo::createFromArray($value);
             })
         ;
     }
@@ -93,12 +93,13 @@ class MatchingResult
         $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setFirstname($resolvedOptions['subject'])
-            ->setLastname($resolvedOptions['issuer'])
-            ->setEmail($resolvedOptions['issuer'])
-            ->setCertificateLevel($resolvedOptions['issuer'])
-            ->setCertificateStatus($resolvedOptions['serial'])
-            ->setCertificateInfo($resolvedOptions['issuer'])
+            ->setFirstname($resolvedOptions['firstname'])
+            ->setLastname($resolvedOptions['lastname'])
+            ->setEmail($resolvedOptions['email'])
+            ->setMobile($resolvedOptions['mobile'])
+            ->setCertificateLevel($resolvedOptions['certificateLevel'])
+            ->setCertificateStatus($resolvedOptions['certificateStatus'])
+            ->setCertificateInfo($resolvedOptions['certificateInfo'])
         ;
     }
 
@@ -183,19 +184,19 @@ class MatchingResult
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCertificateLevel(): string
+    public function getCertificateLevel(): ?string
     {
         return $this->certificateLevel;
     }
 
     /**
-     * @param string $certificateLevel
+     * @param string|null $certificateLevel
      *
      * @return self
      */
-    public function setCertificateLevel(string $certificateLevel): self
+    public function setCertificateLevel(?string $certificateLevel): self
     {
         $this->certificateLevel = $certificateLevel;
 
@@ -203,19 +204,19 @@ class MatchingResult
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCertificateStatus(): string
+    public function getCertificateStatus(): ?string
     {
         return $this->certificateStatus;
     }
 
     /**
-     * @param string $certificateStatus
+     * @param string|null $certificateStatus
      *
      * @return self
      */
-    public function setCertificateStatus(string $certificateStatus): self
+    public function setCertificateStatus(?string $certificateStatus): self
     {
         $this->certificateStatus = $certificateStatus;
 
@@ -223,19 +224,19 @@ class MatchingResult
     }
 
     /**
-     * @return CertificateInfo
+     * @return RaCertificateInfo|null
      */
-    public function getCertificateInfo(): CertificateInfo
+    public function getCertificateInfo(): ?RaCertificateInfo
     {
         return $this->certificateInfo;
     }
 
     /**
-     * @param CertificateInfo $certificateInfo
+     * @param RaCertificateInfo|null $certificateInfo
      *
      * @return self
      */
-    public function setCertificateInfo(CertificateInfo $certificateInfo): self
+    public function setCertificateInfo(?RaCertificateInfo $certificateInfo): self
     {
         $this->certificateInfo = $certificateInfo;
 
