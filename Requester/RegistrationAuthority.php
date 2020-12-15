@@ -77,7 +77,16 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
 
     public function matchAccount(MatchingFilter $matchingFilter): array
     {
-        return $this->call('ra.matchAccount', $matchingFilter);
+        $results = [];
+        $dataResult = $this->call('matcher.matchAccount', [$matchingFilter]);
+
+        if (is_array($dataResult)) {
+            foreach ($dataResult as $item) {
+                $results[] = MatchingResult::createFromArray($item);
+            }
+        }
+
+        return $results;
     }
 
     public function getCertificateAgreement(string $email)

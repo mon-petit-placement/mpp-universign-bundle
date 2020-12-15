@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Laminas\XmlRpc\Value\Base64;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -11,27 +12,22 @@ use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MatchingFilter
+class RaCertificateInfo
 {
     /**
      * @var string
      */
-    protected $firstname;
+    protected $subjectDN;
 
     /**
      * @var string
      */
-    protected $lastname;
+    protected $serialNumber;
 
     /**
-     * @var string|null
+     * @var Base64[]
      */
-    protected $mobile;
-
-    /**
-     * @var string|null
-     */
-    protected $email;
+    protected $chain;
 
     /**
      * @param OptionsResolver $resolver
@@ -39,10 +35,19 @@ class MatchingFilter
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired('firstname')->setAllowedTypes('firstname', ['string'])
-            ->setRequired('lastname')->setAllowedTypes('lastname', ['string'])
-            ->setDefault('mobile', null)->setAllowedTypes('mobile', ['string', 'null'])
-            ->setDefault('email', null)->setAllowedTypes('email', ['string', 'null'])
+            ->setRequired('subjectDN')->setAllowedTypes('subjectDN', ['string'])
+            ->setRequired('serialNumber')->setAllowedTypes('serialNumber', ['string'])
+            ->setRequired('chain')->setAllowedTypes('chain', ['array', Base64::class])->setNormalizer('chain', function (Options $options, $value): array {
+                if (null === $value) {
+                    return $value;
+                }
+                $result = [];
+                foreach ($value as $item) {
+                    $result[] = new Base64($item);
+                }
+
+                return $result;
+            })
         ;
     }
 
@@ -62,32 +67,32 @@ class MatchingFilter
     {
         $resolver = new OptionsResolver();
         self::configureData($resolver);
+
         $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
-            ->setFirstname($resolvedOptions['firstname'])
-            ->setLastname($resolvedOptions['lastname'])
-            ->setMobile($resolvedOptions['mobile'])
-            ->setEmail($resolvedOptions['email'])
+            ->setSubjectDN($resolvedOptions['subjectDN'])
+            ->setSerialNumber($resolvedOptions['serialNumber'])
+            ->setChain($resolvedOptions['chain'])
         ;
     }
 
     /**
      * @return string
      */
-    public function getFirstname(): string
+    public function getSubjectDN(): string
     {
-        return $this->firstname;
+        return $this->subjectDN;
     }
 
     /**
-     * @param string $firstname
+     * @param string $subjectDN
      *
      * @return self
      */
-    public function setFirstname(string $firstname): self
+    public function setSubjectDN(string $subjectDN): self
     {
-        $this->firstname = $firstname;
+        $this->subjectDN = $subjectDN;
 
         return $this;
     }
@@ -95,59 +100,39 @@ class MatchingFilter
     /**
      * @return string
      */
-    public function getLastname(): string
+    public function getSerialNumber(): string
     {
-        return $this->lastname;
+        return $this->serialNumber;
     }
 
     /**
-     * @param string $lastname
+     * @param string $serialNumber
      *
      * @return self
      */
-    public function setLastname(string $lastname): self
+    public function setSerialNumber(string $serialNumber): self
     {
-        $this->lastname = $lastname;
+        $this->serialNumber = $serialNumber;
 
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return Base64[]
      */
-    public function getMobile(): ?string
+    public function getChain(): array
     {
-        return $this->mobile;
+        return $this->chain;
     }
 
     /**
-     * @param string|null $mobile
+     * @param Base64[] $chain
      *
      * @return self
      */
-    public function setMobile(?string $mobile): self
+    public function setChain(array $chain): self
     {
-        $this->mobile = $mobile;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string|null $email
-     *
-     * @return self
-     */
-    public function setEmail(?string $email): self
-    {
-        $this->email = $email;
+        $this->chain = $chain;
 
         return $this;
     }
