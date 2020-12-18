@@ -39,14 +39,14 @@ class Signer extends XmlRpcRequester implements SignerInterface
      */
     protected $options;
 
-    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $options)
+    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $options, array $clientOptions)
     {
         $this->logger = $logger;
         $this->router = $router;
         $this->entrypoint = $entrypoint;
         $this->options = $options;
 
-        parent::__construct();
+        parent::__construct($clientOptions);
     }
 
     /**

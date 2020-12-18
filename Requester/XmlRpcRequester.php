@@ -13,9 +13,9 @@ abstract class XmlRpcRequester
      */
     protected $xmlRpcClient;
 
-    public function __construct()
+    public function __construct(?array $clientOptions = null)
     {
-        $this->xmlRpcClient = new Client($this->getURL());
+        $this->xmlRpcClient = new Client($this->getURL(), new \Laminas\Http\Client(null, $clientOptions));
     }
 
     /**

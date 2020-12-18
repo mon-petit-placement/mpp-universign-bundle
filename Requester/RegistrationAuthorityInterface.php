@@ -16,13 +16,13 @@ interface RegistrationAuthorityInterface
 
     /**
      * @param string $email Email of User
-     * @return int Returns the operator status. The return value can be:
+     * @return int|null Returns the operator status. The return value can be:
      * 0 The user is not an operator.
      * 1 The user is an RA operator.
      * 2 The user is invited to be an RA operator.
      * 5 The User is not existent.
      */
-    public function checkOperatorStatus(string $email): int;
+    public function checkOperatorStatus(string $email): ?int;
 
     /**
      * @param MatchingFilter $matchingFilter
@@ -39,7 +39,7 @@ interface RegistrationAuthorityInterface
      *
      * @param string $email Email of User
      *
-     * @return byte[] Certificate
+     * @return byte[]|null Certificate
      */
     public function getCertificateAgreement(string $email);
 
@@ -70,9 +70,9 @@ interface RegistrationAuthorityInterface
      *
      * @param ValidationRequest $validationRequest
      *
-     * @return ValidatorResult
+     * @return ValidatorResult|null
      */
-    public function validate(ValidationRequest $validationRequest): ValidatorResult;
+    public function validate(ValidationRequest $validationRequest): ?ValidatorResult;
 
     /**
      * Retrieves the validation result of the validation session that matches the
@@ -80,7 +80,7 @@ interface RegistrationAuthorityInterface
      *
      * @param string $validationSessionId
      *
-     * @return ValidatorResult
+     * @return ValidatorResult|null
      */
-    public function getResult(string $validationSessionId): ValidatorResult;
+    public function getResult(string $validationSessionId): ?ValidatorResult;
 }
