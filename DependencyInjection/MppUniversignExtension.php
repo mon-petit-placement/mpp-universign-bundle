@@ -31,5 +31,10 @@ class MppUniversignExtension extends Extension
             sprintf('%s.options', Configuration::CONFIGURATION_ROOT),
             $config['options']
         );
+
+        $container->setParameter(
+            sprintf('%s.client_options', Configuration::CONFIGURATION_ROOT),
+            $config['client_options']
+        );
     }
 }

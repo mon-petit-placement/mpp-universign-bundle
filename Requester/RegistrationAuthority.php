@@ -38,14 +38,12 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
      */
     protected $router;
 
-    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $options)
+    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $clientOptions)
     {
         $this->logger = $logger;
         $this->router = $router;
         $this->entrypoint = $entrypoint;
-        $this->options = $options;
-
-        parent::__construct();
+        parent::__construct($clientOptions);
     }
 
     /**
@@ -70,7 +68,7 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         return $response;
     }
 
-    public function checkOperatorStatus(string $email): int
+    public function checkOperatorStatus(string $email): ?int
     {
         return $this->call('ra.checkOperatorStatus', $email);
     }
@@ -104,7 +102,7 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         return $this->call('ra.revokeMyCertificate', $emailOrPhoneNumber);
     }
 
-    public function validate(ValidationRequest $validationRequest): ValidatorResult
+    public function validate(ValidationRequest $validationRequest): ?ValidatorResult
     {
         if (null === $validationRequest->getCallbackURL()) {
             $validationRequest->setCallbackURL(
@@ -118,11 +116,23 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
             $this->logger->info(sprintf('[Universign - validate] define default callback URL : "%s"', $validationRequest->getCallbackURL()));
         }
 
-        return ValidatorResult::createFromArray($this->call('validator.validate', [$validationRequest]));
+        $result = $this->call('validator.validate', [$validationRequest]);
+
+        if (null === $result) {
+            return null;
+        }
+
+        return ValidatorResult::createFromArray($result);
     }
 
-    public function getResult(string $validationSessionId): ValidatorResult
+    public function getResult(string $validationSessionId): ?ValidatorResult
     {
-        return ValidatorResult::createFromArray($this->call('validator.getResult', $validationSessionId));
+        $result = $this->call('validator.getResult', $validationSessionId);
+
+        if (null === $result) {
+            return null;
+        }
+
+        return ValidatorResult::createFromArray($result);
     }
 }
