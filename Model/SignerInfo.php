@@ -78,6 +78,11 @@ class SignerInfo
      */
     protected $redirectWait;
 
+    /**
+     * @var null|array
+     */
+    protected $idDocuments;
+
     public function __construct()
     {
         $this->refusedDocs = [];
@@ -114,6 +119,7 @@ class SignerInfo
             ->setDefault('refusalComment', null)->setAllowedTypes('refusalComment', ['null', 'string'])
             ->setDefault('redirectPolicy', null)->setAllowedTypes('redirectPolicy', ['null', 'string'])
             ->setDefault('redirectWait', null)->setAllowedTypes('redirectWait', ['null', 'int'])
+            ->setDefault('idDocuments', null)->setAllowedTypes('idDocuments', ['array', 'null'])
         ;
     }
 
@@ -149,6 +155,7 @@ class SignerInfo
             ->setRefusalComment($resolvedOptions['refusalComment'])
             ->setRedirectPolicy($resolvedOptions['redirectPolicy'])
             ->setRedirectWait($resolvedOptions['redirectWait'])
+            ->setIdDocuments($resolvedOptions['idDocuments'])
         ;
     }
 
@@ -423,5 +430,25 @@ class SignerInfo
     public function getRedirectWait(): ?int
     {
         return $this->redirectWait;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getIdDocuments(): ?array
+    {
+        return $this->idDocuments;
+    }
+
+    /**
+     * @param array|null $idDocuments
+     *
+     * @return SignerInfo
+     */
+    public function setIdDocuments(?array $idDocuments): SignerInfo
+    {
+        $this->idDocuments = $idDocuments;
+
+        return $this;
     }
 }
