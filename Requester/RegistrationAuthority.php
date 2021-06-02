@@ -2,19 +2,9 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Client;
 use Laminas\XmlRpc\Client\Exception\FaultException;
-use Laminas\XmlRpc\Value\Base64;
-use Laminas\XmlRpc\Value\DateTime;
-use Mpp\UniversignBundle\Model\InitiatorInfo;
 use Mpp\UniversignBundle\Model\MatchingFilter;
 use Mpp\UniversignBundle\Model\MatchingResult;
-use Mpp\UniversignBundle\Model\RedirectionConfig;
-use Mpp\UniversignBundle\Model\SignerInfo;
-use Mpp\UniversignBundle\Model\SignOptions;
-use Mpp\UniversignBundle\Model\TransactionInfo;
-use Mpp\UniversignBundle\Model\TransactionRequest;
-use Mpp\UniversignBundle\Model\TransactionResponse;
 use Mpp\UniversignBundle\Model\ValidationRequest;
 use Mpp\UniversignBundle\Model\ValidatorResult;
 use Psr\Log\LoggerInterface;
