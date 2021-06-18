@@ -1,10 +1,10 @@
 services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
     Mpp\UniversignBundle\Controller\CallbackController:
         tags: ['controller.service_arguments']
-        arguments:
-            - '@logger'
-            - '@event_dispatcher'
 
     Mpp\UniversignBundle\Requester\Signer:
         arguments:
