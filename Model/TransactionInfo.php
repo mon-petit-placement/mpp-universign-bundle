@@ -4,14 +4,15 @@ namespace Mpp\UniversignBundle\Model;
 
 class TransactionInfo
 {
-    const STATE_SUCCESS = 'SUCCESS';
-    const STATE_ERROR = 'ERROR';
+    public const STATE_SUCCESS = 'SUCCESS';
+    public const STATE_ERROR = 'ERROR';
 
-    const STATUS_CANCELED= 'canceled';
-    const STATUS_COMPLETED = 'completed';
-    const STATUS_EXPIRED = 'expired';
-    const STATUS_FAILED = 'failed';
-    const STATUS_READY = 'ready';
+    public const STATUS_AWAITING_CERTIFICATION = 'awaiting_certification';
+    public const STATUS_CANCELED = 'canceled';
+    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_EXPIRED = 'expired';
+    public const STATUS_FAILED = 'failed';
+    public const STATUS_READY = 'ready';
 
     /**
      * @var string
