@@ -13,8 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Signer
 {
-    const ROLE_SIGNER = 'signer';
-    const ROLE_OBSERVER = 'observer';
+    public const ROLE_SIGNER = 'signer';
+    public const ROLE_OBSERVER = 'observer';
 
     /**
      * @var string
@@ -87,7 +87,7 @@ class Signer
     protected $certificateType;
 
     /**
-     * @var array
+     * @var RegistrationRequest
      */
     protected $idDocuments;
 
@@ -150,7 +150,13 @@ class Signer
             ->setDefault('cancelRedirection', null)->setAllowedTypes('cancelRedirection', ['array', 'null'])
             ->setDefault('failRedirection', null)->setAllowedTypes('failRedirection', ['array', 'null'])
             ->setDefault('certificateType', null)->setAllowedValues('certificateType', [null, CertificateType::SIMPLE, CertificateType::CERTIFIED, CertificateType::ADVANCED])
-            ->setDefault('idDocuments', null)->setAllowedTypes('idDocuments', ['array', 'null'])
+            ->setDefault('idDocuments', null)->setAllowedTypes('idDocuments', ['array', RegistrationRequest::class, 'null'])->setNormalizer('idDocuments', function (Options $options, $value) {
+                if ($value instanceof RegistrationRequest || null === $value) {
+                    return $value;
+                }
+
+                return RegistrationRequest::createFromArray($value);
+            })
             ->setDefault('validationSessionId', null)->setAllowedTypes('validationSessionId', ['null', 'string'])
             ->setDefault('redirectPolicy', null)->setAllowedValues('redirectPolicy', [null, 'dashboard', 'quick'])
             ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])->setNormalizer('redirectWait', function (Options $options, $value) {
@@ -492,11 +498,9 @@ class Signer
      *
      * @return self
      */
-    public function setIdDocuments(?array $idDocument): self
+    public function setIdDocuments(?RegistrationRequest $idDocument): self
     {
-        if (null !== $idDocument) {
-            $this->idDocument = RegistrationRequest::createFromArray($idDocument);
-        }
+        $this->idDocument = $idDocument;
 
         return $this;
     }
@@ -504,7 +508,7 @@ class Signer
     /**
      * @return array|null
      */
-    public function getIdDocument(): ?array
+    public function getIdDocument(): ?RegistrationRequest
     {
         return $this->idDocument;
     }
