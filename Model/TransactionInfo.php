@@ -7,12 +7,17 @@ class TransactionInfo
     public const STATE_SUCCESS = 'SUCCESS';
     public const STATE_ERROR = 'ERROR';
 
-    public const STATUS_AWAITING_CERTIFICATION = 'awaiting_certification';
+    public const STATUS_WAITING = 'waiting';
+    public const STATUS_READY = 'ready';
+    public const STATUS_ACCESSED = 'accessed';
+    public const STATUS_CODE_SENT = 'code-sent';
+    public const STATUS_SIGNED = 'signed';
+    public const STATUS_PENDING_ID_DOCS = 'pending-id-docs';
+    public const STATUS_PENDING_VALIDATION = 'pending-validation';
     public const STATUS_CANCELED = 'canceled';
+    public const STATUS_FAILED = 'failed';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_EXPIRED = 'expired';
-    public const STATUS_FAILED = 'failed';
-    public const STATUS_READY = 'ready';
 
     /**
      * @var string
