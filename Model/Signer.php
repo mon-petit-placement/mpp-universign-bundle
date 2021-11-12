@@ -498,9 +498,9 @@ class Signer
      *
      * @return self
      */
-    public function setIdDocuments(?RegistrationRequest $idDocument): self
+    public function setIdDocuments(?RegistrationRequest $idDocuments): self
     {
-        $this->idDocument = $idDocument;
+        $this->idDocuments = $idDocuments;
 
         return $this;
     }
@@ -508,9 +508,9 @@ class Signer
     /**
      * @return array|null
      */
-    public function getIdDocument(): ?RegistrationRequest
+    public function getIdDocuments(): ?RegistrationRequest
     {
-        return $this->idDocument;
+        return $this->idDocuments;
     }
 
     /**
