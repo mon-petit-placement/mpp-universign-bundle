@@ -83,7 +83,7 @@ class TransactionInfo
      */
     protected $redirectWait;
 
-    public function __construct()
+    public function construct()
     {
         $this->state = null;
         $this->errorMessage = null;

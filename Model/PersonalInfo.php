@@ -2,7 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Laminas\XmlRpc\Value\DateTime;
+use DateTime;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -14,20 +14,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PersonalInfo
 {
-    /**
-     * @var string
-     */
-    protected $firstname;
+    protected string $firstname;
 
-    /**
-     * @var string
-     */
-    protected $lastname;
+    protected string $lastname;
 
-    /**
-     * @var DateTime
-     */
-    protected $birthDate;
+    protected DateTime $birthDate;
 
     /**
      * @param OptionsResolver $resolver

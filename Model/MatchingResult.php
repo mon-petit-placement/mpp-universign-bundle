@@ -13,47 +13,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MatchingResult
 {
-    const CERTIFICATE_LEVEL_NONE = 'none';
-    const CERTIFICATE_LEVEL_ADVANCED = 'advanced';
-    const CERTIFICATE_LEVEL_CERTIFIED = 'certified';
+    public const CERTIFICATE_LEVEL_NONE = 'none';
+    public const CERTIFICATE_LEVEL_ADVANCED = 'advanced';
+    public const CERTIFICATE_LEVEL_CERTIFIED = 'certified';
 
-    const CERTIFICATE_STATUS_VALID = 'valid';
-    const CERTIFICATE_STATUS_REVOKED = 'revoked';
-    const CERTIFICATE_STATUS_AWAITING_VALIDATION = 'awaiting-validation';
-    /**
-     * @var string|null
-     */
-    protected $firstname;
+    public const CERTIFICATE_STATUS_VALID = 'valid';
+    public const CERTIFICATE_STATUS_REVOKED = 'revoked';
+    public const CERTIFICATE_STATUS_AWAITING_VALIDATION = 'awaiting-validation';
 
-    /**
-     * @var string|null
-     */
-    protected $lastname;
+    protected ?string $lastname;
 
-    /**
-     * @var string|null
-     */
-    protected $mobile;
+    protected ?string $mobile;
 
-    /**
-     * @var string|null
-     */
-    protected $email;
+    protected ?string $email;
 
-    /**
-     * @var string|null
-     */
-    protected $certificateLevel;
+    protected ?string $certificateLevel;
 
-    /**
-     * @var string|null
-     */
-    protected $certificateStatus;
+    protected ?string $certificateStatus;
 
-    /**
-     * @var RaCertificateInfo|null
-     */
-    protected $certificateInfo;
+    protected ?RaCertificateInfo $certificateInfo;
 
     public static function configureData(OptionsResolver $resolver)
     {

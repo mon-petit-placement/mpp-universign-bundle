@@ -68,17 +68,17 @@ interface SignerInterface
     public function cancelTransaction(string $transactionId): TransactionInfo;
 
     /**
-     * @param Base64 $document
+     * @param string $document Base64 encoded document
      *
      * @return string|null
      */
-    public function sign(Base64 $document): ?string;
+    public function sign(string $document): ?string;
 
     /**
-     * @param Base64 $document
+     * @param string $document Base64 encoded document
      * @param SignOptions $options
      *
      * @return string|null
      */
-    public function signWithOptions(Base64 $document, SignOptions $options): ?string;
+    public function signWithOptions(string $document, SignOptions $options): ?string;
 }

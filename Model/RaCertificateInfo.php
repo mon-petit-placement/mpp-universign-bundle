@@ -3,6 +3,7 @@
 namespace Mpp\UniversignBundle\Model;
 
 use Laminas\XmlRpc\Value\Base64;
+use PhpXmlRpc\Value;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -14,20 +15,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RaCertificateInfo
 {
-    /**
-     * @var string
-     */
-    protected $subjectDN;
+    protected string $subjectDN;
+
+    protected string $serialNumber;
 
     /**
-     * @var string
+     * @var Value[]
      */
-    protected $serialNumber;
-
-    /**
-     * @var Base64[]
-     */
-    protected $chain;
+    protected array $chain;
 
     /**
      * @param OptionsResolver $resolver
@@ -37,13 +32,14 @@ class RaCertificateInfo
         $resolver
             ->setRequired('subjectDN')->setAllowedTypes('subjectDN', ['string'])
             ->setRequired('serialNumber')->setAllowedTypes('serialNumber', ['string'])
-            ->setRequired('chain')->setAllowedTypes('chain', ['array', Base64::class])->setNormalizer('chain', function (Options $options, $value): array {
+            ->setRequired('chain')->setAllowedTypes('chain', ['array', Value::class])->setNormalizer('chain', function (Options $options, $value): array {
                 if (null === $value) {
-                    return $value;
+                    return [];
                 }
+
                 $result = [];
                 foreach ($value as $item) {
-                    $result[] = new Base64($item);
+                    $result[] = new Value(base64_encode($item), 'base64');
                 }
 
                 return $result;
@@ -118,7 +114,7 @@ class RaCertificateInfo
     }
 
     /**
-     * @return Base64[]
+     * @return Value[]
      */
     public function getChain(): array
     {
@@ -126,7 +122,7 @@ class RaCertificateInfo
     }
 
     /**
-     * @param Base64[] $chain
+     * @param Value[] $chain
      *
      * @return self
      */

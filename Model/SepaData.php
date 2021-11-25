@@ -13,46 +13,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SepaData
 {
-    /**
-     * @var string
-     */
-    protected $rum;
+    protected string $rum;
 
-    /**
-     * @var string
-     */
-    protected $ics;
+    protected string $ics;
 
-    /**
-     * @var string
-     */
-    protected $iban;
+    protected string $iban;
 
-    /**
-     * @var string
-     */
-    protected $bic;
+    protected string $bic;
 
-    /**
-     * @var bool
-     */
-    protected $recuring;
+    protected bool $recuring;
 
-    /**
-     * @var SepaThirdParty
-     */
-    protected $debtor;
+    protected ?SepaThirdParty $debtor;
 
-    /**
-     * @var SepaThirdParty
-     */
-    protected $creditor;
-
-    public function __construct()
-    {
-        $this->debtor = [];
-        $this->creditor = [];
-    }
+    protected ?SepaThirdParty $creditor;
 
     /**
      * @param OptionsResolver $resolver

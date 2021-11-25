@@ -2,79 +2,38 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Client;
-use Laminas\XmlRpc\Value\Base64;
-use Laminas\XmlRpc\Value\DateTime;
+use Mpp\UniversignBundle\Exception\FaultException;
+use PhpXmlRpc\Client;
+use PhpXmlRpc\Encoder;
+use PhpXmlRpc\Request;
 
 abstract class XmlRpcRequester
 {
-    /**
-     * @var Client
-     */
-    protected $xmlRpcClient;
+    protected Client $xmlRpcClient;
 
     public function __construct(?array $clientOptions = null)
     {
-        $this->xmlRpcClient = new Client($this->getURL(), new \Laminas\Http\Client(null, $clientOptions));
+        $this->xmlRpcClient = new Client($this->getURL());
+        $this->xmlRpcClient->setCurlOptions($clientOptions);
     }
 
-    /**
-     * @return string;
-     */
-    abstract public function getUrl();
+    abstract public function getUrl(): string;
 
     /**
-     * @param mixed $data
-     * @param bool $skipNullValue
-     *
-     * @return mixed
+     * @param string $method
+     * @param $args
+     * @return mixed Note that the client will always return a Response object, even if the call fails
+     * @throws FaultException
      */
-    public static function flatten($data, bool $skipNullValue = true)
+    protected function call(string $method, $args)
     {
-        $flattenedData = [];
+        $encoder = new Encoder();
+        $response = $this->xmlRpcClient->send(new Request($method, $encoder->encode($args)));
 
-        if (is_object($data) &&
-            !($data instanceof DateTime) &&
-            !($data instanceof Base64)
-        ) {
-            return self::dismount($data, $skipNullValue);
+        if (0 != $response->faultCode()) {
+            throw new FaultException($method, $response);
         }
 
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                $flattenedValue = self::flatten($value, $skipNullValue);
-                if (true === $skipNullValue && null === $flattenedValue) {
-                    continue;
-                }
-                $flattenedData[$key] = $flattenedValue;
-            }
-
-            return $flattenedData;
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param mixed $object
-     * @param bool $skipNullValue
-     *
-     * @return array
-     */
-    public static function dismount($object, bool $skipNullValue = true): array
-    {
-        $rc = new \ReflectionClass($object);
-        $data = [];
-        foreach ($rc->getProperties() as $property) {
-            $property->setAccessible(true);
-            $value = $property->getValue($object);
-            $property->setAccessible(false);
-            if (true === $skipNullValue && (null === $value || (is_array($value) && empty($value)))) {
-                continue;
-            }
-            $data[$property->getName()] = self::flatten($value, $skipNullValue);
-        }
-
-        return $data;
+        return $encoder->decode($response->value());
     }
 }

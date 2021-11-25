@@ -13,127 +13,61 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionRequest
 {
-    /**
-     * @var string
-     */
-    protected $profile;
+    protected string $profile;
+
+    protected string $customId;
 
     /**
-     * @var string
+     * @var Signer[]
      */
-    protected $customId;
+    protected array $signers;
 
     /**
-     * @var array<Signer>
+     * @var Document[]
      */
-    protected $signers;
+    protected array $documents;
 
-    /**
-     * @var array<Document>
-     */
-    protected $documents;
+    protected bool $mustContactFirstSigner;
 
-    /**
-     * @var bool
-     */
-    protected $mustContactFirstSigner;
+    protected bool $finalDocSent;
 
-    /**
-     * @var bool
-     */
-    protected $finalDocSent;
+    protected bool $finalDocRequesterSent;
 
-    /**
-     * @var bool
-     */
-    protected $finalDocRequesterSent;
+    protected bool $finalDocObserverSent;
 
-    /**
-     * @var bool
-     */
-    protected $finalDocObserverSent;
+    protected string $description;
 
-    /**
-     * @var string
-     */
-    protected $description;
+    protected string $certificateType;
 
-    /**
-     * @var string
-     */
-    protected $certificateType;
+    protected string $language;
 
-    /**
-     * @var string
-     */
-    protected $language;
+    protected int $handwrittenSignatureMode;
 
-    /**
-     * @var int
-     */
-    protected $handwrittenSignatureMode;
+    protected string $chainingMode;
 
-    /**
-     * @var string
-     */
-    protected $chainingMode;
+    protected array $finalDocCCeMails;
 
-    /**
-     * @var array
-     */
-    protected $finalDocCCeMails;
+    protected RedirectionConfig $autoValidationRedirection;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $autoValidationRedirection;
+    protected string $redirectPolicy;
 
-    /**
-     * @var string
-     */
-    protected $redirectPolicy;
+    protected int $redirectWait;
 
-    /**
-     * @var int
-     */
-    protected $redirectWait;
+    protected bool $autoSendAgreements;
 
-    /**
-     * @var bool
-     */
-    protected $autoSendAgreements;
+    protected string $operator;
 
-    /**
-     * @var string
-     */
-    protected $operator;
+    protected string $registrationCallbackURL;
 
-    /**
-     * @var string
-     */
-    protected $registrationCallbackURL;
+    protected RedirectionConfig $successRedirection;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $successRedirection;
+    protected RedirectionConfig $failRedirection;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $failRedirection;
+    protected RedirectionConfig $cancelRedirection;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $cancelRedirection;
+    protected string $invitationMessage;
 
-    /**
-     * @var string
-     */
-    protected $invitationMessage;
-
-    public function __construct()
+    public function construct()
     {
         $this->signers = [];
         $this->documents = [];

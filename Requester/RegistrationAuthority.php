@@ -2,7 +2,7 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Client\Exception\FaultException;
+use Mpp\UniversignBundle\Exception\FaultException;
 use Mpp\UniversignBundle\Model\MatchingFilter;
 use Mpp\UniversignBundle\Model\MatchingResult;
 use Mpp\UniversignBundle\Model\ValidationRequest;
@@ -13,60 +13,42 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RegistrationAuthority extends XmlRpcRequester implements RegistrationAuthorityInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var array
-     */
-    protected $entrypoint;
+    protected array $entrypoint;
 
-    /**
-     * @var Router
-     */
-    protected $router;
+    protected Router $router;
 
     public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $clientOptions)
     {
         $this->logger = $logger;
         $this->router = $router;
         $this->entrypoint = $entrypoint;
+
         parent::__construct($clientOptions);
     }
 
-    /**
-     * @return string;
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->entrypoint['ra'];
     }
 
-    private function call(string $method, $args)
-    {
-        $response = null;
 
-        try {
-            $response = $this->xmlRpcClient->call($method, self::flatten($args));
-            $this->logger->info(sprintf('[Universign - %s] SUCCESS', $method));
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - %s] ERROR (%s): %s', $method, $fe->getCode(), $fe->getMessage()));
-        }
-
-        return $response;
-    }
-
+    /**
+     * @throws FaultException
+     */
     public function checkOperatorStatus(string $email): ?int
     {
-        return $this->call('ra.checkOperatorStatus', $email);
+        return $this->call('ra.checkOperatorStatus', $email)->value();
     }
 
+    /**
+     * @throws FaultException
+     */
     public function matchAccount(MatchingFilter $matchingFilter): array
     {
         $results = [];
-        $dataResult = $this->call('matcher.matchAccount', [$matchingFilter]);
+        $dataResult = $this->call('matcher.matchAccount', [$matchingFilter])->value();
 
         if (is_array($dataResult)) {
             foreach ($dataResult as $item) {
@@ -77,21 +59,33 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         return $results;
     }
 
+    /**
+     * @throws FaultException
+     */
     public function getCertificateAgreement(string $email)
     {
         return $this->call('ra.getCertificateAgreement', $email);
     }
 
+    /**
+     * @throws FaultException
+     */
     public function revokeCertificate(string $emailOrPhoneNumber)
     {
         return $this->call('ra.revokeCertificate', $emailOrPhoneNumber);
     }
 
+    /**
+     * @throws FaultException
+     */
     public function revokeMyCertificate(string $emailOrPhoneNumber)
     {
         return $this->call('ra.revokeMyCertificate', $emailOrPhoneNumber);
     }
 
+    /**
+     * @throws FaultException
+     */
     public function validate(ValidationRequest $validationRequest): ?ValidatorResult
     {
         if (null === $validationRequest->getCallbackURL()) {
@@ -103,7 +97,7 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
                 )
             );
 
-            $this->logger->info(sprintf('[Universign - validate] define default callback URL : "%s"', $validationRequest->getCallbackURL()));
+            $this->logger->debug(sprintf('[Universign - validate] define default callback URL : "%s"', $validationRequest->getCallbackURL()));
         }
 
         $result = $this->call('validator.validate', [$validationRequest]);
@@ -115,6 +109,9 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         return ValidatorResult::createFromArray($result);
     }
 
+    /**
+     * @throws FaultException
+     */
     public function getResult(string $validationSessionId): ?ValidatorResult
     {
         $result = $this->call('validator.getResult', $validationSessionId);

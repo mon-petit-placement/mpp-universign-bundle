@@ -13,44 +13,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SignOptions
 {
-    const SINGNATURE_FORMAT_PADES = 'PADES';
-    const SINGNATURE_FORMAT_PADES_COMP = 'PADES-COMP';
-    const SINGNATURE_FORMAT_ISO32000_1 = 'ISO-32000-1';
+    public const SINGNATURE_FORMAT_PADES = 'PADES';
+    public const SINGNATURE_FORMAT_PADES_COMP = 'PADES-COMP';
+    public const SINGNATURE_FORMAT_ISO32000_1 = 'ISO-32000-1';
 
-    /**
-     * @var string|null
-     */
-    protected $profile;
+    protected ?string $profile;
 
-    /**
-     * @var SignatureField|null
-     */
-    protected $signatureField;
+    protected ?SignatureField $signatureField;
 
-    /**
-     * @var string|null
-     */
-    protected $reason;
+    protected ?string $reason;
 
-    /**
-     * @var string|null
-     */
-    protected $location;
+    protected ?string $location;
 
-    /**
-     * @var string|null
-     */
-    protected $signatureFormat;
+    protected ?string $signatureFormat;
 
-    /**
-     * @var string|null
-     */
-    protected $language;
+    protected ?string $language;
 
-    /**
-     * @var string|null
-     */
-    protected $patternName;
+    protected ?string $patternName;
 
     /**
      * @param OptionsResolver $resolver

@@ -12,30 +12,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SepaThirdParty
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @var string
-     */
-    protected $address;
+    protected string $address;
 
-    /**
-     * @var string
-     */
-    protected $postalCode;
+    protected string $postalCode;
 
-    /**
-     * @var string
-     */
-    protected $city;
+    protected string $city;
 
-    /**
-     * @var string
-     */
-    protected $country;
+    protected string $country;
 
     /**
      * @param OptionsResolver $resolver

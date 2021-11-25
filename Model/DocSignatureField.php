@@ -8,25 +8,15 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DocSignatureField extends SignatureField
 {
-    /**
-     * @var string
-     */
-    protected $patternName;
+    protected string $patternName;
 
-    /**
-     * @var string
-     */
-    protected $label;
+    protected string $label;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\Base64
-     */
-    protected $image;
+    protected string $image;
 
     /**
      * @param OptionsResolver $resolver
@@ -73,7 +63,7 @@ class DocSignatureField extends SignatureField
     }
 
     /**
-     * @param string $patternName
+     * @param string|null $patternName
      *
      * @return self
      */
@@ -93,7 +83,7 @@ class DocSignatureField extends SignatureField
     }
 
     /**
-     * @param string $label
+     * @param string|null $label
      *
      * @return self
      */
@@ -113,7 +103,7 @@ class DocSignatureField extends SignatureField
     }
 
     /**
-     * @param array $image
+     * @param array|null $image
      *
      * @return self
      */
@@ -124,10 +114,7 @@ class DocSignatureField extends SignatureField
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\Base64
-     */
-    public function getImage(): \Laminas\XmlRpc\Value\Base64
+    public function getImage(): string
     {
         return $this->image;
     }

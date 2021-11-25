@@ -13,25 +13,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MatchingFilter
 {
-    /**
-     * @var string
-     */
-    protected $firstname;
+    protected string $firstname;
 
-    /**
-     * @var string
-     */
-    protected $lastname;
+    protected string $lastname;
 
-    /**
-     * @var string|null
-     */
-    protected $mobile;
+    protected ?string $mobile;
 
-    /**
-     * @var string|null
-     */
-    protected $email;
+    protected ?string $email;
 
     /**
      * @param OptionsResolver $resolver

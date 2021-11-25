@@ -2,9 +2,19 @@
     "name": "mpp/universign-bundle",
     "type": "symfony-bundle",
     "description": "Symfony Universign Bundle",
-    "keywords": ["json", "yaml", "api", "xmlrpc"],
+    "keywords": ["json", "yaml", "api", "xmlrpc", "universign"],
     "license": "MIT",
     "authors": [
+      {
+        "name": "Céline CÊTRE",
+        "email": "celine@monpetitplacement.fr",
+        "homepage": "https://monpetitplacement.fr"
+      },
+      {
+        "name": "Thibault BUATHIER",
+        "email": "thibault.b@monpetitplacement.fr",
+        "homepage": "https://monpetitplacement.fr"
+      },
       {
         "name": "Gabriel BONDAZ",
         "email": "gabriel.bondaz@idci-consulting.fr",
@@ -17,13 +27,14 @@
       }
     ],
     "require": {
-      "php": ">=7.3",
-      "laminas/laminas-xmlrpc": "^2.10.1",
+      "php": ">=7.4",
       "symfony/dependency-injection": "^4.0 | ^5.0",
       "symfony/event-dispatcher": "*",
       "symfony/framework-bundle": "^4.0 | ^5.0",
       "symfony/monolog-bundle": "*",
-      "ext-json": "*"
+      "ext-json": "*",
+      "phpxmlrpc/phpxmlrpc": "^4.5",
+        "symfony/options-resolver": "^5.3"
     },
     "autoload":{
       "psr-4":{

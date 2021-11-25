@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use DateTimeInterface;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -13,60 +14,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionFilter
 {
-    /**
-     * @var string
-     */
-    protected $requesterEmail;
+    protected string $requesterEmail;
 
-    /**
-     * @var string
-     */
-    protected $profile;
+    protected string $profile;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notBefore;
+    protected DateTimeInterface $notBefore;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notAfter;
+    protected DateTimeInterface $notAfter;
 
-    /**
-     * @var int
-     */
-    protected $startRange;
+    protected int $startRange;
 
-    /**
-     * @var int
-     */
-    protected $stopRange;
+    protected int $stopRange;
 
-    /**
-     * @var string
-     */
-    protected $signerId;
+    protected string $signerId;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notBeforeCompletion;
+    protected DateTimeInterface $notBeforeCompletion;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notAfterCompletion;
+    protected DateTimeInterface $notAfterCompletion;
 
-    /**
-     * @var int
-     */
-    protected $status;
+    protected int $status;
 
-    /**
-     * @var bool
-     */
-    protected $withAffiliated;
+    protected bool $withAffiliated;
 
     /**
      * @return TransactionFilter
@@ -84,45 +52,13 @@ class TransactionFilter
         $resolver
             ->setDefault('requesterEmail', null)->setAllowedTypes('requesterEmail', ['string', 'null'])
             ->setDefault('profile', null)->setAllowedTypes('profile', ['string', 'null'])
-            ->setDefault('notBefore', null)->setAllowedTypes('notBefore', ['DateTime', 'null'])->setNormalizer('notBefore', function (Options $option, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
-            ->setDefault('notAfter', null)->setAllowedTypes('notAfter', ['DateTime', 'null'])->setNormalizer('notAfter', function (Options $options, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
+            ->setDefault('notBefore', null)->setAllowedTypes('notBefore', ['DateTime', DateTimeInterface::class, 'null'])
+            ->setDefault('notAfter', null)->setAllowedTypes('notAfter', ['DateTime', DateTimeInterface::class, 'null'])
             ->setDefault('startRange', null)->setAllowedTypes('startRange', ['int', 'null'])
             ->setDefault('stopRange', null)->setAllowedTypes('stopRange', ['int', 'null'])
             ->setDefault('signerId', null)->setAllowedTypes('signerId', ['string', 'null'])
-            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', ['DateTime', 'null'])->setNormalizer('notBeforeCompletion', function (Options $options, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
-            ->setDefault('notAfterCompletion', null)->setAllowedTypes('notAfterCompletion', ['DateTime', 'null'])->setNormalizer('notAfterCompletion', function (Options $options, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
+            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', ['DateTime', DateTimeInterface::class, 'null'])
+            ->setDefault('notAfterCompletion', null)->setAllowedTypes('notAfterCompletion', ['DateTime', DateTimeInterface::class, 'null'])
             ->setDefault('status', null)->setAllowedTypes('status', ['int', 'null'])
             ->setDefault('withAffiliated', null)->setAllowedTypes('withAffiliated', ['bool', 'null']);
     }

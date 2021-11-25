@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use DateTimeInterface;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -23,77 +24,38 @@ class SignerInfo
     public const STATUS_CANCELED = 'canceled';
     public const STATUS_FAILED = 'failed';
 
-    /**
-     * @var string
-     */
-    protected $status;
+    protected string $status;
+
+    protected string $error;
+
+    protected CertificateInfo $certificateInfo;
+
+    protected string $url;
+
+    protected string $id;
+
+    protected string $email;
+
+    protected string $firstName;
+
+    protected string $lastName;
+
+    protected DateTimeInterface $actionDate;
 
     /**
-     * @var string
+     * @var int[]
      */
-    protected $error;
+    protected array $refusedDocs;
 
-    /**
-     * @var CertificateInfo
-     */
-    protected $certificateInfo;
+    protected string $refusalComment;
 
-    /**
-     * @var string
-     */
-    protected $url;
+    protected string $redirectPolicy;
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected int $redirectWait;
 
-    /**
-     * @var string
-     */
-    protected $email;
+    protected ?array $idDocuments;
 
-    /**
-     * @var string
-     */
-    protected $firstName;
-
-    /**
-     * @var string
-     */
-    protected $lastName;
-
-    /**
-     * @var \DateTime
-     */
-    protected $actionDate;
-
-    /**
-     * @var array<int>
-     */
-    protected $refusedDocs;
-
-    /**
-     * @var string
-     */
-    protected $refusalComment;
-
-    /**
-     * @var string
-     */
-    protected $redirectPolicy;
-
-    /**
-     * @var int
-     */
-    protected $redirectWait;
-
-    /**
-     * @var null|array
-     */
-    protected $idDocuments;
-
-    public function __construct()
+    public function construct()
     {
         $this->refusedDocs = [];
     }
@@ -118,13 +80,7 @@ class SignerInfo
             ->setDefault('email', null)->setAllowedTypes('email', ['null', 'string'])
             ->setDefault('firstName', null)->setAllowedTypes('firstName', ['null', 'string'])
             ->setDefault('lastName', null)->setAllowedTypes('lastName', ['null', 'string'])
-            ->setDefault('actionDate', null)->setAllowedTypes('actionDate', ['null', 'string', \DateTime::class])->setNormalizer('actionDate', function(Options $options, $value) {
-                if (null === $value || $value instanceof \DateTime) {
-                    return $value;
-                }
-
-                return \DateTime::createFromFormat("Ymd\TH:i:s", $value);
-            })
+            ->setDefault('actionDate', null)->setAllowedTypes('actionDate', ['null', 'DateTime', DateTimeInterface::class])
             ->setDefault('refusedDocs', null)->setAllowedTypes('refusedDocs', ['null', 'string'])
             ->setDefault('refusalComment', null)->setAllowedTypes('refusalComment', ['null', 'string'])
             ->setDefault('redirectPolicy', null)->setAllowedTypes('redirectPolicy', ['null', 'string'])

@@ -4,35 +4,20 @@ namespace Mpp\UniversignBundle\Model;
 
 class TransactionResponse
 {
-    const STATE_SUCCESS = 'SUCCESS';
-    const STATE_ERROR = 'ERROR';
+    public const STATE_SUCCESS = 'SUCCESS';
+    public const STATE_ERROR = 'ERROR';
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected string $id;
 
-    /**
-     * @var string
-     */
-    protected $url;
+    protected string $url;
 
-    /**
-     * @var string
-     */
-    protected $state;
+    protected string $state;
 
-    /**
-     * @var string
-     */
-    protected $errorCode;
+    protected string $errorCode;
 
-    /**
-     * @var string
-     */
-    protected $errorMessage;
+    protected string $errorMessage;
 
-    public function __construct()
+    public function construct()
     {
         $this->id = null;
         $this->url = null;

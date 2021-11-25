@@ -12,15 +12,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CallbackController extends AbstractController
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(LoggerInterface $logger, EventDispatcherInterface $dispatcher)
     {
@@ -31,7 +25,7 @@ class CallbackController extends AbstractController
     /**
      * @Route("/universign/callback", name="mpp_universign_callback", methods="GET")
      */
-    public function process(Request $request)
+    public function process(Request $request): Response
     {
         $status = $request->query->get('status');
         $transactionId = $request->query->get('id');

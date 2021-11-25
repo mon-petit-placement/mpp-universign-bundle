@@ -13,20 +13,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InitiatorInfo
 {
-    /**
-     * @var string
-     */
-    protected $email;
+    protected string $email;
 
-    /**
-     * @var string
-     */
-    protected $firstName;
+    protected string $firstName;
 
-    /**
-     * @var string
-     */
-    protected $lastName;
+    protected string $lastName;
 
     /**
      * @param OptionsResolver $resolver
@@ -43,7 +34,7 @@ class InitiatorInfo
     /**
      * @param array|null $options
      *
-     * @return self
+     * @return self|null
      *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
@@ -52,7 +43,7 @@ class InitiatorInfo
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(?array $options): self
+    public static function createFromArray(?array $options): ?self
     {
         if (null === $options) {
             return null;

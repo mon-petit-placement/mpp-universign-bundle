@@ -13,15 +13,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RedirectionConfig
 {
-    /**
-     * @var string
-     */
-    protected $URL;
+    protected string $url;
 
-    /**
-     * @var string
-     */
-    protected $displayName;
+    protected string $displayName;
 
     /**
      * @param OptionsResolver
@@ -65,7 +59,7 @@ class RedirectionConfig
      */
     public function setUrl(?string $url): self
     {
-        $this->URL = $url;
+        $this->url = $url;
 
         return $this;
     }
@@ -75,7 +69,7 @@ class RedirectionConfig
      */
     public function getUrl(): ?string
     {
-        return $this->URL;
+        return $this->url;
     }
 
     /**

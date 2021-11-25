@@ -13,27 +13,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ValidationRequest
 {
-    /**
-     * @var IdDocument
-     */
-    protected $idDocument;
+    protected IdDocument $idDocument;
 
-    /**
-     * @var PersonalInfo
-     */
-    protected $personalInfo;
+    protected PersonalInfo $personalInfo;
 
-    /**
-     * @var bool
-     */
-    protected $allowManual;
+    protected bool $allowManual;
 
-    /**
-     * @var null|string
-     */
-    protected $callbackURL;
+    protected ?string $callbackURL;
 
-    public function __construct()
+    public function construct()
     {
         $this->allowManual = false;
         $this->callbackURL = null;

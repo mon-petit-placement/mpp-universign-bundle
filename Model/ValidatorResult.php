@@ -13,36 +13,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ValidatorResult
 {
-    const STATUS_PENDING = 0;
-    const STATUS_VALID = 1;
-    const STATUS_INVALID = 2;
+    public const STATUS_PENDING = 0;
+    public const STATUS_VALID = 1;
+    public const STATUS_INVALID = 2;
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected string $id;
 
-    /**
-     * @var int
-     */
-    protected $status;
+    protected int $status;
 
-    /**
-     * @var null|int
-     */
-    protected $reason;
+    protected ?int $reason;
 
-    /**
-     * @var null|string
-     */
-    protected $reasonMessage;
+    protected ?string $reasonMessage;
 
-    /**
-     * @var null|array
-     */
-    protected $result;
+    protected ?array $result;
 
-    public function __construct()
+    public function construct()
     {
         $this->reason = null;
         $this->reasonMessage = null;

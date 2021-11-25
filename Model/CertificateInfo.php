@@ -8,25 +8,15 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CertificateInfo
 {
-    /**
-     * @var string
-     */
-    protected $subject;
+    protected string $subject;
 
-    /**
-     * @var string
-     */
-    protected $issuer;
+    protected string $issuer;
 
-    /**
-     * @var string
-     */
-    protected $serial;
+    protected string $serial;
 
     /**
      * @param OptionsResolver $resolver

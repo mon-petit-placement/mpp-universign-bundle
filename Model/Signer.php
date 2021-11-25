@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use DateTimeInterface;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -16,112 +17,51 @@ class Signer
     public const ROLE_SIGNER = 'signer';
     public const ROLE_OBSERVER = 'observer';
 
-    /**
-     * @var string
-     */
-    protected $firstname;
+    protected string $firstname;
 
-    /**
-     * @var string
-     */
-    protected $lastname;
+    protected string $lastname;
 
-    /**
-     * @var string
-     */
-    protected $organization;
+    protected string $organization;
 
-    /**
-     * @var string
-     */
-    protected $profile;
+    protected string $profile;
 
-    /**
-     * @var string
-     */
-    protected $emailAddress;
+    protected string $emailAddress;
 
-    /**
-     * @var string
-     */
-    protected $phoneNum;
+    protected string $phoneNum;
 
-    /**
-     * @var string
-     */
-    protected $language;
+    protected string $language;
 
-    /**
-     * @var string
-     */
-    protected $role;
+    protected string $role;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $birthDate;
+    protected DateTimeInterface $birthDate;
 
-    /**
-     * @var string
-     */
-    protected $universignId;
+    protected string $universignId;
 
-    /**
-     * @var array
-     */
-    protected $successRedirection;
+    protected array $successRedirection;
 
-    /**
-     * @var array
-     */
-    protected $cancelRedirection;
+    protected array $cancelRedirection;
 
-    /**
-     * @var array
-     */
-    protected $failRedirection;
+    protected array $failRedirection;
 
-    /**
-     * @var string
-     */
-    protected $certificateType;
+    protected string $certificateType;
 
-    /**
-     * @var RegistrationRequest
-     */
-    protected $idDocuments;
+    protected RegistrationRequest $idDocuments;
 
-    /**
-     * @var string
-     */
-    protected $validationSessionId;
+    protected string $validationSessionId;
 
-    /**
-     * @var string
-     */
-    protected $redirectPolicy;
+    protected string $redirectPolicy;
 
-    /**
-     * @var int
-     */
-    protected $redirectWait;
+    protected int $redirectWait;
 
-    /**
-     * @var bool
-     */
-    protected $autoSendAgreements;
+    protected bool $autoSendAgreements;
 
-    /**
-     * @var string
-     */
-    protected $invitationMessage;
+    protected string $invitationMessage;
 
-    public function __construct()
+    public function construct()
     {
         $this->successRedirection = [];
         $this->cancelRedirection = [];
         $this->failRedirection = [];
-        $this->idDocuments = [];
     }
 
     /**
@@ -138,13 +78,7 @@ class Signer
             ->setDefault('profile', null)->setAllowedTypes('profile', ['null', 'string'])
             ->setDefault('language', 'en')->setAllowedValues('language', [Language::BULGARIAN, Language::CATALAN, Language::GERMAN, Language::ENGLISH, Language::SPANISH, Language::FRENCH, Language::ITALIAN, Language::DUTCH, Language::POLISH, Language::PORTUGUESE, Language::ROMANIAN])
             ->setDefault('role', self::ROLE_SIGNER)->setAllowedValues('role', [self::ROLE_SIGNER, self::ROLE_OBSERVER])
-            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', 'null'])->setNormalizer('birthDate', function (Options $options, $value): ?\Laminas\XmlRpc\Value\DateTime {
-                if (null === $value) {
-                    return null;
-                }
-
-                return new \Laminas\XmlRpc\Value\DateTime($value);
-            })
+            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', DateTimeInterface::class, 'null'])
             ->setDefault('universignId', null)->setAllowedTypes('universignId', ['null', 'string'])
             ->setDefault('successRedirection', null)->setAllowedTypes('successRedirection', ['array', 'null'])
             ->setDefault('cancelRedirection', null)->setAllowedTypes('cancelRedirection', ['array', 'null'])
@@ -374,11 +308,11 @@ class Signer
     }
 
     /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $birthDate
+     * @param DateTimeInterface|null $birthDate
      *
      * @return self
      */
-    public function setBirthDate(?\Laminas\XmlRpc\Value\DateTime $birthDate): self
+    public function setBirthDate(DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
 
@@ -386,9 +320,9 @@ class Signer
     }
 
     /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
+     * @return DateTimeInterface|null
      */
-    public function getBirthDate(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getBirthDate(): ?DateTimeInterface
     {
         return $this->birthDate;
     }
@@ -494,8 +428,7 @@ class Signer
     }
 
     /**
-     * @param array|null $idDocument
-     *
+     * @param RegistrationRequest|null $idDocuments
      * @return self
      */
     public function setIdDocuments(?RegistrationRequest $idDocuments): self

@@ -2,7 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Laminas\XmlRpc\Value\Base64;
+use PhpXmlRpc\Value;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -14,20 +14,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IdDocument
 {
-    const TYPE_IDENTITY_CARD = 0;
-    const TYPE_PASSPORT = 1;
-    const TYPE_RESIDENCE_PERMIT = 2;
-    const TYPE_EUROPEAN_DRIVER_LICENSE = 3;
+    public const TYPE_IDENTITY_CARD = 0;
+    public const TYPE_PASSPORT = 1;
+    public const TYPE_RESIDENCE_PERMIT = 2;
+    public const TYPE_EUROPEAN_DRIVER_LICENSE = 3;
 
     /**
-     * @var Base64[]
+     * @var Value[]
      */
-    protected $photos;
+    protected array $photos;
 
     /**
      * @var int
      */
-    protected $type;
+    protected int $type;
 
     /**
      * @param OptionsResolver $resolver
@@ -39,17 +39,17 @@ class IdDocument
             ->setRequired('photos')->setAllowedTypes('photos', ['array'])->setNormalizer('photos', function (Options $options, $array): ?array {
                 $list = [];
                 foreach ($array as $value) {
-                    if ($value instanceof Base64) {
+                    if ($value instanceof Value || null === $value) {
                         $list[] = $value;
                         continue;
                     }
 
-                    if (null === $value || !file_exists($value)) {
+                    if (file_exists($value)) {
+                        $list[] = new Value(base64_encode(file_get_contents($value)), 'base64');
                         continue;
                     }
 
-                    $file = file_get_contents($value);
-                    $list[] = new \Laminas\XmlRpc\Value\Base64($file);
+                    $list[] = new Value(base64_encode($value), 'base64');
                 }
 
                 return $list;
@@ -82,7 +82,7 @@ class IdDocument
     }
 
     /**
-     * @return Base64[]
+     * @return Value[]
      */
     public function getPhotos(): array
     {

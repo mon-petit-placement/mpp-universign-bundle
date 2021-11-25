@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use PhpXmlRpc\Value;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -13,55 +14,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Document
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected int $id;
 
-    /**
-     * @var string
-     */
-    protected $documentType;
+    protected string $documentType;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\Base64
-     */
-    protected $content;
+    protected Value $content;
 
-    /**
-     * @var string
-     */
-    protected $url;
+    protected string $url;
 
-    /**
-     * @var string
-     */
-    protected $fileName;
+    protected string $fileName;
 
-    /**
-     * @var array<DocSignatureField>
-     */
-    protected $signatureFields;
+    protected array $signatureFields;
 
-    /**
-     * @var array
-     */
-    protected $checkBoxTexts;
+    protected array $checkBoxTexts;
 
-    /**
-     * @var array
-     */
-    protected $metaData;
+    protected array $metaData;
 
-    /**
-     * @var string
-     */
-    protected $title;
+    protected string $title;
 
-    /**
-     * @var SepaData
-     */
-    protected $sepaData;
+    protected SepaData $sepaData;
 
     /**
      * @param OptionsResolver $resolver
@@ -71,19 +42,16 @@ class Document
         $resolver
             ->setDefault('id', null)->setAllowedTypes('id', ['null', 'string'])
             ->setDefault('documentType', 'pdf')->setAllowedValues('documentType', ['pdf', 'pdf-for-presentation', 'pdf-optional', 'sepa'])
-            ->setDefault('content', null)->setAllowedTypes('content', ['null', 'string', \Laminas\XmlRpc\Value\Base64::class])->setNormalizer('content', function (Options $options, $value): ?\Laminas\XmlRpc\Value\Base64 {
-                if ($value instanceof \Laminas\XmlRpc\Value\Base64) {
+            ->setDefault('content', null)->setAllowedTypes('content', ['null', 'string', Value::class])->setNormalizer('content', function (Options $options, $value): ?Value {
+                if ($value instanceof Value || null === $value) {
                     return $value;
                 }
 
-                if (null === $value || !file_exists($value)) {
-                    return null;
+                if (file_exists($value)) {
+                    return new Value(base64_encode(file_get_contents($value)), 'base64');
                 }
 
-                $file = file_get_contents($value);
-                $b64 = new \Laminas\XmlRpc\Value\Base64($file);
-
-                return $b64;
+                return new Value(base64_encode($value), 'base64');
             })
             ->setDefault('url', null)->setAllowedTypes('url', ['null', 'string'])
             ->setDefault('fileName', null)->setAllowedTypes('fileName', ['null', 'string'])
@@ -195,11 +163,11 @@ class Document
     }
 
     /**
-     * @param \Laminas\XmlRpc\Value\Base64|null $content
+     * @param Value|null $content
      *
      * @return self
      */
-    public function setContent(?\Laminas\XmlRpc\Value\Base64 $content): self
+    public function setContent(?Value $content): self
     {
         $this->content = $content;
 
@@ -207,9 +175,9 @@ class Document
     }
 
     /**
-     * @return \Laminas\XmlRpc\Value\Base64|null
+     * @return Value|null
      */
-    public function getContent(): ?\Laminas\XmlRpc\Value\Base64
+    public function getContent(): ?Value
     {
         return $this->content;
     }

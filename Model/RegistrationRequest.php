@@ -17,17 +17,11 @@ class RegistrationRequest
     public const DOCTYPE_PASSPORT = 'passport_eu';
     public const DOCTYPE_TITLE_STAY = 'titre_sejour';
 
-    /**
-     * @var array
-     */
-    protected $documents;
+    protected array $documents;
 
-    /**
-     * @var string
-     */
-    protected $type;
+    protected string $type;
 
-    public function __construct()
+    public function construct()
     {
         $this->documents = [];
     }

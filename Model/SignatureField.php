@@ -13,30 +13,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SignatureField
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @var int
-     */
-    protected $page;
+    protected int $page;
 
-    /**
-     * @var int
-     */
-    protected $x;
+    protected int $x;
 
-    /**
-     * @var int
-     */
-    protected $y;
+    protected int $y;
 
-    /**
-     * @var int
-     */
-    protected $signerIndex;
+    protected int $signerIndex;
 
     /**
      * @param OptionsResolver $resolver
