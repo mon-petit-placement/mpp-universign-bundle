@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Mpp\UniversignBundle\Utils\StringUtils;
 use PhpXmlRpc\Value;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -49,7 +50,11 @@ class IdDocument
                         continue;
                     }
 
-                    $list[] = new Value(base64_encode($value), 'base64');
+                    if (!StringUtils::isBase64($value)) {
+                        $value = base64_encode($value);
+                    }
+
+                    $list[] = new Value($value, 'base64');
                 }
 
                 return $list;

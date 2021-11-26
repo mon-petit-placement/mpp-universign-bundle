@@ -137,11 +137,11 @@ class TransactionFilter
     }
 
     /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notBefore
+     * @param DateTimeInterface|null $notBefore
      *
      * @return self
      */
-    public function setNotBefore(?\Laminas\XmlRpc\Value\DateTime $notBefore): self
+    public function setNotBefore(?DateTimeInterface $notBefore): self
     {
         $this->notBefore = $notBefore;
 
@@ -149,19 +149,19 @@ class TransactionFilter
     }
 
     /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
+     * @return DateTimeInterface|null
      */
-    public function getNotBefore(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotBefore(): ?DateTimeInterface
     {
         return $this->notBefore;
     }
 
     /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notAfter
+     * @param DateTimeInterface|null $notAfter
      *
      * @return self
      */
-    public function setNotAfter(?\Laminas\XmlRpc\Value\DateTime $notAfter): self
+    public function setNotAfter(?DateTimeInterface $notAfter): self
     {
         $this->notAfter = $notAfter;
 
@@ -169,9 +169,9 @@ class TransactionFilter
     }
 
     /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
+     * @return DateTimeInterface|null
      */
-    public function getNotAfter(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotAfter(): ?DateTimeInterface
     {
         return $this->notAfter;
     }
@@ -237,11 +237,11 @@ class TransactionFilter
     }
 
     /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notBeforeCompletion
+     * @param DateTimeInterface|null $notBeforeCompletion
      *
      * @return self
      */
-    public function setNotBeforeCompletion(?\Laminas\XmlRpc\Value\DateTime $notBeforeCompletion): self
+    public function setNotBeforeCompletion(?DateTimeInterface $notBeforeCompletion): self
     {
         $this->notBeforeCompletion = $notBeforeCompletion;
 
@@ -249,19 +249,19 @@ class TransactionFilter
     }
 
     /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
+     * @return DateTimeInterface|null
      */
-    public function getNotBeforeCompletion(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotBeforeCompletion(): ?DateTimeInterface
     {
         return $this->notBeforeCompletion;
     }
 
     /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notAfterCompletion
+     * @param DateTimeInterface|null $notAfterCompletion
      *
      * @return self
      */
-    public function setNotAfterCompletion(?\Laminas\XmlRpc\Value\DateTime $notAfterCompletion): self
+    public function setNotAfterCompletion(?DateTimeInterface $notAfterCompletion): self
     {
         $this->notAfterCompletion = $notAfterCompletion;
 
@@ -269,9 +269,9 @@ class TransactionFilter
     }
 
     /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
+     * @return DateTimeInterface|null
      */
-    public function getNotAfterCompletion(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotAfterCompletion(): ?DateTimeInterface
     {
         return $this->notAfterCompletion;
     }

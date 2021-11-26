@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Mpp\UniversignBundle\Utils\StringUtils;
 use PhpXmlRpc\Value;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -51,7 +52,11 @@ class Document
                     return new Value(base64_encode(file_get_contents($value)), 'base64');
                 }
 
-                return new Value(base64_encode($value), 'base64');
+                if (!StringUtils::isBase64($value)) {
+                    $value = base64_encode($value);
+                }
+
+                return new Value($value, 'base64');
             })
             ->setDefault('url', null)->setAllowedTypes('url', ['null', 'string'])
             ->setDefault('fileName', null)->setAllowedTypes('fileName', ['null', 'string'])

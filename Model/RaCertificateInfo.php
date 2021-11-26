@@ -2,7 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Laminas\XmlRpc\Value\Base64;
+use Mpp\UniversignBundle\Utils\StringUtils;
 use PhpXmlRpc\Value;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -39,7 +39,10 @@ class RaCertificateInfo
 
                 $result = [];
                 foreach ($value as $item) {
-                    $result[] = new Value(base64_encode($item), 'base64');
+                    if (!StringUtils::isBase64($item)) {
+                        $item = base64_encode($item);
+                    }
+                    $result[] = new Value($item, 'base64');
                 }
 
                 return $result;

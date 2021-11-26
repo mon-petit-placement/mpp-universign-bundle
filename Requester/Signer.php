@@ -10,6 +10,7 @@ use Mpp\UniversignBundle\Model\SignOptions;
 use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
+use Mpp\UniversignBundle\Utils\StringUtils;
 use PhpXmlRpc\Value;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -268,6 +269,9 @@ class Signer extends XmlRpcRequester implements SignerInterface
     public function sign(string $document): ?string
     {
         $response = null;
+        if (!StringUtils::isBase64($document)) {
+            $document = base64_encode($document);
+        }
         $data = [
             'document' => new Value($document, 'base64'),
         ];
@@ -288,6 +292,9 @@ class Signer extends XmlRpcRequester implements SignerInterface
     public function signWithOptions(string $document, SignOptions $options): ?string
     {
         $response = null;
+        if (!StringUtils::isBase64($document)) {
+            $document = base64_encode($document);
+        }
         $data = [
             'document' => new Value($document, 'base64'),
             'options' => $options,
