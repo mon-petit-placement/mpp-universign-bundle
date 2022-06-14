@@ -55,6 +55,11 @@ class MatchingResult
      */
     protected $certificateInfo;
 
+    /**
+     * @var \DateTime|null
+     */
+    protected $expirationDate;
+
     public static function configureData(OptionsResolver $resolver)
     {
         $resolver
@@ -64,6 +69,13 @@ class MatchingResult
             ->setDefault('email', null)->setAllowedTypes('email', ['string', 'null'])
             ->setDefault('certificateLevel', null)->setAllowedTypes('certificateLevel', ['string', 'null'])
             ->setDefault('certificateStatus', null)->setAllowedTypes('certificateStatus', ['string', 'null'])
+            ->setDefault('expirationDate', null)->setAllowedTypes('expirationDate', ['string', 'null', \DateTime::class])->setNormalizer('expirationDate', function(Options $options, $value) {
+                if (!is_string($value)) {
+                    return $value;
+                }
+
+                return \DateTime::createFromFormat('Ymd\TH:i:s', $value, new \DateTimeZone('UTC'));
+            })
             ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['array', 'null', RaCertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
                 if (null === $value || $value instanceof RaCertificateInfo) {
                     return $value;
@@ -100,6 +112,7 @@ class MatchingResult
             ->setCertificateLevel($resolvedOptions['certificateLevel'])
             ->setCertificateStatus($resolvedOptions['certificateStatus'])
             ->setCertificateInfo($resolvedOptions['certificateInfo'])
+            ->setExpirationDate($resolvedOptions['expirationDate'])
         ;
     }
 
@@ -239,6 +252,26 @@ class MatchingResult
     public function setCertificateInfo(?RaCertificateInfo $certificateInfo): self
     {
         $this->certificateInfo = $certificateInfo;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getExpirationDate(): ?\DateTime
+    {
+        return $this->expirationDate;
+    }
+
+    /**
+     * @param \DateTime|null $expirationDate
+     *
+     * @return MatchingResult
+     */
+    public function setExpirationDate(?\DateTime $expirationDate): self
+    {
+        $this->expirationDate = $expirationDate;
 
         return $this;
     }
