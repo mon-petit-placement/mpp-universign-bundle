@@ -4,7 +4,7 @@ namespace Mpp\UniversignBundle\Model;
 
 class CertificateType
 {
-    const SIMPLE = 'simple';
-    const CERTIFIED = 'certified';
-    const ADVANCED = 'advanced';
+    public const SIMPLE = 'simple';
+    public const CERTIFIED = 'certified';
+    public const ADVANCED = 'advanced';
 }

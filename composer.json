@@ -17,13 +17,13 @@
       }
     ],
     "require": {
-      "php": ">=7.3",
-      "laminas/laminas-xmlrpc": "^2.10.1",
+      "php": ">=7.4",
       "symfony/dependency-injection": "^4.0 | ^5.0 | ^6.0",
       "symfony/event-dispatcher": "*",
       "symfony/framework-bundle": "^4.0 | ^5.0 | ^6.0",
       "symfony/monolog-bundle": "*",
-      "ext-json": "*"
+      "ext-json": "*",
+      "phpxmlrpc/phpxmlrpc": "^4.9"
     },
     "autoload":{
       "psr-4":{

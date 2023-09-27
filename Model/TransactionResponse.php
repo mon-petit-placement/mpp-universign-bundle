@@ -4,8 +4,8 @@ namespace Mpp\UniversignBundle\Model;
 
 class TransactionResponse
 {
-    const STATE_SUCCESS = 'SUCCESS';
-    const STATE_ERROR = 'ERROR';
+    public const STATE_SUCCESS = 'SUCCESS';
+    public const STATE_ERROR = 'ERROR';
 
     /**
      * @var string

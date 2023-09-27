@@ -2,12 +2,12 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Value\Base64;
 use Mpp\UniversignBundle\Model\Document;
 use Mpp\UniversignBundle\Model\SignOptions;
 use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
+use Mpp\UniversignBundle\Model\XmlRpc\Base64;
 
 interface SignerInterface
 {

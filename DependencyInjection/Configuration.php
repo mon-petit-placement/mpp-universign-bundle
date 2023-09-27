@@ -9,7 +9,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    const CONFIGURATION_ROOT = 'mpp_universign';
+    public const CONFIGURATION_ROOT = 'mpp_universign';
 
     public function getConfigTreeBuilder()
     {

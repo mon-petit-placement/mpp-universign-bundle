@@ -2,11 +2,12 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Client\Exception\FaultException;
 use Mpp\UniversignBundle\Model\MatchingFilter;
 use Mpp\UniversignBundle\Model\MatchingResult;
 use Mpp\UniversignBundle\Model\ValidationRequest;
 use Mpp\UniversignBundle\Model\ValidatorResult;
+use PhpXmlRpc\Encoder;
+use PhpXmlRpc\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -28,12 +29,17 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
      */
     protected $router;
 
-    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $clientOptions)
-    {
+    public function __construct(
+        Encoder $encoder,
+        LoggerInterface $logger,
+        Router $router,
+        array $entrypoint,
+        array $clientOptions
+    ) {
         $this->logger = $logger;
         $this->router = $router;
         $this->entrypoint = $entrypoint;
-        parent::__construct($clientOptions);
+        parent::__construct($encoder, $clientOptions);
     }
 
     /**
@@ -49,10 +55,15 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         $response = null;
 
         try {
-            $response = $this->xmlRpcClient->call($method, self::flatten($args));
+            $response = $this->send($method, $args);
             $this->logger->info(sprintf('[Universign - %s] SUCCESS', $method));
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - %s] ERROR (%s): %s', $method, $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(sprintf(
+                '[Universign - %s] ERROR (%s): %s',
+                $method,
+                $e->getCode(),
+                $e->getMessage()
+            ));
         }
 
         return $response;
@@ -103,7 +114,10 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
                 )
             );
 
-            $this->logger->info(sprintf('[Universign - validate] define default callback URL : "%s"', $validationRequest->getCallbackURL()));
+            $this->logger->info(sprintf(
+                '[Universign - validate] define default callback URL : "%s"',
+                $validationRequest->getCallbackURL()
+            ));
         }
 
         $result = $this->call('validator.validate', [$validationRequest]);

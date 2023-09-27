@@ -2,31 +2,22 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Mpp\UniversignBundle\Model\XmlRpc\Base64;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DocSignatureField extends SignatureField
 {
-    /**
-     * @var string
-     */
-    protected $patternName;
+    protected string $patternName;
 
-    /**
-     * @var string
-     */
-    protected $label;
+    protected string $label;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\Base64
-     */
-    protected $image;
+    protected Base64 $image;
 
     /**
      * @param OptionsResolver $resolver
@@ -38,7 +29,7 @@ class DocSignatureField extends SignatureField
         $resolver
             ->setDefault('patternName', null)->setAllowedTypes('patternName', ['string', 'null'])
             ->setDefault('label', null)->setAllowedTypes('label', ['string', 'null'])
-            ->setDefault('image', null)->setAllowedTypes('image', ['string', 'null'])
+            ->setDefault('image', null)->setAllowedTypes('image', [Base64::class, 'null'])
         ;
     }
 
@@ -61,22 +52,17 @@ class DocSignatureField extends SignatureField
         $resolvedOptions = $resolver->resolve($options);
 
         return (new self())
+            ->setPatternName($resolvedOptions['patternName'])
+            ->setLabel($resolvedOptions['label'])
+            ->setImage($resolvedOptions['image'])
             ->setName($resolvedOptions['name'])
             ->setPage($resolvedOptions['page'])
             ->setX($resolvedOptions['x'])
             ->setY($resolvedOptions['y'])
             ->setSignerIndex($resolvedOptions['signerIndex'])
-            ->setPatternName($resolvedOptions['patternName'])
-            ->setLabel($resolvedOptions['label'])
-            ->setImage($resolvedOptions['image'])
         ;
     }
 
-    /**
-     * @param string $patternName
-     *
-     * @return self
-     */
     public function setPatternName(?string $patternName): self
     {
         $this->patternName = $patternName;
@@ -84,19 +70,11 @@ class DocSignatureField extends SignatureField
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPatternName(): string
     {
         return $this->patternName;
     }
 
-    /**
-     * @param string $label
-     *
-     * @return self
-     */
     public function setLabel(?string $label): self
     {
         $this->label = $label;
@@ -104,30 +82,19 @@ class DocSignatureField extends SignatureField
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->label;
     }
 
-    /**
-     * @param array $image
-     *
-     * @return self
-     */
-    public function setImage(?array $image): self
+    public function setImage(?Base64 $image): self
     {
         $this->image = $image;
 
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\Base64
-     */
-    public function getImage(): \Laminas\XmlRpc\Value\Base64
+    public function getImage(): Base64
     {
         return $this->image;
     }

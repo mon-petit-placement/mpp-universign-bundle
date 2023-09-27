@@ -4,15 +4,15 @@ namespace Mpp\UniversignBundle\Event;
 
 class UniversignCallbackEvent
 {
-    const STATUS_READY = 0;
-    const STATUS_EXPIRED = 1;
-    const STATUS_COMPLETED = 2;
-    const STATUS_CANCELED = 3;
-    const STATUS_ERROR = 4;
+    public const STATUS_READY = 0;
+    public const STATUS_EXPIRED = 1;
+    public const STATUS_COMPLETED = 2;
+    public const STATUS_CANCELED = 3;
+    public const STATUS_ERROR = 4;
     /**
      * All signatories have signed BUT waiting for Universign registration authority validation.
      */
-    const STATUS_SIGNED = 5;
+    public const STATUS_SIGNED = 5;
 
     /**
      * @var string

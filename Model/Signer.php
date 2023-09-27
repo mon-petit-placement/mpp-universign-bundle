@@ -16,118 +16,47 @@ class Signer
     public const ROLE_SIGNER = 'signer';
     public const ROLE_OBSERVER = 'observer';
 
-    /**
-     * @var string
-     */
-    protected $firstname;
+    protected ?string $firstname;
 
-    /**
-     * @var string
-     */
-    protected $lastname;
+    protected ?string $lastname;
 
-    /**
-     * @var string
-     */
-    protected $organization;
+    protected ?string $organization;
 
-    /**
-     * @var string
-     */
-    protected $profile;
+    protected ?string $profile;
 
-    /**
-     * @var string
-     */
-    protected $emailAddress;
+    protected ?string $emailAddress;
 
-    /**
-     * @var string
-     */
-    protected $phoneNum;
+    protected ?string $phoneNum;
 
-    /**
-     * @var string
-     */
-    protected $language;
+    protected string $language;
 
-    /**
-     * @var string
-     */
-    protected $role;
+    protected string $role;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $birthDate;
+    protected ?\DateTimeInterface $birthDate;
 
-    /**
-     * @var string
-     */
-    protected $universignId;
+    protected ?string $universignId;
 
-    /**
-     * @var array
-     */
-    protected $successRedirection;
+    protected array $successRedirection;
 
-    /**
-     * @var array
-     */
-    protected $cancelRedirection;
+    protected array $cancelRedirection;
 
-    /**
-     * @var array
-     */
-    protected $failRedirection;
+    protected array $failRedirection;
 
-    /**
-     * @var string
-     */
-    protected $certificateType;
+    protected ?string $certificateType;
 
-    /**
-     * @var RegistrationRequest
-     */
-    protected $idDocuments;
+    protected ?RegistrationRequest $idDocuments;
 
-    /**
-     * @var string
-     */
-    protected $validationSessionId;
+    protected ?string $validationSessionId;
 
-    /**
-     * @var string
-     */
-    protected $redirectPolicy;
+    protected ?string $redirectPolicy;
 
-    /**
-     * @var int
-     */
-    protected $redirectWait;
+    protected int $redirectWait;
 
-    /**
-     * @var bool
-     */
-    protected $autoSendAgreements;
+    protected ?bool $autoSendAgreements;
 
-    /**
-     * @var string
-     */
-    protected $invitationMessage;
+    protected ?string $invitationMessage;
 
-    public function __construct()
-    {
-        $this->successRedirection = [];
-        $this->cancelRedirection = [];
-        $this->failRedirection = [];
-        $this->idDocuments = [];
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('firstname', null)->setAllowedTypes('firstname', ['null', 'string'])
@@ -138,17 +67,11 @@ class Signer
             ->setDefault('profile', null)->setAllowedTypes('profile', ['null', 'string'])
             ->setDefault('language', 'en')->setAllowedValues('language', [Language::BULGARIAN, Language::CATALAN, Language::GERMAN, Language::ENGLISH, Language::SPANISH, Language::FRENCH, Language::ITALIAN, Language::DUTCH, Language::POLISH, Language::PORTUGUESE, Language::ROMANIAN])
             ->setDefault('role', self::ROLE_SIGNER)->setAllowedValues('role', [self::ROLE_SIGNER, self::ROLE_OBSERVER])
-            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', ['DateTime', 'null'])->setNormalizer('birthDate', function (Options $options, $value): ?\Laminas\XmlRpc\Value\DateTime {
-                if (null === $value) {
-                    return null;
-                }
-
-                return new \Laminas\XmlRpc\Value\DateTime($value);
-            })
+            ->setDefault('birthDate', null)->setAllowedTypes('birthDate', [\DateTimeInterface::class, 'null'])
             ->setDefault('universignId', null)->setAllowedTypes('universignId', ['null', 'string'])
-            ->setDefault('successRedirection', null)->setAllowedTypes('successRedirection', ['array', 'null'])
-            ->setDefault('cancelRedirection', null)->setAllowedTypes('cancelRedirection', ['array', 'null'])
-            ->setDefault('failRedirection', null)->setAllowedTypes('failRedirection', ['array', 'null'])
+            ->setDefault('successRedirection', [])->setAllowedTypes('successRedirection', ['array'])
+            ->setDefault('cancelRedirection', [])->setAllowedTypes('cancelRedirection', ['array'])
+            ->setDefault('failRedirection', [])->setAllowedTypes('failRedirection', ['array'])
             ->setDefault('certificateType', null)->setAllowedValues('certificateType', [null, CertificateType::SIMPLE, CertificateType::CERTIFIED, CertificateType::ADVANCED])
             ->setDefault('idDocuments', null)->setAllowedTypes('idDocuments', ['array', RegistrationRequest::class, 'null'])->setNormalizer('idDocuments', function (Options $options, $value) {
                 if ($value instanceof RegistrationRequest || null === $value) {
@@ -158,7 +81,7 @@ class Signer
                 return RegistrationRequest::createFromArray($value);
             })
             ->setDefault('validationSessionId', null)->setAllowedTypes('validationSessionId', ['null', 'string'])
-            ->setDefault('redirectPolicy', null)->setAllowedValues('redirectPolicy', [null, 'dashboard', 'quick'])
+            ->setDefault('redirectPolicy', null)->setAllowedValues('redirectPolicy', ['null', 'dashboard', 'quick'])
             ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])->setNormalizer('redirectWait', function (Options $options, $value) {
                 if ('quick' === $options['redirectPolicy']) {
                     return null;
@@ -213,11 +136,6 @@ class Signer
         ;
     }
 
-    /**
-     * @param string|null $firstname
-     *
-     * @return self
-     */
     public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
@@ -225,19 +143,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFirstname(): ?string
     {
         return $this->firstname;
     }
 
-    /**
-     * @param string|null $lastname
-     *
-     * @return self
-     */
     public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
@@ -245,19 +155,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastname(): ?string
     {
         return $this->lastname;
     }
 
-    /**
-     * @param string|null $organization
-     *
-     * @return self
-     */
     public function setOrganization(?string $organization): self
     {
         $this->organization = $organization;
@@ -265,19 +167,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getOrganization(): ?string
     {
         return $this->organization;
     }
 
-    /**
-     * @param string|null $profile
-     *
-     * @return self
-     */
     public function setProfile(?string $profile): self
     {
         $this->profile = $profile;
@@ -285,19 +179,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getProfile(): ?string
     {
         return $this->profile;
     }
 
-    /**
-     * @param string|null $emailAddress
-     *
-     * @return self
-     */
     public function setEmailAddress(?string $emailAddress): self
     {
         $this->emailAddress = $emailAddress;
@@ -305,19 +191,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmailAddress(): ?string
     {
         return $this->emailAddress;
     }
 
-    /**
-     * @param string|null $phoneNum
-     *
-     * @return self
-     */
     public function setPhoneNum(?string $phoneNum): self
     {
         $this->phoneNum = $phoneNum;
@@ -325,79 +203,47 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPhoneNum(): ?string
     {
         return $this->phoneNum;
     }
 
-    /**
-     * @param string|null $language
-     *
-     * @return self
-     */
-    public function setLanguage(?string $language): self
+    public function setLanguage(string $language): self
     {
         $this->language = $language;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getLanguage(): ?string
+    public function getLanguage(): string
     {
         return $this->language;
     }
 
-    /**
-     * @param string|null $role
-     *
-     * @return self
-     */
-    public function setRole(?string $role): self
+    public function setRole(string $role): self
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRole(): ?string
+    public function getRole(): string
     {
         return $this->role;
     }
 
-    /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $birthDate
-     *
-     * @return self
-     */
-    public function setBirthDate(?\Laminas\XmlRpc\Value\DateTime $birthDate): self
+    public function setBirthDate(?\DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
 
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
-     */
-    public function getBirthDate(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getBirthDate(): ?\DateTimeInterface
     {
         return $this->birthDate;
     }
 
-    /**
-     * @param string|null $universignId
-     *
-     * @return self
-     */
     public function setUniversignId(?string $universignId): self
     {
         $this->universignId = $universignId;
@@ -405,79 +251,47 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUniversignId(): ?string
     {
         return $this->universignId;
     }
 
-    /**
-     * @param array|null $successRedirection
-     *
-     * @return self
-     */
-    public function setSuccessRedirection(?array $successRedirection): self
+    public function setSuccessRedirection(array $successRedirection): self
     {
         $this->successRedirection = $successRedirection;
 
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
-    public function getSuccessRedirection(): ?array
+    public function getSuccessRedirection(): array
     {
         return $this->successRedirection;
     }
 
-    /**
-     * @param array|null $failRedirection
-     *
-     * @return self
-     */
-    public function setFailRedirection(?array $failRedirection): self
+    public function setFailRedirection(array $failRedirection): self
     {
         $this->failRedirection = $failRedirection;
 
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
-    public function getFailRedirection(): ?array
+    public function getFailRedirection(): array
     {
         return $this->failRedirection;
     }
 
-    /**
-     * @param array|null $cancelRedirection
-     *
-     * @return self
-     */
-    public function setCancelRedirection(?array $cancelRedirection): self
+    public function setCancelRedirection(array $cancelRedirection): self
     {
         $this->cancelRedirection = $cancelRedirection;
 
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
-    public function getCancelRedirection(): ?array
+    public function getCancelRedirection(): array
     {
         return $this->cancelRedirection;
     }
 
-    /**
-     * @param string|null $certificateType
-     *
-     * @return self
-     */
     public function setCertificateType(?string $certificateType): self
     {
         $this->certificateType = $certificateType;
@@ -485,19 +299,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCertificateType(): ?string
     {
         return $this->certificateType;
     }
 
-    /**
-     * @param array|null $idDocument
-     *
-     * @return self
-     */
     public function setIdDocuments(?RegistrationRequest $idDocuments): self
     {
         $this->idDocuments = $idDocuments;
@@ -505,19 +311,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getIdDocuments(): ?RegistrationRequest
     {
         return $this->idDocuments;
     }
 
-    /**
-     * @param string|null $validationSessionId
-     *
-     * @return self
-     */
     public function setValidationSessionId(?string $validationSessionId): self
     {
         $this->validationSessionId = $validationSessionId;
@@ -525,19 +323,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getValidationSessionId(): ?string
     {
         return $this->validationSessionId;
     }
 
-    /**
-     * @param string|null $redirectPolicy
-     *
-     * @return self
-     */
     public function setRedirectPolicy(?string $redirectPolicy): self
     {
         $this->redirectPolicy = $redirectPolicy;
@@ -545,39 +335,23 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRedirectPolicy(): ?string
     {
         return $this->redirectPolicy;
     }
 
-    /**
-     * @param int|null $redirectWait
-     *
-     * @return self
-     */
-    public function setRedirectWait(?int $redirectWait): self
+    public function setRedirectWait(int $redirectWait): self
     {
         $this->redirectWait = $redirectWait;
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getRedirectWait(): ?int
+    public function getRedirectWait(): int
     {
         return $this->redirectWait;
     }
 
-    /**
-     * @param bool|null $autoSendAgreements
-     *
-     * @return self
-     */
     public function setAutoSendAgreements(?bool $autoSendAgreements): self
     {
         $this->autoSendAgreements = $autoSendAgreements;
@@ -585,19 +359,11 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getAutoSendAgreements(): ?bool
     {
         return $this->autoSendAgreements;
     }
 
-    /**
-     * @param string|null $invitationMessage
-     *
-     * @return self
-     */
     public function setInvitationMessage(?string $invitationMessage): self
     {
         $this->invitationMessage = $invitationMessage;
@@ -605,9 +371,6 @@ class Signer
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getInvitationMessage(): ?string
     {
         return $this->invitationMessage;

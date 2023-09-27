@@ -9,10 +9,10 @@ use Mpp\UniversignBundle\Model\ValidatorResult;
 
 interface RegistrationAuthorityInterface
 {
-    const OPERATOR_STATUS_NOT_OPERATOR = 0;
-    const OPERATOR_STATUS_RA_OPERATOR = 1;
-    const OPERATOR_STATUS_INVITED_RA_OPERATOR = 2;
-    const OPERATOR_STATUS_NOT_EXISTENT = 5;
+    public const OPERATOR_STATUS_NOT_OPERATOR = 0;
+    public const OPERATOR_STATUS_RA_OPERATOR = 1;
+    public const OPERATOR_STATUS_INVITED_RA_OPERATOR = 2;
+    public const OPERATOR_STATUS_NOT_EXISTENT = 5;
 
     /**
      * @param string $email Email of User

@@ -13,9 +13,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SignOptions
 {
-    const SINGNATURE_FORMAT_PADES = 'PADES';
-    const SINGNATURE_FORMAT_PADES_COMP = 'PADES-COMP';
-    const SINGNATURE_FORMAT_ISO32000_1 = 'ISO-32000-1';
+    public const SINGNATURE_FORMAT_PADES = 'PADES';
+    public const SINGNATURE_FORMAT_PADES_COMP = 'PADES-COMP';
+    public const SINGNATURE_FORMAT_ISO32000_1 = 'ISO-32000-1';
 
     /**
      * @var string|null
@@ -59,7 +59,7 @@ class SignOptions
     {
         $resolver
             ->setDefault('profile', 'default')->setAllowedTypes('profile', ['string'])
-            ->setDefault('signatureField', null)->setAllowedTypes('signatureField', ['null', 'array', SignatureField::class])->setNormalizer('signatureField', function(Options $options, $value) {
+            ->setDefault('signatureField', null)->setAllowedTypes('signatureField', ['null', 'array', SignatureField::class])->setNormalizer('signatureField', function (Options $options, $value) {
                 if (null === $value || $value instanceof SignatureField) {
                     return $value;
                 }

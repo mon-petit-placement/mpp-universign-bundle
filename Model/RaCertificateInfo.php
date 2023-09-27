@@ -2,7 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Laminas\XmlRpc\Value\Base64;
+use Mpp\UniversignBundle\Model\XmlRpc\Base64;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -14,35 +14,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RaCertificateInfo
 {
-    /**
-     * @var string
-     */
-    protected $subjectDN;
+    protected string $subjectDN;
 
-    /**
-     * @var string
-     */
-    protected $serialNumber;
+    protected string $serialNumber;
 
     /**
      * @var Base64[]
      */
-    protected $chain;
+    protected array $chain;
 
     /**
-     * @param OptionsResolver $resolver
+     * @throws \UnexpectedValueException
      */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('subjectDN')->setAllowedTypes('subjectDN', ['string'])
             ->setRequired('serialNumber')->setAllowedTypes('serialNumber', ['string'])
-            ->setRequired('chain')->setAllowedTypes('chain', ['array', Base64::class])->setNormalizer('chain', function (Options $options, $value): array {
-                if (null === $value) {
-                    return $value;
-                }
+            ->setRequired('chain')->setAllowedTypes('chain', ['array'])->setNormalizer('chain', function (Options $options, $value): array {
                 $result = [];
                 foreach ($value as $item) {
+                    if (!is_string($item)) {
+                        throw new \UnexpectedValueException(
+                            'Type ' . gettype($item) . ' is not allowed in chain array'
+                        );
+                    }
                     $result[] = new Base64($item);
                 }
 
@@ -52,10 +48,6 @@ class RaCertificateInfo
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -77,19 +69,11 @@ class RaCertificateInfo
         ;
     }
 
-    /**
-     * @return string
-     */
     public function getSubjectDN(): string
     {
         return $this->subjectDN;
     }
 
-    /**
-     * @param string $subjectDN
-     *
-     * @return self
-     */
     public function setSubjectDN(string $subjectDN): self
     {
         $this->subjectDN = $subjectDN;
@@ -97,19 +81,11 @@ class RaCertificateInfo
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSerialNumber(): string
     {
         return $this->serialNumber;
     }
 
-    /**
-     * @param string $serialNumber
-     *
-     * @return self
-     */
     public function setSerialNumber(string $serialNumber): self
     {
         $this->serialNumber = $serialNumber;
@@ -127,8 +103,6 @@ class RaCertificateInfo
 
     /**
      * @param Base64[] $chain
-     *
-     * @return self
      */
     public function setChain(array $chain): self
     {

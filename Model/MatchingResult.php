@@ -13,13 +13,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MatchingResult
 {
-    const CERTIFICATE_LEVEL_NONE = 'none';
-    const CERTIFICATE_LEVEL_ADVANCED = 'advanced';
-    const CERTIFICATE_LEVEL_CERTIFIED = 'certified';
+    public const CERTIFICATE_LEVEL_NONE = 'none';
+    public const CERTIFICATE_LEVEL_ADVANCED = 'advanced';
+    public const CERTIFICATE_LEVEL_CERTIFIED = 'certified';
 
-    const CERTIFICATE_STATUS_VALID = 'valid';
-    const CERTIFICATE_STATUS_REVOKED = 'revoked';
-    const CERTIFICATE_STATUS_AWAITING_VALIDATION = 'awaiting-validation';
+    public const CERTIFICATE_STATUS_VALID = 'valid';
+    public const CERTIFICATE_STATUS_REVOKED = 'revoked';
+    public const CERTIFICATE_STATUS_AWAITING_VALIDATION = 'awaiting-validation';
     /**
      * @var string|null
      */
@@ -69,14 +69,14 @@ class MatchingResult
             ->setDefault('email', null)->setAllowedTypes('email', ['string', 'null'])
             ->setDefault('certificateLevel', null)->setAllowedTypes('certificateLevel', ['string', 'null'])
             ->setDefault('certificateStatus', null)->setAllowedTypes('certificateStatus', ['string', 'null'])
-            ->setDefault('expirationDate', null)->setAllowedTypes('expirationDate', ['string', 'null', \DateTime::class])->setNormalizer('expirationDate', function(Options $options, $value) {
+            ->setDefault('expirationDate', null)->setAllowedTypes('expirationDate', ['string', 'null', \DateTime::class])->setNormalizer('expirationDate', function (Options $options, $value) {
                 if (!is_string($value)) {
                     return $value;
                 }
 
                 return \DateTime::createFromFormat('Ymd\TH:i:s', $value, new \DateTimeZone('UTC'));
             })
-            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['array', 'null', RaCertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
+            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['array', 'null', RaCertificateInfo::class])->setNormalizer('certificateInfo', function (Options $options, $value) {
                 if (null === $value || $value instanceof RaCertificateInfo) {
                     return $value;
                 }

@@ -718,7 +718,7 @@ class TransactionRequest
     /**
      * @return RedirectionConfig|null
      */
-    public function getCancelRedirection(): ? RedirectionConfig
+    public function getCancelRedirection(): ?RedirectionConfig
     {
         return $this->cancelRedirection;
     }

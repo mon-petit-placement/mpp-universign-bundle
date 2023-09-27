@@ -13,9 +13,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ValidatorResult
 {
-    const STATUS_PENDING = 0;
-    const STATUS_VALID = 1;
-    const STATUS_INVALID = 2;
+    public const STATUS_PENDING = 0;
+    public const STATUS_VALID = 1;
+    public const STATUS_INVALID = 2;
 
     /**
      * @var string
