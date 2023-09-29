@@ -12,35 +12,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SignatureField
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected ?string $name;
 
-    /**
-     * @var int
-     */
-    protected $page;
+    protected ?int $page;
 
-    /**
-     * @var int
-     */
-    protected $x;
+    protected ?int $x;
 
-    /**
-     * @var int
-     */
-    protected $y;
+    protected ?int $y;
 
-    /**
-     * @var int
-     */
-    protected $signerIndex;
+    protected int $signerIndex;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('name', null)->setAllowedTypes('name', ['null', 'string'])
@@ -52,10 +34,6 @@ class SignatureField
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -78,11 +56,6 @@ class SignatureField
         ;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return self
-     */
     public function setName(?string $name): self
     {
         $this->name = $name;
@@ -90,19 +63,11 @@ class SignatureField
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param int $page
-     *
-     * @return self
-     */
     public function setPage(?int $page): self
     {
         $this->page = $page;
@@ -110,19 +75,11 @@ class SignatureField
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getPage(): int
+    public function getPage(): ?int
     {
         return $this->page;
     }
 
-    /**
-     * @param int $x;
-     *
-     * @return self
-     */
     public function setX(?int $x): self
     {
         $this->x = $x;
@@ -130,19 +87,11 @@ class SignatureField
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getX(): int
+    public function getX(): ?int
     {
         return $this->x;
     }
 
-    /**
-     * @param int $y;
-     *
-     * @return self
-     */
     public function setY(?int $y): self
     {
         $this->y = $y;
@@ -150,29 +99,18 @@ class SignatureField
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getY(): int
+    public function getY(): ?int
     {
         return $this->y;
     }
 
-    /**
-     * @param int $signerIndex
-     *
-     * @return self
-     */
-    public function setSignerIndex(?int $signerIndex): self
+    public function setSignerIndex(int $signerIndex): self
     {
         $this->signerIndex = $signerIndex;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getSignerIndex(): int
     {
         return $this->signerIndex;

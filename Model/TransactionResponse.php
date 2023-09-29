@@ -7,30 +7,15 @@ class TransactionResponse
     public const STATE_SUCCESS = 'SUCCESS';
     public const STATE_ERROR = 'ERROR';
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected ?string $id;
 
-    /**
-     * @var string
-     */
-    protected $url;
+    protected ?string $url;
 
-    /**
-     * @var string
-     */
-    protected $state;
+    protected ?string $state;
 
-    /**
-     * @var string
-     */
-    protected $errorCode;
+    protected ?string $errorCode;
 
-    /**
-     * @var string
-     */
-    protected $errorMessage;
+    protected ?string $errorMessage;
 
     public function __construct()
     {
@@ -41,11 +26,6 @@ class TransactionResponse
         $this->errorMessage = null;
     }
 
-    /**
-     * @param string|null $id
-     *
-     * @return self
-     */
     public function setId(?string $id): self
     {
         $this->id = $id;
@@ -53,19 +33,11 @@ class TransactionResponse
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @param string|null $url
-     *
-     * @return self
-     */
     public function setUrl(?string $url): self
     {
         $this->url = $url;
@@ -73,19 +45,11 @@ class TransactionResponse
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string|null
-     *
-     * @return self
-     */
     public function setState(?string $state): self
     {
         $this->state = $state;
@@ -93,19 +57,11 @@ class TransactionResponse
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getState(): ?string
     {
         return $this->state;
     }
 
-    /**
-     * @param string|null
-     *
-     * @return self
-     */
     public function setErrorCode(?string $errorCode): self
     {
         $this->errorCode = $errorCode;
@@ -113,19 +69,11 @@ class TransactionResponse
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getErrorCode(): ?string
     {
         return $this->errorCode;
     }
 
-    /**
-     * @param string|null
-     *
-     * @return self
-     */
     public function setErrorMessage(?string $errorMessage): self
     {
         $this->errorMessage = $errorMessage;
@@ -133,9 +81,6 @@ class TransactionResponse
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getErrorMessage(): ?string
     {
         return $this->errorMessage;

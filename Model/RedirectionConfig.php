@@ -8,25 +8,18 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RedirectionConfig
 {
-    /**
-     * @var string
-     */
-    protected $URL;
+    protected ?string $URL;
 
-    /**
-     * @var string
-     */
-    protected $displayName;
+    protected ?string $displayName;
 
     /**
      * @param OptionsResolver
      */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('URL', null)->setAllowedTypes('URL', ['string', 'null'])
@@ -35,10 +28,6 @@ class RedirectionConfig
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -58,11 +47,6 @@ class RedirectionConfig
         ;
     }
 
-    /**
-     * @param string|null $url
-     *
-     * @return self
-     */
     public function setUrl(?string $url): self
     {
         $this->URL = $url;
@@ -70,19 +54,11 @@ class RedirectionConfig
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUrl(): ?string
     {
         return $this->URL;
     }
 
-    /**
-     * @param string|null $displayName
-     *
-     * @return self
-     */
     public function setDisplayName(?string $displayName): self
     {
         $this->displayName = $displayName;
@@ -90,9 +66,6 @@ class RedirectionConfig
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDisplayName(): ?string
     {
         return $this->displayName;

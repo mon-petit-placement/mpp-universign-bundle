@@ -18,25 +18,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Signer extends XmlRpcRequester implements SignerInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var Router
-     */
-    protected $router;
+    protected Router $router;
 
-    /**
-     * @var array
-     */
-    protected $entrypoint;
+    protected array $entrypoint;
 
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
     public function __construct(
         Encoder $encoder,
@@ -54,17 +42,11 @@ class Signer extends XmlRpcRequester implements SignerInterface
         parent::__construct($encoder, $clientOptions);
     }
 
-    /**
-     * @return string;
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->entrypoint['sign'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function initiateTransactionRequest(array $options = []): TransactionRequest
     {
         $defaultOptions = [];
@@ -125,9 +107,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $transaction;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function requestTransaction(TransactionRequest $transactionRequest): TransactionResponse
     {
         $transactionResponse = new TransactionResponse();
@@ -158,9 +137,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $transactionResponse;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDocuments(string $documentId): array
     {
         $documents = [];
@@ -177,9 +153,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $documents;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDocumentsByCustomId(string $customId): array
     {
         $documents = [];
@@ -198,9 +171,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $documents;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTransactionInfo(string $transactionId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
@@ -239,9 +209,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTransactionInfoByCustomId(string $customId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
@@ -279,9 +246,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function relaunchTransaction(string $transactionId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
@@ -307,9 +271,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function cancelTransaction(string $transactionId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
@@ -333,9 +294,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function sign(Base64 $document): ?string
     {
         $response = null;
@@ -355,9 +313,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $response;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function signWithOptions(Base64 $document, SignOptions $options): ?string
     {
         $response = null;

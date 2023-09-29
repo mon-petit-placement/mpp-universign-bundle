@@ -8,7 +8,6 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationRequest
@@ -17,37 +16,19 @@ class RegistrationRequest
     public const DOCTYPE_PASSPORT = 'passport_eu';
     public const DOCTYPE_TITLE_STAY = 'titre_sejour';
 
-    /**
-     * @var array
-     */
-    protected $documents;
+    protected array $documents;
 
-    /**
-     * @var string
-     */
-    protected $type;
+    protected ?string $type;
 
-    public function __construct()
-    {
-        $this->documents = [];
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
-            ->setDefined('documents', [])->setAllowedTypes('documents', ['array'])
-            ->setDefined('type', null)->setAllowedTypes('type', ['null', 'string'])
+            ->setDefault('documents', [])->setAllowedTypes('documents', ['array'])
+            ->setDefault('type', null)->setAllowedTypes('type', ['null', 'string'])
         ;
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -67,31 +48,18 @@ class RegistrationRequest
         ;
     }
 
-    /**
-     * @param array|null $documents
-     *
-     * @return self
-     */
-    public function setDocuments(?array $documents): self
+    public function setDocuments(array $documents): self
     {
         $this->documents = $documents;
 
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
-    public function getDocuments(): ?array
+    public function getDocuments(): array
     {
         return $this->documents;
     }
 
-    /**
-     * @param string|null $type
-     *
-     * @return self
-     */
     public function setType(?string $type): self
     {
         $this->type = $type;
@@ -99,9 +67,6 @@ class RegistrationRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getType(): ?string
     {
         return $this->type;

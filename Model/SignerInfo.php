@@ -23,90 +23,43 @@ class SignerInfo
     public const STATUS_CANCELED = 'canceled';
     public const STATUS_FAILED = 'failed';
 
-    /**
-     * @var string
-     */
-    protected $status;
+    protected ?string $status;
 
-    /**
-     * @var string
-     */
-    protected $error;
+    protected ?string $error;
 
-    /**
-     * @var CertificateInfo
-     */
-    protected $certificateInfo;
+    protected ?CertificateInfo $certificateInfo;
 
-    /**
-     * @var string
-     */
-    protected $url;
+    protected ?string $url;
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected ?string $id;
 
-    /**
-     * @var string
-     */
-    protected $email;
+    protected ?string $email;
 
-    /**
-     * @var string
-     */
-    protected $firstName;
+    protected ?string $firstName;
 
-    /**
-     * @var string
-     */
-    protected $lastName;
+    protected ?string $lastName;
 
-    /**
-     * @var \DateTime
-     */
-    protected $actionDate;
+    protected ?\DateTime $actionDate;
 
     /**
      * @var array<int>
      */
-    protected $refusedDocs;
+    protected array $refusedDocs;
 
-    /**
-     * @var string
-     */
-    protected $refusalComment;
+    protected ?string $refusalComment;
 
-    /**
-     * @var string
-     */
-    protected $redirectPolicy;
+    protected ?string $redirectPolicy;
 
-    /**
-     * @var int
-     */
-    protected $redirectWait;
+    protected ?int $redirectWait;
 
-    /**
-     * @var null|array
-     */
-    protected $idDocuments;
+    protected ?array $idDocuments;
 
-    public function __construct()
-    {
-        $this->refusedDocs = [];
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('status', null)->setAllowedTypes('status', ['null', 'string'])
             ->setDefault('error', null)->setAllowedTypes('error', ['null', 'string'])
-            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['null', 'array', CertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
+            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['null', 'array', CertificateInfo::class])->setNormalizer('certificateInfo', function (Options $options, $value) {
                 if (null === $value || $value instanceof CertificateInfo) {
                     return $value;
                 }
@@ -118,14 +71,14 @@ class SignerInfo
             ->setDefault('email', null)->setAllowedTypes('email', ['null', 'string'])
             ->setDefault('firstName', null)->setAllowedTypes('firstName', ['null', 'string'])
             ->setDefault('lastName', null)->setAllowedTypes('lastName', ['null', 'string'])
-            ->setDefault('actionDate', null)->setAllowedTypes('actionDate', ['null', 'string', \DateTime::class])->setNormalizer('actionDate', function(Options $options, $value) {
+            ->setDefault('actionDate', null)->setAllowedTypes('actionDate', ['null', 'string', \DateTime::class])->setNormalizer('actionDate', function (Options $options, $value) {
                 if (null === $value || $value instanceof \DateTime) {
                     return $value;
                 }
 
                 return \DateTime::createFromFormat("Ymd\TH:i:s", $value);
             })
-            ->setDefault('refusedDocs', null)->setAllowedTypes('refusedDocs', ['null', 'string'])
+            ->setDefault('refusedDocs', [])->setAllowedTypes('refusedDocs', ['null', 'array'])
             ->setDefault('refusalComment', null)->setAllowedTypes('refusalComment', ['null', 'string'])
             ->setDefault('redirectPolicy', null)->setAllowedTypes('redirectPolicy', ['null', 'string'])
             ->setDefault('redirectWait', null)->setAllowedTypes('redirectWait', ['null', 'int'])
@@ -134,10 +87,6 @@ class SignerInfo
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -169,24 +118,6 @@ class SignerInfo
         ;
     }
 
-    /**
-     * @param string|null $date
-     *
-     * @return \DateTime|null
-     */
-    private static function createDate(?string $date): ?\DateTime {
-        if (is_null($date)) {
-            return null;
-        }
-
-        return \DateTime::createFromFormat("Ymd\TH:i:s", $date);
-    }
-
-    /**
-     * @param string|null $status
-     *
-     * @return self
-     */
     public function setStatus(?string $status): self
     {
         $this->status = $status;
@@ -194,19 +125,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    /**
-     * @param string|null $error
-     *
-     * @return self
-     */
     public function setError(?string $error): self
     {
         $this->error = $error;
@@ -214,19 +137,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getError(): ?string
     {
         return $this->error;
     }
 
-    /**
-     * @param CertificateInfo|null $certificateInfo
-     *
-     * @return self
-     */
     public function setCertificateInfo(?CertificateInfo $certificateInfo): self
     {
         $this->certificateInfo = $certificateInfo;
@@ -234,19 +149,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return CertificateInfo|null
-     */
     public function getCertificateInfo(): ?CertificateInfo
     {
         return $this->certificateInfo;
     }
 
-    /**
-     * @param string|null $url
-     *
-     * @return self
-     */
     public function setUrl(?string $url): self
     {
         $this->url = $url;
@@ -254,19 +161,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string|null $id
-     *
-     * @return self
-     */
     public function setId(?string $id): self
     {
         $this->id = $id;
@@ -274,19 +173,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @param string|null $email
-     *
-     * @return self
-     */
     public function setEmail(?string $email): self
     {
         $this->email = $email;
@@ -294,19 +185,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string|null $firstName
-     *
-     * @return self
-     */
     public function setFirstName(?string $firstName): self
     {
         $this->firstName = $firstName;
@@ -314,19 +197,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param string|null $lastName
-     *
-     * @return self
-     */
     public function setLastName(?string $lastName): self
     {
         $this->lastName = $lastName;
@@ -334,19 +209,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    /**
-     * @param \DateTime|null $actionDate
-     *
-     * @return self
-     */
     public function setActionDate(?\DateTime $actionDate): self
     {
         $this->actionDate = $actionDate;
@@ -354,39 +221,23 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getActionDate(): ?\DateTime
     {
         return $this->actionDate;
     }
 
-    /**
-     * @param array|null $refusedDocs
-     *
-     * @return self
-     */
-    public function setRefusedDocs(?array $refusedDocs): self
+    public function setRefusedDocs(array $refusedDocs): self
     {
         $this->refusedDocs = $refusedDocs;
 
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
-    public function getRefusedDocs(): ?array
+    public function getRefusedDocs(): array
     {
         return $this->refusedDocs;
     }
 
-    /**
-     * @param string|null $refusalComment
-     *
-     * @return self
-     */
     public function setRefusalComment(?string $refusalComment): self
     {
         $this->refusalComment = $refusalComment;
@@ -394,19 +245,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRefusalComment(): ?string
     {
         return $this->refusalComment;
     }
 
-    /**
-     * @param string|null $redirectPolicy
-     *
-     * @return self
-     */
     public function setRediRectPolicy(?string $redirectPolicy): self
     {
         $this->redirectPolicy = $redirectPolicy;
@@ -414,19 +257,11 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRedirectPolicy(): ?string
     {
         return $this->redirectPolicy;
     }
 
-    /**
-     * @param int|null $redirectWait
-     *
-     * @return self
-     */
     public function setRedirectWait(?int $redirectWait): self
     {
         $this->redirectWait = $redirectWait;
@@ -434,27 +269,16 @@ class SignerInfo
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getRedirectWait(): ?int
     {
         return $this->redirectWait;
     }
 
-    /**
-     * @return array|null
-     */
     public function getIdDocuments(): ?array
     {
         return $this->idDocuments;
     }
 
-    /**
-     * @param array|null $idDocuments
-     *
-     * @return SignerInfo
-     */
     public function setIdDocuments(?array $idDocuments): SignerInfo
     {
         $this->idDocuments = $idDocuments;

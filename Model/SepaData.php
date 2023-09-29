@@ -13,40 +13,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SepaData
 {
-    /**
-     * @var string
-     */
-    protected $rum;
+    protected string $rum;
 
-    /**
-     * @var string
-     */
-    protected $ics;
+    protected string $ics;
 
-    /**
-     * @var string
-     */
-    protected $iban;
+    protected string $iban;
 
-    /**
-     * @var string
-     */
-    protected $bic;
+    protected string $bic;
 
-    /**
-     * @var bool
-     */
-    protected $recuring;
+    protected bool $recuring;
 
-    /**
-     * @var SepaThirdParty
-     */
-    protected $debtor;
+    protected SepaThirdParty $debtor;
 
-    /**
-     * @var SepaThirdParty
-     */
-    protected $creditor;
+    protected SepaThirdParty $creditor;
 
     public function __construct()
     {
@@ -54,10 +33,7 @@ class SepaData
         $this->creditor = [];
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('rum')->setAllowedTypes('rum', ['string'])
@@ -83,10 +59,6 @@ class SepaData
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -111,142 +83,86 @@ class SepaData
         ;
     }
 
-    /**
-     * @param string|null $rum
-     *
-     * @return self
-     */
-    public function setRum(?string $rum): self
+    public function setRum(string $rum): self
     {
         $this->rum = $rum;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRum(): ?string
+    public function getRum(): string
     {
         return $this->rum;
     }
 
-    /**
-     * @param string|null $ics
-     *
-     * @return self
-     */
-    public function setIcs(?string $ics): self
+    public function setIcs(string $ics): self
     {
         $this->ics = $ics;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getIcs(): ?string
+    public function getIcs(): string
     {
         return $this->ics;
     }
 
-    /**
-     * @param string|null $iban
-     *
-     * @return self
-     */
-    public function setIban(?string $iban): self
+    public function setIban(string $iban): self
     {
         $this->iban = $iban;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getIban(): ?string
+    public function getIban(): string
     {
         return $this->iban;
     }
 
-    /**
-     * @param string|null $bic
-     *
-     * @return self
-     */
-    public function setBic(?string $bic): self
+    public function setBic(string $bic): self
     {
         $this->bic = $bic;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getBic(): ?string
+    public function getBic(): string
     {
         return $this->bic;
     }
 
-    /**
-     * @param bool|null $recuring
-     *
-     * @return self
-     */
-    public function setRecuring(?bool $recuring): self
+    public function setRecuring(bool $recuring): self
     {
         $this->recuring = $recuring;
 
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getRecuring(): ?bool
+    public function getRecuring(): bool
     {
         return $this->recuring;
     }
 
-    /**
-     * @param SepaThirdParty|null $debtor
-     *
-     * @return self
-     */
-    public function setDebtor(?SepaThirdParty $debtor): self
+    public function setDebtor(SepaThirdParty $debtor): self
     {
         $this->debtor = $debtor;
 
         return $this;
     }
 
-    /**
-     * @return SepaThirdParty|null
-     */
-    public function getDebtor(): ?SepaThirdParty
+    public function getDebtor(): SepaThirdParty
     {
         return $this->debtor;
     }
 
-    /**
-     * @param SepaThirdParty|null $creditor
-     *
-     * @return self
-     */
-    public function setCreditor(?SepaThirdParty $creditor): self
+    public function setCreditor(SepaThirdParty $creditor): self
     {
         $this->creditor = $creditor;
 
         return $this;
     }
 
-    /**
-     * @return SepaThirdParty|null
-     */
-    public function getCreditor(): ?SepaThirdParty
+    public function getCreditor(): SepaThirdParty
     {
         return $this->creditor;
     }

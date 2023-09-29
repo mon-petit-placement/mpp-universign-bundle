@@ -13,36 +13,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ValidationRequest
 {
-    /**
-     * @var IdDocument
-     */
-    protected $idDocument;
+    protected IdDocument $idDocument;
 
-    /**
-     * @var PersonalInfo
-     */
-    protected $personalInfo;
+    protected PersonalInfo $personalInfo;
 
-    /**
-     * @var bool
-     */
-    protected $allowManual;
+    protected bool $allowManual;
 
-    /**
-     * @var null|string
-     */
-    protected $callbackURL;
+    protected ?string $callbackURL;
 
-    public function __construct()
-    {
-        $this->allowManual = false;
-        $this->callbackURL = null;
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('idDocument')->setAllowedTypes('idDocument', ['array', IdDocument::class])->setNormalizer('idDocument', function (Options $options, $value) {
@@ -65,10 +44,6 @@ class ValidationRequest
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -90,19 +65,11 @@ class ValidationRequest
         ;
     }
 
-    /**
-     * @return IdDocument
-     */
     public function getIdDocument(): IdDocument
     {
         return $this->idDocument;
     }
 
-    /**
-     * @param IdDocument $idDocument
-     *
-     * @return self
-     */
     public function setIdDocument(IdDocument $idDocument): self
     {
         $this->idDocument = $idDocument;
@@ -110,19 +77,11 @@ class ValidationRequest
         return $this;
     }
 
-    /**
-     * @return PersonalInfo
-     */
     public function getPersonalInfo(): PersonalInfo
     {
         return $this->personalInfo;
     }
 
-    /**
-     * @param PersonalInfo $personalInfo
-     *
-     * @return self
-     */
     public function setPersonalInfo(PersonalInfo $personalInfo): self
     {
         $this->personalInfo = $personalInfo;
@@ -130,19 +89,11 @@ class ValidationRequest
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isAllowManual(): bool
     {
         return $this->allowManual;
     }
 
-    /**
-     * @param bool $allowManual
-     *
-     * @return self
-     */
     public function setAllowManual(bool $allowManual): self
     {
         $this->allowManual = $allowManual;
@@ -150,19 +101,11 @@ class ValidationRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCallbackURL(): ?string
     {
         return $this->callbackURL;
     }
 
-    /**
-     * @param string|null $callbackURL
-     *
-     * @return self
-     */
     public function setCallbackURL(?string $callbackURL): self
     {
         $this->callbackURL = $callbackURL;

@@ -13,16 +13,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DocSignatureField extends SignatureField
 {
-    protected string $patternName;
+    protected ?string $patternName;
 
-    protected string $label;
+    protected ?string $label;
 
-    protected Base64 $image;
+    protected ?Base64 $image;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         parent::configureData($resolver);
 
@@ -34,10 +31,6 @@ class DocSignatureField extends SignatureField
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing

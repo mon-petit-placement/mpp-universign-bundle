@@ -14,26 +14,12 @@ class UniversignCallbackEvent
      */
     public const STATUS_SIGNED = 5;
 
-    /**
-     * @var string
-     */
-    private $transactionId;
+    private string $transactionId;
 
-    /**
-     * @var int|null
-     */
-    private $indexSigner;
+    private ?int $indexSigner;
 
-    /**
-     * @var int
-     */
-    private $status;
+    private int $status;
 
-    /**
-     * @param string $transactionId
-     * @param int|null $indexSigner
-     * @param int $status
-     */
     public function __construct(string $transactionId, ?int $indexSigner, int $status)
     {
         $this->transactionId = $transactionId;
@@ -41,25 +27,16 @@ class UniversignCallbackEvent
         $this->status = $status;
     }
 
-    /**
-     * @retrun string
-     */
-    public function getTransactionId()
+    public function getTransactionId(): string
     {
         return $this->transactionId;
     }
 
-    /**
-     * @return int
-     */
     public function getIndexSigner(): ?int
     {
         return $this->indexSigner;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;

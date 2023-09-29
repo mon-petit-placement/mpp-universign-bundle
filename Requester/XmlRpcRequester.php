@@ -10,16 +10,9 @@ use PhpXmlRpc\Value;
 
 abstract class XmlRpcRequester
 {
-    /**
-     * @var Client
-     */
-    protected $xmlRpcClient;
+    protected Client $xmlRpcClient;
 
-    /**
-    * @var Encoder
-    */
-    protected $encoder;
-
+    protected Encoder $encoder;
 
     public function __construct(Encoder $encoder, array $clientOptions = [])
     {
@@ -31,18 +24,12 @@ abstract class XmlRpcRequester
         $this->xmlRpcClient->setOption(Client::OPT_RETURN_TYPE, XMLParser::RETURN_PHP);
     }
 
-    /**
-     * @return string;
-     */
-    abstract public function getUrl();
+    abstract public function getUrl(): string;
 
     /**
-     * @param mixed $data
-     * @param bool $skipNullValue
-     *
      * @return Value|array<string, Value>
      */
-    public function flatten($data, bool $skipNullValue = true)
+    public function flatten(mixed $data, bool $skipNullValue = true): Value|array
     {
         $flattenedData = [];
 
@@ -72,13 +59,7 @@ abstract class XmlRpcRequester
         return $data;
     }
 
-    /**
-     * @param mixed $object
-     * @param bool $skipNullValue
-     *
-     * @return array
-     */
-    public function dismount($object, bool $skipNullValue = true): array
+    public function dismount(mixed $object, bool $skipNullValue = true): array
     {
         $rc = new \ReflectionClass($object);
         $data = [];
@@ -102,7 +83,7 @@ abstract class XmlRpcRequester
         return $response->value();
     }
 
-    protected static function buildRequest(string $method, $params)
+    protected static function buildRequest(string $method, $params): Request
     {
         if (!is_array($params)) {
             $params = [$params];

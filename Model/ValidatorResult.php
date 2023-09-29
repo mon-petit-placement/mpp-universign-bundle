@@ -17,42 +17,17 @@ class ValidatorResult
     public const STATUS_VALID = 1;
     public const STATUS_INVALID = 2;
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected string $id;
 
-    /**
-     * @var int
-     */
-    protected $status;
+    protected int $status;
 
-    /**
-     * @var null|int
-     */
-    protected $reason;
+    protected ?int $reason;
 
-    /**
-     * @var null|string
-     */
-    protected $reasonMessage;
+    protected ?string $reasonMessage;
 
-    /**
-     * @var null|array
-     */
-    protected $result;
+    protected ?array $result;
 
-    public function __construct()
-    {
-        $this->reason = null;
-        $this->reasonMessage = null;
-        $this->result = null;
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('id')->setAllowedTypes('id', ['string'])
@@ -64,10 +39,6 @@ class ValidatorResult
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -90,19 +61,11 @@ class ValidatorResult
         ;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return self
-     */
     public function setId(string $id): self
     {
         $this->id = $id;
@@ -110,19 +73,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     *
-     * @return self
-     */
     public function setStatus(int $status): self
     {
         $this->status = $status;
@@ -130,19 +85,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getReason(): ?int
     {
         return $this->reason;
     }
 
-    /**
-     * @param int|null $reason
-     *
-     * @return self
-     */
     public function setReason(?int $reason): self
     {
         $this->reason = $reason;
@@ -150,19 +97,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getReasonMessage(): ?string
     {
         return $this->reasonMessage;
     }
 
-    /**
-     * @param string|null $reasonMessage
-     *
-     * @return self
-     */
     public function setReasonMessage(?string $reasonMessage): self
     {
         $this->reasonMessage = $reasonMessage;
@@ -170,19 +109,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getResult(): ?array
     {
         return $this->result;
     }
 
-    /**
-     * @param array|null $result
-     *
-     * @return self
-     */
     public function setResult(?array $result): self
     {
         $this->result = $result;

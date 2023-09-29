@@ -11,7 +11,7 @@ class Configuration implements ConfigurationInterface
 {
     public const CONFIGURATION_ROOT = 'mpp_universign';
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder(self::CONFIGURATION_ROOT);
 

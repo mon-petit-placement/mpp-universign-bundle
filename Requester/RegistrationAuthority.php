@@ -14,20 +14,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RegistrationAuthority extends XmlRpcRequester implements RegistrationAuthorityInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var array
-     */
-    protected $entrypoint;
+    protected array $entrypoint;
 
-    /**
-     * @var Router
-     */
-    protected $router;
+    protected Router $router;
 
     public function __construct(
         Encoder $encoder,
@@ -42,15 +33,12 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         parent::__construct($encoder, $clientOptions);
     }
 
-    /**
-     * @return string;
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->entrypoint['ra'];
     }
 
-    private function call(string $method, $args)
+    private function call(string $method, $args): mixed
     {
         $response = null;
 
@@ -88,17 +76,17 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         return $results;
     }
 
-    public function getCertificateAgreement(string $email)
+    public function getCertificateAgreement(string $email): mixed
     {
         return $this->call('ra.getCertificateAgreement', $email);
     }
 
-    public function revokeCertificate(string $emailOrPhoneNumber)
+    public function revokeCertificate(string $emailOrPhoneNumber): mixed
     {
         return $this->call('ra.revokeCertificate', $emailOrPhoneNumber);
     }
 
-    public function revokeMyCertificate(string $emailOrPhoneNumber)
+    public function revokeMyCertificate(string $emailOrPhoneNumber): mixed
     {
         return $this->call('ra.revokeMyCertificate', $emailOrPhoneNumber);
     }
