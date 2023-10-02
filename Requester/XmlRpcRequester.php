@@ -14,9 +14,9 @@ abstract class XmlRpcRequester
 
     protected Encoder $encoder;
 
-    public function __construct(Encoder $encoder, array $clientOptions = [])
+    public function __construct(array $clientOptions = [])
     {
-        $this->encoder = $encoder;
+        $this->encoder = new Encoder();
         $this->xmlRpcClient = new Client($this->getUrl());
         foreach ($clientOptions as $name => $value) {
             $this->xmlRpcClient->setOption($name, $value);

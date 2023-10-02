@@ -27,7 +27,6 @@ class Signer extends XmlRpcRequester implements SignerInterface
     protected array $options;
 
     public function __construct(
-        Encoder $encoder,
         LoggerInterface $logger,
         Router $router,
         array $entrypoint,
@@ -39,7 +38,7 @@ class Signer extends XmlRpcRequester implements SignerInterface
         $this->entrypoint = $entrypoint;
         $this->options = $options;
 
-        parent::__construct($encoder, $clientOptions);
+        parent::__construct($clientOptions);
     }
 
     public function getUrl(): string

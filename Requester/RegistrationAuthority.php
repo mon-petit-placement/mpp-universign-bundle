@@ -21,7 +21,6 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
     protected Router $router;
 
     public function __construct(
-        Encoder $encoder,
         LoggerInterface $logger,
         Router $router,
         array $entrypoint,
@@ -30,7 +29,7 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         $this->logger = $logger;
         $this->router = $router;
         $this->entrypoint = $entrypoint;
-        parent::__construct($encoder, $clientOptions);
+        parent::__construct($clientOptions);
     }
 
     public function getUrl(): string
