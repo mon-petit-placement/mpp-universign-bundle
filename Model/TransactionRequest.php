@@ -67,6 +67,35 @@ class TransactionRequest
 
     protected ?string $invitationMessage;
 
+    public function __construct()
+    {
+        $this->profile = null;
+        $this->customId = null;
+        $this->signers = [];
+        $this->documents = [];
+        $this->mustContactFirstSigner = false;
+        $this->finalDocSent = false;
+        $this->finalDocRequesterSent = false;
+        $this->finalDocObserverSent = false;
+        $this->description = null;
+        $this->certificateType = CertificateType::SIMPLE;
+        $this->language = 'en';
+        $this->handwrittenSignatureMode = null;
+        $this->chainingMode = 'email';
+        $this->finalDocCCeMails = null;
+        $this->autoValidationRedirection = null;
+        $this->redirectPolicy = 'dashboard';
+        $this->redirectWait = 5;
+        $this->autoSendAgreements = null;
+        $this->operator = null;
+        $this->autoSendAgreements = null;
+        $this->registrationCallbackURL = null;
+        $this->successRedirection = null;
+        $this->cancelRedirection = null;
+        $this->failRedirection = null;
+        $this->invitationMessage = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

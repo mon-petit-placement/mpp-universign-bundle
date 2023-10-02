@@ -20,6 +20,12 @@ class RegistrationRequest
 
     protected ?string $type;
 
+    public function __construct()
+    {
+        $this->documents = [];
+        $this->type = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

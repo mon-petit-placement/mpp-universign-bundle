@@ -18,6 +18,13 @@ class CertificateInfo
 
     protected ?string $serial;
 
+    public function __construct()
+    {
+        $this->subject = null;
+        $this->issuer = null;
+        $this->serial = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

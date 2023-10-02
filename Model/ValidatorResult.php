@@ -8,7 +8,6 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ValidatorResult
@@ -26,6 +25,15 @@ class ValidatorResult
     protected ?string $reasonMessage;
 
     protected ?array $result;
+
+    public function __construct(string $id, int $status)
+    {
+        $this->id = $id;
+        $this->status = $status;
+        $this->reason = null;
+        $this->reasonMessage = null;
+        $this->result = null;
+    }
 
     public static function configureData(OptionsResolver $resolver): void
     {
@@ -52,9 +60,10 @@ class ValidatorResult
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setId($resolvedOptions['id'])
-            ->setStatus($resolvedOptions['status'])
+        return (new self(
+            $resolvedOptions['id'],
+            $resolvedOptions['status'],
+        ))
             ->setReason($resolvedOptions['reason'])
             ->setReasonMessage($resolvedOptions['reasonMessage'])
             ->setResult($resolvedOptions['result'])

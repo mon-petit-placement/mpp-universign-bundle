@@ -27,6 +27,15 @@ class IdDocument
     protected int $type;
 
     /**
+     * @param Base64[] $photos
+     */
+    public function __construct(array $photos, int $type)
+    {
+        $this->photos = $photos;
+        $this->type = $type;
+    }
+
+    /**
      * @throws \UnexpectedValueException
      */
     public static function configureData(OptionsResolver $resolver): void
@@ -73,10 +82,10 @@ class IdDocument
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setPhotos($resolvedOptions['photos'])
-            ->setType($resolvedOptions['type'])
-        ;
+        return (new self(
+            $resolvedOptions['photos'],
+            $resolvedOptions['type']
+        ));
     }
 
     /**

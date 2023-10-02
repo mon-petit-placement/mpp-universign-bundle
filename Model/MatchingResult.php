@@ -37,6 +37,18 @@ class MatchingResult
 
     protected ?\DateTime $expirationDate;
 
+    public function __construct()
+    {
+        $this->firstname = null;
+        $this->lastname = null;
+        $this->mobile = null;
+        $this->email = null;
+        $this->certificateLevel = null;
+        $this->certificateStatus = null;
+        $this->certificateInfo = null;
+        $this->expirationDate = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

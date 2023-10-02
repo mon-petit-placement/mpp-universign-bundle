@@ -33,7 +33,7 @@ abstract class XmlRpcRequester
     {
         $flattenedData = [];
 
-        if (is_object($data) && !$data instanceof Value && !$data instanceof \DateTime) {
+        if (is_object($data) && !$data instanceof Value && !$data instanceof \DateTimeInterface) {
             return $this->dismount($data, $skipNullValue);
         }
 

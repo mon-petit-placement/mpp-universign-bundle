@@ -20,6 +20,14 @@ class MatchingFilter
 
     protected ?string $email;
 
+    public function __construct(string $firstname, string $lastname)
+    {
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->mobile = null;
+        $this->email = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
@@ -44,9 +52,10 @@ class MatchingFilter
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setFirstname($resolvedOptions['firstname'])
-            ->setLastname($resolvedOptions['lastname'])
+        return (new self(
+            $resolvedOptions['firstname'],
+            $resolvedOptions['lastname'],
+        ))
             ->setMobile($resolvedOptions['mobile'])
             ->setEmail($resolvedOptions['email'])
         ;

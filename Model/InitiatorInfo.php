@@ -18,6 +18,13 @@ class InitiatorInfo
 
     protected ?string $lastName;
 
+    public function __construct()
+    {
+        $this->email = null;
+        $this->firstName = null;
+        $this->lastName = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

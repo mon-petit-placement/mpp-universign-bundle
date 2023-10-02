@@ -18,6 +18,13 @@ class PersonalInfo
 
     protected \DateTimeInterface $birthDate;
 
+    public function __construct(string $firstname, string $lastname, \DateTimeInterface $birthDate)
+    {
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->birthDate = $birthDate;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
@@ -41,11 +48,11 @@ class PersonalInfo
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setFirstname($resolvedOptions['firstname'])
-            ->setLastname($resolvedOptions['lastname'])
-            ->setBirthDate($resolvedOptions['birthDate'])
-        ;
+        return (new self(
+            $resolvedOptions['firstname'],
+            $resolvedOptions['lastname'],
+            $resolvedOptions['birthDate'],
+        ));
     }
 
     public function getFirstname(): string

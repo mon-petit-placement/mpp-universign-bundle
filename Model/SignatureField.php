@@ -14,13 +14,22 @@ class SignatureField
 {
     protected ?string $name;
 
-    protected ?int $page;
+    protected int $page;
 
     protected ?int $x;
 
     protected ?int $y;
 
     protected int $signerIndex;
+
+    public function __construct(int $signerIndex)
+    {
+        $this->signerIndex = $signerIndex;
+        $this->name = null;
+        $this->page = 1;
+        $this->x = null;
+        $this->y = null;
+    }
 
     public static function configureData(OptionsResolver $resolver): void
     {
@@ -29,7 +38,7 @@ class SignatureField
             ->setDefault('page', 1)->setAllowedTypes('page', ['int'])
             ->setDefault('x', null)->setAllowedTypes('x', ['null', 'int'])
             ->setDefault('y', null)->setAllowedTypes('y', ['null', 'int'])
-            ->setRequired('signerIndex')->setAllowedTypes('signerIndex', ['null', 'int'])
+            ->setRequired('signerIndex')->setAllowedTypes('signerIndex', ['int'])
         ;
     }
 
@@ -47,12 +56,11 @@ class SignatureField
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
+        return (new self($resolvedOptions['signerIndex']))
             ->setName($resolvedOptions['name'])
             ->setPage($resolvedOptions['page'])
             ->setX($resolvedOptions['x'])
             ->setY($resolvedOptions['y'])
-            ->setSignerIndex($resolvedOptions['signerIndex'])
         ;
     }
 
@@ -68,14 +76,14 @@ class SignatureField
         return $this->name;
     }
 
-    public function setPage(?int $page): self
+    public function setPage(int $page): self
     {
         $this->page = $page;
 
         return $this;
     }
 
-    public function getPage(): ?int
+    public function getPage(): int
     {
         return $this->page;
     }

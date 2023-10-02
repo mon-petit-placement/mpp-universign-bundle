@@ -31,6 +31,17 @@ class SignOptions
 
     protected ?string $patternName;
 
+    public function __construct()
+    {
+        $this->profile = 'default';
+        $this->signatureField = null;
+        $this->reason = null;
+        $this->location = null;
+        $this->signatureFormat = self::SINGNATURE_FORMAT_PADES;
+        $this->language = 'en';
+        $this->patternName = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

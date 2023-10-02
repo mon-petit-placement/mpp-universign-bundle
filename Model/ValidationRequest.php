@@ -21,6 +21,14 @@ class ValidationRequest
 
     protected ?string $callbackURL;
 
+    public function __construct(IdDocument $idDocument, PersonalInfo $personalInfo, bool $allowManual)
+    {
+        $this->idDocument = $idDocument;
+        $this->personalInfo = $personalInfo;
+        $this->allowManual = $allowManual;
+        $this->callbackURL = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
@@ -57,11 +65,11 @@ class ValidationRequest
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setIdDocument($resolvedOptions['idDocument'])
-            ->setPersonalInfo($resolvedOptions['personalInfo'])
-            ->setAllowManual($resolvedOptions['allowManual'])
-            ->setCallbackURL($resolvedOptions['callbackUrl'])
+        return (new self(
+            $resolvedOptions['idDocument'],
+            $resolvedOptions['personalInfo'],
+            $resolvedOptions['allowManual'],
+        ))->setCallbackURL($resolvedOptions['callbackUrl'])
         ;
     }
 

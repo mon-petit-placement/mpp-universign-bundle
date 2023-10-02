@@ -22,6 +22,20 @@ class SepaThirdParty
 
     protected string $country;
 
+    public function __construct(
+        string $name,
+        string $address,
+        string $postalCode,
+        string $city,
+        string $country,
+    ) {
+        $this->name = $name;
+        $this->address = $address;
+        $this->postalCode = $postalCode;
+        $this->city = $city;
+        $this->country = $country;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
@@ -47,13 +61,13 @@ class SepaThirdParty
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setName($resolvedOptions['name'])
-            ->setAddress($resolvedOptions['address'])
-            ->setPostalCode($resolvedOptions['postalCode'])
-            ->setCity($resolvedOptions['city'])
-            ->setCountry($resolvedOptions['country'])
-        ;
+        return (new self(
+            $resolvedOptions['name'],
+            $resolvedOptions['address'],
+            $resolvedOptions['postalCode'],
+            $resolvedOptions['city'],
+            $resolvedOptions['country']
+        ));
     }
 
     public function setName(string $name): self

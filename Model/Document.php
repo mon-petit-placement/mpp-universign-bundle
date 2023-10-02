@@ -16,7 +16,7 @@ class Document
 {
     protected ?int $id;
 
-    protected ?string $documentType;
+    protected string $documentType;
 
     protected ?Base64 $content;
 
@@ -36,6 +36,20 @@ class Document
     protected ?string $title;
 
     protected ?SepaData $sepaData;
+
+    public function __construct()
+    {
+        $this->id = null;
+        $this->documentType = 'pdf';
+        $this->content = null;
+        $this->url = null;
+        $this->fileName = null;
+        $this->signatureFields = null;
+        $this->checkBoxTexts = null;
+        $this->metaData = null;
+        $this->title = null;
+        $this->sepaData = null;
+    }
 
     public static function configureData(OptionsResolver $resolver): void
     {
@@ -126,14 +140,14 @@ class Document
         return $this->id;
     }
 
-    public function setDocumentType(?string $documentType): self
+    public function setDocumentType(string $documentType): self
     {
         $this->documentType = $documentType;
 
         return $this;
     }
 
-    public function getDocumentType(): ?string
+    public function getDocumentType(): string
     {
         return $this->documentType;
     }

@@ -54,6 +54,26 @@ class SignerInfo
 
     protected ?array $idDocuments;
 
+    public function __construct()
+    {
+        $this->status = null;
+        $this->error = null;
+        $this->certificateInfo = null;
+        $this->url = null;
+        $this->id = null;
+        $this->email = null;
+        $this->firstName = null;
+        $this->lastName = null;
+        $this->actionDate = null;
+        $this->refusedDocs = [];
+        $this->refusalComment = null;
+        $this->redirectPolicy = null;
+        $this->redirectWait = null;
+        $this->redirectPolicy = null;
+        $this->redirectWait = null;
+        $this->idDocuments = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

@@ -19,6 +19,13 @@ class DocSignatureField extends SignatureField
 
     protected ?Base64 $image;
 
+    public function __construct()
+    {
+        $this->patternName = null;
+        $this->label = null;
+        $this->image = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         parent::configureData($resolver);

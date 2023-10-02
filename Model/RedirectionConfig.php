@@ -16,6 +16,12 @@ class RedirectionConfig
 
     protected ?string $displayName;
 
+    public function __construct()
+    {
+        $this->URL = null;
+        $this->displayName = null;
+    }
+
     /**
      * @param OptionsResolver
      */

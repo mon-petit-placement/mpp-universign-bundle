@@ -56,6 +56,30 @@ class Signer
 
     protected ?string $invitationMessage;
 
+    public function __construct()
+    {
+        $this->firstname = null;
+        $this->lastname = null;
+        $this->organization = null;
+        $this->profile = null;
+        $this->emailAddress = null;
+        $this->phoneNum = null;
+        $this->language = 'en';
+        $this->role = self::ROLE_SIGNER;
+        $this->birthDate = null;
+        $this->universignId = null;
+        $this->successRedirection = [];
+        $this->cancelRedirection = [];
+        $this->failRedirection = [];
+        $this->certificateType = null;
+        $this->idDocuments = null;
+        $this->validationSessionId = null;
+        $this->redirectPolicy = null;
+        $this->redirectWait = 5;
+        $this->autoSendAgreements = null;
+        $this->invitationMessage = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

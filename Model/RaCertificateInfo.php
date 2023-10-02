@@ -24,6 +24,16 @@ class RaCertificateInfo
     protected array $chain;
 
     /**
+     * @param Base64[] $chain
+     */
+    public function __construct(string $subjectDN, string $serialNumber, array $chain)
+    {
+        $this->subjectDN = $subjectDN;
+        $this->serialNumber = $serialNumber;
+        $this->chain = $chain;
+    }
+
+    /**
      * @throws \UnexpectedValueException
      */
     public static function configureData(OptionsResolver $resolver): void
@@ -62,11 +72,11 @@ class RaCertificateInfo
 
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setSubjectDN($resolvedOptions['subjectDN'])
-            ->setSerialNumber($resolvedOptions['serialNumber'])
-            ->setChain($resolvedOptions['chain'])
-        ;
+        return (new self(
+            $resolvedOptions['subjectDN'],
+            $resolvedOptions['serialNumber'],
+            $resolvedOptions['chain'],
+        ));
     }
 
     public function getSubjectDN(): string

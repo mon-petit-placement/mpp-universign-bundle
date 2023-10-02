@@ -34,6 +34,21 @@ class TransactionFilter
 
     protected ?bool $withAffiliated;
 
+    public function __construct()
+    {
+        $this->requesterEmail = null;
+        $this->profile = null;
+        $this->notBefore = null;
+        $this->notAfter = null;
+        $this->startRange = null;
+        $this->stopRange = null;
+        $this->signerId = null;
+        $this->notBeforeCompletion = null;
+        $this->notAfterCompletion = null;
+        $this->status = null;
+        $this->withAffiliated = null;
+    }
+
     public static function configureData(OptionsResolver $resolver): void
     {
         $resolver

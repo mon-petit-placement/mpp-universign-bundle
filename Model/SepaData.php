@@ -27,10 +27,22 @@ class SepaData
 
     protected SepaThirdParty $creditor;
 
-    public function __construct()
-    {
-        $this->debtor = [];
-        $this->creditor = [];
+    public function __construct(
+        string $rum,
+        string $ics,
+        string $iban,
+        string $bic,
+        bool $recuring,
+        SepaThirdParty $debtor,
+        SepaThirdParty $creditor
+    ) {
+        $this->rum = $rum;
+        $this->ics = $ics;
+        $this->iban = $iban;
+        $this->bic = $bic;
+        $this->recuring = $recuring;
+        $this->debtor = $debtor;
+        $this->creditor = $creditor;
     }
 
     public static function configureData(OptionsResolver $resolver): void
@@ -72,15 +84,15 @@ class SepaData
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setRum($resolvedOptions['rum'])
-            ->setIcs($resolvedOptions['ics'])
-            ->setIban($resolvedOptions['iban'])
-            ->setBic($resolvedOptions['bic'])
-            ->setRecuring($resolvedOptions['recurring'])
-            ->setDebtor($resolvedOptions['debtor'])
-            ->setCreditor($resolvedOptions['creditor'])
-        ;
+        return (new self(
+            $resolvedOptions['rum'],
+            $resolvedOptions['ics'],
+            $resolvedOptions['iban'],
+            $resolvedOptions['bic'],
+            $resolvedOptions['recurring'],
+            $resolvedOptions['debtor'],
+            $resolvedOptions['creditor'],
+        ));
     }
 
     public function setRum(string $rum): self
