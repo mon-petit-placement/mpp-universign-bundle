@@ -2,57 +2,55 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Client\Exception\FaultException;
 use Mpp\UniversignBundle\Model\MatchingFilter;
 use Mpp\UniversignBundle\Model\MatchingResult;
 use Mpp\UniversignBundle\Model\ValidationRequest;
 use Mpp\UniversignBundle\Model\ValidatorResult;
+use PhpXmlRpc\Encoder;
+use PhpXmlRpc\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RegistrationAuthority extends XmlRpcRequester implements RegistrationAuthorityInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var array
-     */
-    protected $entrypoint;
+    protected array $entrypoint;
 
-    /**
-     * @var Router
-     */
-    protected $router;
+    protected Router $router;
 
-    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $clientOptions)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        Router $router,
+        array $entrypoint,
+        array $clientOptions
+    ) {
         $this->logger = $logger;
         $this->router = $router;
         $this->entrypoint = $entrypoint;
         parent::__construct($clientOptions);
     }
 
-    /**
-     * @return string;
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->entrypoint['ra'];
     }
 
-    private function call(string $method, $args)
+    private function call(string $method, $args): mixed
     {
         $response = null;
 
         try {
-            $response = $this->xmlRpcClient->call($method, self::flatten($args));
+            $response = $this->send($method, $args);
             $this->logger->info(sprintf('[Universign - %s] SUCCESS', $method));
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - %s] ERROR (%s): %s', $method, $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(sprintf(
+                '[Universign - %s] ERROR (%s): %s',
+                $method,
+                $e->getCode(),
+                $e->getMessage()
+            ));
         }
 
         return $response;
@@ -77,17 +75,17 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
         return $results;
     }
 
-    public function getCertificateAgreement(string $email)
+    public function getCertificateAgreement(string $email): mixed
     {
         return $this->call('ra.getCertificateAgreement', $email);
     }
 
-    public function revokeCertificate(string $emailOrPhoneNumber)
+    public function revokeCertificate(string $emailOrPhoneNumber): mixed
     {
         return $this->call('ra.revokeCertificate', $emailOrPhoneNumber);
     }
 
-    public function revokeMyCertificate(string $emailOrPhoneNumber)
+    public function revokeMyCertificate(string $emailOrPhoneNumber): mixed
     {
         return $this->call('ra.revokeMyCertificate', $emailOrPhoneNumber);
     }
@@ -103,7 +101,10 @@ class RegistrationAuthority extends XmlRpcRequester implements RegistrationAutho
                 )
             );
 
-            $this->logger->info(sprintf('[Universign - validate] define default callback URL : "%s"', $validationRequest->getCallbackURL()));
+            $this->logger->info(sprintf(
+                '[Universign - validate] define default callback URL : "%s"',
+                $validationRequest->getCallbackURL()
+            ));
         }
 
         $result = $this->call('validator.validate', [$validationRequest]);

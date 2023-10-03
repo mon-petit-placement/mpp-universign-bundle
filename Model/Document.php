@@ -2,6 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
+use Mpp\UniversignBundle\Model\XmlRpc\Base64;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -13,77 +14,54 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Document
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected ?int $id;
 
-    /**
-     * @var string
-     */
-    protected $documentType;
+    protected string $documentType;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\Base64
-     */
-    protected $content;
+    protected ?Base64 $content;
 
-    /**
-     * @var string
-     */
-    protected $url;
+    protected ?string $url;
 
-    /**
-     * @var string
-     */
-    protected $fileName;
+    protected ?string $fileName;
 
     /**
      * @var array<DocSignatureField>
      */
-    protected $signatureFields;
+    protected array $signatureFields;
 
-    /**
-     * @var array
-     */
-    protected $checkBoxTexts;
+    protected ?array $checkBoxTexts;
 
-    /**
-     * @var array
-     */
-    protected $metaData;
+    protected ?array $metaData;
 
-    /**
-     * @var string
-     */
-    protected $title;
+    protected ?string $title;
 
-    /**
-     * @var SepaData
-     */
-    protected $sepaData;
+    protected ?SepaData $sepaData;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public function __construct()
+    {
+        $this->id = null;
+        $this->documentType = 'pdf';
+        $this->content = null;
+        $this->url = null;
+        $this->fileName = null;
+        $this->signatureFields = null;
+        $this->checkBoxTexts = null;
+        $this->metaData = null;
+        $this->title = null;
+        $this->sepaData = null;
+    }
+
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('id', null)->setAllowedTypes('id', ['null', 'string'])
             ->setDefault('documentType', 'pdf')->setAllowedValues('documentType', ['pdf', 'pdf-for-presentation', 'pdf-optional', 'sepa'])
-            ->setDefault('content', null)->setAllowedTypes('content', ['null', 'string', \Laminas\XmlRpc\Value\Base64::class])->setNormalizer('content', function (Options $options, $value): ?\Laminas\XmlRpc\Value\Base64 {
-                if ($value instanceof \Laminas\XmlRpc\Value\Base64) {
+            ->setDefault('content', null)->setAllowedTypes('content', ['null', 'string', Base64::class])->setNormalizer('content', function (Options $options, $value): ?Base64 {
+                if (null === $value || $value instanceof Base64) {
                     return $value;
                 }
 
-                if (null === $value || !file_exists($value)) {
-                    return null;
-                }
-
-                $file = file_get_contents($value);
-                $b64 = new \Laminas\XmlRpc\Value\Base64($file);
-
-                return $b64;
+                return new Base64($value);
             })
             ->setDefault('url', null)->setAllowedTypes('url', ['null', 'string'])
             ->setDefault('fileName', null)->setAllowedTypes('fileName', ['null', 'string'])
@@ -99,7 +77,7 @@ class Document
 
                 return $signatureFields;
             })
-            ->setDefault('checkBoxTexts', null)->setAllowedTypes('checkBoxTexts', ['null', 'array'])->setNormalizer('checkBoxTexts',  function (Options $options, $value) {
+            ->setDefault('checkBoxTexts', null)->setAllowedTypes('checkBoxTexts', ['null', 'array'])->setNormalizer('checkBoxTexts', function (Options $options, $value) {
                 if ('pdf-for-presentation' === $options['documentType']) {
                     return null;
                 }
@@ -123,10 +101,6 @@ class Document
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -154,11 +128,6 @@ class Document
         ;
     }
 
-    /**
-     * @param int|null $id
-     *
-     * @return self
-     */
     public function setId(?int $id): self
     {
         $this->id = $id;
@@ -166,59 +135,35 @@ class Document
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param string|null $documentType
-     *
-     * @return self
-     */
-    public function setDocumentType(?string $documentType): self
+    public function setDocumentType(string $documentType): self
     {
         $this->documentType = $documentType;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDocumentType(): ?string
+    public function getDocumentType(): string
     {
         return $this->documentType;
     }
 
-    /**
-     * @param \Laminas\XmlRpc\Value\Base64|null $content
-     *
-     * @return self
-     */
-    public function setContent(?\Laminas\XmlRpc\Value\Base64 $content): self
+    public function setContent(?Base64 $content): self
     {
         $this->content = $content;
 
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\Base64|null
-     */
-    public function getContent(): ?\Laminas\XmlRpc\Value\Base64
+    public function getContent(): ?Base64
     {
         return $this->content;
     }
 
-    /**
-     * @param string|null $url
-     *
-     * @return self
-     */
     public function setUrl(?string $url): self
     {
         $this->url = $url;
@@ -226,19 +171,11 @@ class Document
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string|null $fileName
-     *
-     * @return self
-     */
     public function setFileName(?string $fileName): self
     {
         $this->fileName = $fileName;
@@ -246,19 +183,11 @@ class Document
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFileName(): ?string
     {
         return $this->fileName;
     }
 
-    /**
-     * @param SignatureField $signatureField
-     *
-     * @return self
-     */
     public function addSignatureField(SignatureField $signatureField): self
     {
         $this->signatureFields[] = $signatureField;
@@ -266,31 +195,18 @@ class Document
         return $this;
     }
 
-    /**
-     * @param array<SignatureField>|null $signatureFields
-     *
-     * @return self
-     */
-    public function setSignatureFields(?array $signatureFields): self
+    public function setSignatureFields(array $signatureFields): self
     {
         $this->signatureFields = $signatureFields;
 
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
-    public function getSignatureFields(): ?array
+    public function getSignatureFields(): array
     {
         return $this->signatureFields;
     }
 
-    /**
-     * @param array|null $checkBoxTexts
-     *
-     * @return self
-     */
     public function setCheckBoxTexts(?array $checkBoxTexts): self
     {
         $this->checkBoxTexts = $checkBoxTexts;
@@ -298,19 +214,11 @@ class Document
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getCheckBoxTexts(): ?array
     {
         return $this->checkBoxTexts;
     }
 
-    /**
-     * @param array|null $metaData
-     *
-     * @return self
-     */
     public function setMetaData(?array $metaData): self
     {
         $this->metaData = $metaData;
@@ -318,19 +226,11 @@ class Document
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getMetaData(): ?array
     {
         return $this->metaData;
     }
 
-    /**
-     * @param string|null $title
-     *
-     * @return self
-     */
     public function setTitle(?string $title): self
     {
         $this->title = $title;
@@ -338,19 +238,11 @@ class Document
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param SepaData|null $sepaData
-     *
-     * @return self
-     */
     public function setSepaData(?SepaData $sepaData): self
     {
         $this->sepaData = $sepaData;
@@ -358,9 +250,6 @@ class Document
         return $this;
     }
 
-    /**
-     * @return SepaData|null
-     */
     public function getSepaData(): ?SepaData
     {
         return $this->sepaData;

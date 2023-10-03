@@ -8,30 +8,24 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CertificateInfo
 {
-    /**
-     * @var string
-     */
-    protected $subject;
+    protected ?string $subject;
 
-    /**
-     * @var string
-     */
-    protected $issuer;
+    protected ?string $issuer;
 
-    /**
-     * @var string
-     */
-    protected $serial;
+    protected ?string $serial;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public function __construct()
+    {
+        $this->subject = null;
+        $this->issuer = null;
+        $this->serial = null;
+    }
+
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('subject', null)->setAllowedTypes('subject', ['null', 'string'])
@@ -41,10 +35,6 @@ class CertificateInfo
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -65,11 +55,6 @@ class CertificateInfo
         ;
     }
 
-    /**
-     * @param string|null $subject
-     *
-     * @return self
-     */
     public function setSubject(?string $subject): self
     {
         $this->subject = $subject;
@@ -77,19 +62,11 @@ class CertificateInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSubject(): ?string
     {
         return $this->subject;
     }
 
-    /**
-     * @param string|null $issuer
-     *
-     * @return self
-     */
     public function setIssuer(?string $issuer): self
     {
         $this->issuer = $issuer;
@@ -97,19 +74,11 @@ class CertificateInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getIssuer(): ?string
     {
         return $this->issuer;
     }
 
-    /**
-     * @param string|null $serial
-     *
-     * @return self
-     */
     public function setSerial(?string $serial): self
     {
         $this->serial = $serial;
@@ -117,9 +86,6 @@ class CertificateInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSerial(): ?string
     {
         return $this->serial;

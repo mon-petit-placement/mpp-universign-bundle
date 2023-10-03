@@ -2,49 +2,49 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Client;
-use Laminas\XmlRpc\Value\Base64;
-use Laminas\XmlRpc\Value\DateTime;
+use PhpXmlRpc\Client;
+use PhpXmlRpc\Encoder;
+use PhpXmlRpc\Helper\XMLParser;
+use PhpXmlRpc\Request;
+use PhpXmlRpc\Value;
 
 abstract class XmlRpcRequester
 {
-    /**
-     * @var Client
-     */
-    protected $xmlRpcClient;
+    protected Client $xmlRpcClient;
 
-    public function __construct(?array $clientOptions = null)
+    protected Encoder $encoder;
+
+    public function __construct(array $clientOptions = [])
     {
-        $this->xmlRpcClient = new Client($this->getURL(), new \Laminas\Http\Client(null, $clientOptions));
+        $this->encoder = new Encoder();
+        $this->xmlRpcClient = new Client($this->getUrl());
+        foreach ($clientOptions as $name => $value) {
+            $this->xmlRpcClient->setOption($name, $value);
+        }
+        $this->xmlRpcClient->setOption(Client::OPT_RETURN_TYPE, XMLParser::RETURN_PHP);
     }
 
-    /**
-     * @return string;
-     */
-    abstract public function getUrl();
+    abstract public function getUrl(): string;
 
     /**
-     * @param mixed $data
-     * @param bool $skipNullValue
-     *
-     * @return mixed
+     * @return Value|array<string, Value>
      */
-    public static function flatten($data, bool $skipNullValue = true)
+    public function flatten(mixed $data, bool $skipNullValue = true): Value|array
     {
         $flattenedData = [];
 
-        if (is_object($data) &&
-            !($data instanceof DateTime) &&
-            !($data instanceof Base64)
-        ) {
-            return self::dismount($data, $skipNullValue);
+        if (is_object($data) && !$data instanceof Value && !$data instanceof \DateTimeInterface) {
+            return $this->dismount($data, $skipNullValue);
         }
 
         if (is_array($data)) {
             foreach ($data as $key => $value) {
-                $flattenedValue = self::flatten($value, $skipNullValue);
+                $flattenedValue = $this->flatten($value, $skipNullValue);
                 if (true === $skipNullValue && null === $flattenedValue) {
                     continue;
+                }
+                if (!$flattenedValue instanceof Value) {
+                    $flattenedValue = $this->encoder->encode($flattenedValue);
                 }
                 $flattenedData[$key] = $flattenedValue;
             }
@@ -52,16 +52,14 @@ abstract class XmlRpcRequester
             return $flattenedData;
         }
 
+        if (!$data instanceof Value) {
+            $data = $this->encoder->encode($data);
+        }
+
         return $data;
     }
 
-    /**
-     * @param mixed $object
-     * @param bool $skipNullValue
-     *
-     * @return array
-     */
-    public static function dismount($object, bool $skipNullValue = true): array
+    public function dismount(mixed $object, bool $skipNullValue = true): array
     {
         $rc = new \ReflectionClass($object);
         $data = [];
@@ -72,9 +70,28 @@ abstract class XmlRpcRequester
             if (true === $skipNullValue && (null === $value || (is_array($value) && empty($value)))) {
                 continue;
             }
-            $data[$property->getName()] = self::flatten($value, $skipNullValue);
+            $data[$property->getName()] = $this->flatten($value, $skipNullValue);
         }
 
         return $data;
+    }
+
+    protected function send(string $method, $params): mixed
+    {
+        $response = $this->xmlRpcClient->send($this::buildRequest($method, $this->flatten($params)));
+
+        return $response->value();
+    }
+
+    protected static function buildRequest(string $method, $params): Request
+    {
+        if (!is_array($params)) {
+            $params = [$params];
+        }
+
+        return new Request(
+            $method,
+            $params
+        );
     }
 }

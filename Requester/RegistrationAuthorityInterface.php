@@ -9,10 +9,10 @@ use Mpp\UniversignBundle\Model\ValidatorResult;
 
 interface RegistrationAuthorityInterface
 {
-    const OPERATOR_STATUS_NOT_OPERATOR = 0;
-    const OPERATOR_STATUS_RA_OPERATOR = 1;
-    const OPERATOR_STATUS_INVITED_RA_OPERATOR = 2;
-    const OPERATOR_STATUS_NOT_EXISTENT = 5;
+    public const OPERATOR_STATUS_NOT_OPERATOR = 0;
+    public const OPERATOR_STATUS_RA_OPERATOR = 1;
+    public const OPERATOR_STATUS_INVITED_RA_OPERATOR = 2;
+    public const OPERATOR_STATUS_NOT_EXISTENT = 5;
 
     /**
      * @param string $email Email of User
@@ -41,7 +41,7 @@ interface RegistrationAuthorityInterface
      *
      * @return byte[]|null Certificate
      */
-    public function getCertificateAgreement(string $email);
+    public function getCertificateAgreement(string $email): mixed;
 
     /**
      * This service allows the admin of an organization to revoke a user’s certifi-
@@ -49,14 +49,12 @@ interface RegistrationAuthorityInterface
      *
      * @param string $emailOrPhoneNumber Email or Phone number of User
      */
-    public function revokeCertificate(string $emailOrPhoneNumber);
+    public function revokeCertificate(string $emailOrPhoneNumber): mixed;
 
     /**
      * This service allows a user to revoke his own certificate.
-     *
-     * @param string $emailOrPhoneNumber
      */
-    public function revokeMyCertificate(string $emailOrPhoneNumber);
+    public function revokeMyCertificate(string $emailOrPhoneNumber): mixed;
 
     /**
      * Sends a validation request in order to validate ID documents with the provided user info
@@ -67,20 +65,12 @@ interface RegistrationAuthorityInterface
      *
      * Optionnaly, a callback URL can be provided. This URL will be requested
      * when the validation session is completed (i.e. it ended with a final status).
-     *
-     * @param ValidationRequest $validationRequest
-     *
-     * @return ValidatorResult|null
      */
     public function validate(ValidationRequest $validationRequest): ?ValidatorResult;
 
     /**
      * Retrieves the validation result of the validation session that matches the
      * given id.
-     *
-     * @param string $validationSessionId
-     *
-     * @return ValidatorResult|null
      */
     public function getResult(string $validationSessionId): ?ValidatorResult;
 }

@@ -12,35 +12,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SepaThirdParty
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @var string
-     */
-    protected $address;
+    protected string $address;
 
-    /**
-     * @var string
-     */
-    protected $postalCode;
+    protected string $postalCode;
 
-    /**
-     * @var string
-     */
-    protected $city;
+    protected string $city;
 
-    /**
-     * @var string
-     */
-    protected $country;
+    protected string $country;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public function __construct(
+        string $name,
+        string $address,
+        string $postalCode,
+        string $city,
+        string $country,
+    ) {
+        $this->name = $name;
+        $this->address = $address;
+        $this->postalCode = $postalCode;
+        $this->city = $city;
+        $this->country = $country;
+    }
+
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('name')->setAllowedTypes('name', ['string'])
@@ -52,10 +48,6 @@ class SepaThirdParty
     }
 
     /**
-     * @param array $options
-     *
-     * @return SepaThirdParty
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -69,111 +61,71 @@ class SepaThirdParty
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setName($resolvedOptions['name'])
-            ->setAddress($resolvedOptions['address'])
-            ->setPostalCode($resolvedOptions['postalCode'])
-            ->setCity($resolvedOptions['city'])
-            ->setCountry($resolvedOptions['country'])
-        ;
+        return (new self(
+            $resolvedOptions['name'],
+            $resolvedOptions['address'],
+            $resolvedOptions['postalCode'],
+            $resolvedOptions['city'],
+            $resolvedOptions['country']
+        ));
     }
 
-    /**
-     * @param string|null $name
-     *
-     * @return self
-     */
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $address
-     *
-     * @return self
-     */
-    public function setAddress(?string $address): self
+    public function setAddress(string $address): self
     {
         $this->address = $address;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getAddress(): ?string
+    public function getAddress(): string
     {
         return $this->address;
     }
 
-    /**
-     * @param string|null $postalCode
-     *
-     * @return self
-     */
-    public function setPostalCode(?string $postalCode): self
+    public function setPostalCode(string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPostalCode(): ?string
+    public function getPostalCode(): string
     {
         return $this->postalCode;
     }
 
-    /**
-     * @param string|null $city
-     *
-     * @return self
-     */
-    public function setCity(?string $city): self
+    public function setCity(string $city): self
     {
         $this->city = $city;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getCity(): ?string
+    public function getCity(): string
     {
         return $this->city;
     }
 
-    /**
-     * @param string|null $country
-     *
-     * @return self
-     */
-    public function setCountry(?string $country): self
+    public function setCountry(string $country): self
     {
         $this->country = $country;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getCountry(): ?string
+    public function getCountry(): string
     {
         return $this->country;
     }

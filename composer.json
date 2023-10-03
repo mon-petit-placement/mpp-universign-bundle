@@ -1,40 +1,41 @@
 {
-    "name": "mpp/universign-bundle",
-    "type": "symfony-bundle",
-    "description": "Symfony Universign Bundle",
-    "keywords": ["json", "yaml", "api", "xmlrpc"],
-    "license": "MIT",
-    "authors": [
-      {
-        "name": "Gabriel BONDAZ",
-        "email": "gabriel.bondaz@idci-consulting.fr",
-        "homepage": "https://www.idci-consulting.fr"
-      },
-      {
-        "name": "Louis-Arnaud CATOIRE",
-        "email": "la.catoire@itefficience.com",
-        "homepage": "https://www.itefficience.com"
-      }
-    ],
-    "require": {
-      "php": ">=7.3",
-      "laminas/laminas-xmlrpc": "^2.10.1",
-      "symfony/dependency-injection": "^4.0 | ^5.0 | ^6.0",
-      "symfony/event-dispatcher": "*",
-      "symfony/framework-bundle": "^4.0 | ^5.0 | ^6.0",
-      "symfony/monolog-bundle": "*",
-      "ext-json": "*"
+  "name": "mpp/universign-bundle",
+  "type": "symfony-bundle",
+  "description": "Symfony Universign Bundle",
+  "keywords": ["json", "yaml", "api", "xmlrpc"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Gabriel BONDAZ",
+      "email": "gabriel.bondaz@idci-consulting.fr",
+      "homepage": "https://www.idci-consulting.fr"
     },
-    "autoload":{
-      "psr-4":{
-        "Mpp\\UniversignBundle\\": ""
-      },
-      "exclude-from-classmap": [
-        "Resources/",
-        "Tests/"
-      ]
-    },
-    "require-dev": {
-      "phpunit/phpunit": "^9.5"
+    {
+      "name": "Louis-Arnaud CATOIRE",
+      "email": "la.catoire@itefficience.com",
+      "homepage": "https://www.itefficience.com"
     }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "symfony/dependency-injection": "^4.0 | ^5.0 | ^6.0",
+    "symfony/event-dispatcher": "*",
+    "symfony/framework-bundle": "^4.0 | ^5.0 | ^6.0",
+    "symfony/monolog-bundle": "*",
+    "ext-json": "*",
+    "phpxmlrpc/phpxmlrpc": "^4.9",
+    "symfony/options-resolver": "^6.3"
+  },
+  "autoload":{
+    "psr-4":{
+      "Mpp\\UniversignBundle\\": ""
+    },
+    "exclude-from-classmap": [
+      "Resources/",
+      "Tests/"
+    ]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
   }
+}

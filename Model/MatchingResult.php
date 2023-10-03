@@ -13,54 +13,43 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MatchingResult
 {
-    const CERTIFICATE_LEVEL_NONE = 'none';
-    const CERTIFICATE_LEVEL_ADVANCED = 'advanced';
-    const CERTIFICATE_LEVEL_CERTIFIED = 'certified';
+    public const CERTIFICATE_LEVEL_NONE = 'none';
+    public const CERTIFICATE_LEVEL_ADVANCED = 'advanced';
+    public const CERTIFICATE_LEVEL_CERTIFIED = 'certified';
 
-    const CERTIFICATE_STATUS_VALID = 'valid';
-    const CERTIFICATE_STATUS_REVOKED = 'revoked';
-    const CERTIFICATE_STATUS_AWAITING_VALIDATION = 'awaiting-validation';
-    /**
-     * @var string|null
-     */
-    protected $firstname;
+    public const CERTIFICATE_STATUS_VALID = 'valid';
+    public const CERTIFICATE_STATUS_REVOKED = 'revoked';
+    public const CERTIFICATE_STATUS_AWAITING_VALIDATION = 'awaiting-validation';
 
-    /**
-     * @var string|null
-     */
-    protected $lastname;
+    protected ?string $firstname;
 
-    /**
-     * @var string|null
-     */
-    protected $mobile;
+    protected ?string $lastname;
 
-    /**
-     * @var string|null
-     */
-    protected $email;
+    protected ?string $mobile;
 
-    /**
-     * @var string|null
-     */
-    protected $certificateLevel;
+    protected ?string $email;
 
-    /**
-     * @var string|null
-     */
-    protected $certificateStatus;
+    protected ?string $certificateLevel;
 
-    /**
-     * @var RaCertificateInfo|null
-     */
-    protected $certificateInfo;
+    protected ?string $certificateStatus;
 
-    /**
-     * @var \DateTime|null
-     */
-    protected $expirationDate;
+    protected ?RaCertificateInfo $certificateInfo;
 
-    public static function configureData(OptionsResolver $resolver)
+    protected ?\DateTime $expirationDate;
+
+    public function __construct()
+    {
+        $this->firstname = null;
+        $this->lastname = null;
+        $this->mobile = null;
+        $this->email = null;
+        $this->certificateLevel = null;
+        $this->certificateStatus = null;
+        $this->certificateInfo = null;
+        $this->expirationDate = null;
+    }
+
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('firstname', null)->setAllowedTypes('firstname', ['null', 'string'])
@@ -69,14 +58,14 @@ class MatchingResult
             ->setDefault('email', null)->setAllowedTypes('email', ['string', 'null'])
             ->setDefault('certificateLevel', null)->setAllowedTypes('certificateLevel', ['string', 'null'])
             ->setDefault('certificateStatus', null)->setAllowedTypes('certificateStatus', ['string', 'null'])
-            ->setDefault('expirationDate', null)->setAllowedTypes('expirationDate', ['string', 'null', \DateTime::class])->setNormalizer('expirationDate', function(Options $options, $value) {
+            ->setDefault('expirationDate', null)->setAllowedTypes('expirationDate', ['string', 'null', \DateTime::class])->setNormalizer('expirationDate', function (Options $options, $value) {
                 if (!is_string($value)) {
                     return $value;
                 }
 
                 return \DateTime::createFromFormat('Ymd\TH:i:s', $value, new \DateTimeZone('UTC'));
             })
-            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['array', 'null', RaCertificateInfo::class])->setNormalizer('certificateInfo', function(Options $options, $value) {
+            ->setDefault('certificateInfo', null)->setAllowedTypes('certificateInfo', ['array', 'null', RaCertificateInfo::class])->setNormalizer('certificateInfo', function (Options $options, $value) {
                 if (null === $value || $value instanceof RaCertificateInfo) {
                     return $value;
                 }
@@ -87,10 +76,6 @@ class MatchingResult
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -116,19 +101,11 @@ class MatchingResult
         ;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFirstname(): ?string
     {
         return $this->firstname;
     }
 
-    /**
-     * @param string|null $firstname
-     *
-     * @return self
-     */
     public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
@@ -136,19 +113,11 @@ class MatchingResult
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastname(): ?string
     {
         return $this->lastname;
     }
 
-    /**
-     * @param string|null $lastname
-     *
-     * @return self
-     */
     public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
@@ -156,19 +125,11 @@ class MatchingResult
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMobile(): ?string
     {
         return $this->mobile;
     }
 
-    /**
-     * @param string|null $mobile
-     *
-     * @return self
-     */
     public function setMobile(?string $mobile): self
     {
         $this->mobile = $mobile;
@@ -176,19 +137,11 @@ class MatchingResult
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string|null $email
-     *
-     * @return self
-     */
     public function setEmail(?string $email): self
     {
         $this->email = $email;
@@ -196,19 +149,11 @@ class MatchingResult
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCertificateLevel(): ?string
     {
         return $this->certificateLevel;
     }
 
-    /**
-     * @param string|null $certificateLevel
-     *
-     * @return self
-     */
     public function setCertificateLevel(?string $certificateLevel): self
     {
         $this->certificateLevel = $certificateLevel;
@@ -216,19 +161,11 @@ class MatchingResult
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCertificateStatus(): ?string
     {
         return $this->certificateStatus;
     }
 
-    /**
-     * @param string|null $certificateStatus
-     *
-     * @return self
-     */
     public function setCertificateStatus(?string $certificateStatus): self
     {
         $this->certificateStatus = $certificateStatus;
@@ -236,19 +173,11 @@ class MatchingResult
         return $this;
     }
 
-    /**
-     * @return RaCertificateInfo|null
-     */
     public function getCertificateInfo(): ?RaCertificateInfo
     {
         return $this->certificateInfo;
     }
 
-    /**
-     * @param RaCertificateInfo|null $certificateInfo
-     *
-     * @return self
-     */
     public function setCertificateInfo(?RaCertificateInfo $certificateInfo): self
     {
         $this->certificateInfo = $certificateInfo;
@@ -256,19 +185,11 @@ class MatchingResult
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getExpirationDate(): ?\DateTime
     {
         return $this->expirationDate;
     }
 
-    /**
-     * @param \DateTime|null $expirationDate
-     *
-     * @return MatchingResult
-     */
     public function setExpirationDate(?\DateTime $expirationDate): self
     {
         $this->expirationDate = $expirationDate;

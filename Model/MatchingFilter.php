@@ -8,35 +8,27 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MatchingFilter
 {
-    /**
-     * @var string
-     */
-    protected $firstname;
+    protected string $firstname;
 
-    /**
-     * @var string
-     */
-    protected $lastname;
+    protected string $lastname;
 
-    /**
-     * @var string|null
-     */
-    protected $mobile;
+    protected ?string $mobile;
 
-    /**
-     * @var string|null
-     */
-    protected $email;
+    protected ?string $email;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public function __construct(string $firstname, string $lastname)
+    {
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->mobile = null;
+        $this->email = null;
+    }
+
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('firstname')->setAllowedTypes('firstname', ['string'])
@@ -47,10 +39,6 @@ class MatchingFilter
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -64,27 +52,20 @@ class MatchingFilter
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setFirstname($resolvedOptions['firstname'])
-            ->setLastname($resolvedOptions['lastname'])
+        return (new self(
+            $resolvedOptions['firstname'],
+            $resolvedOptions['lastname'],
+        ))
             ->setMobile($resolvedOptions['mobile'])
             ->setEmail($resolvedOptions['email'])
         ;
     }
 
-    /**
-     * @return string
-     */
     public function getFirstname(): string
     {
         return $this->firstname;
     }
 
-    /**
-     * @param string $firstname
-     *
-     * @return self
-     */
     public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
@@ -92,19 +73,11 @@ class MatchingFilter
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLastname(): string
     {
         return $this->lastname;
     }
 
-    /**
-     * @param string $lastname
-     *
-     * @return self
-     */
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
@@ -112,19 +85,11 @@ class MatchingFilter
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMobile(): ?string
     {
         return $this->mobile;
     }
 
-    /**
-     * @param string|null $mobile
-     *
-     * @return self
-     */
     public function setMobile(?string $mobile): self
     {
         $this->mobile = $mobile;
@@ -132,19 +97,11 @@ class MatchingFilter
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string|null $email
-     *
-     * @return self
-     */
     public function setEmail(?string $email): self
     {
         $this->email = $email;

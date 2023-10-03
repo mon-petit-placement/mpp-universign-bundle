@@ -2,7 +2,7 @@
 
 namespace Mpp\UniversignBundle\Model;
 
-use Laminas\XmlRpc\Value\Base64;
+use Mpp\UniversignBundle\Model\XmlRpc\Base64;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -14,42 +14,53 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IdDocument
 {
-    const TYPE_IDENTITY_CARD = 0;
-    const TYPE_PASSPORT = 1;
-    const TYPE_RESIDENCE_PERMIT = 2;
-    const TYPE_EUROPEAN_DRIVER_LICENSE = 3;
+    public const TYPE_IDENTITY_CARD = 0;
+    public const TYPE_PASSPORT = 1;
+    public const TYPE_RESIDENCE_PERMIT = 2;
+    public const TYPE_EUROPEAN_DRIVER_LICENSE = 3;
 
     /**
      * @var Base64[]
      */
-    protected $photos;
+    protected array $photos;
+
+    protected int $type;
 
     /**
-     * @var int
+     * @param Base64[] $photos
      */
-    protected $type;
+    public function __construct(array $photos, int $type)
+    {
+        $this->photos = $photos;
+        $this->type = $type;
+    }
 
     /**
-     * @param OptionsResolver $resolver
+     * @throws \UnexpectedValueException
      */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('type')->setAllowedValues('type', [self::TYPE_EUROPEAN_DRIVER_LICENSE, self::TYPE_RESIDENCE_PERMIT, self::TYPE_PASSPORT, self::TYPE_IDENTITY_CARD])
             ->setRequired('photos')->setAllowedTypes('photos', ['array'])->setNormalizer('photos', function (Options $options, $array): ?array {
                 $list = [];
                 foreach ($array as $value) {
+                    if (null === $value) {
+                        continue;
+                    }
+
                     if ($value instanceof Base64) {
                         $list[] = $value;
                         continue;
                     }
 
-                    if (null === $value || !file_exists($value)) {
-                        continue;
+                    if (!is_string($value)) {
+                        throw new \UnexpectedValueException(
+                            'Type ' . gettype($value) . ' is not allowed in photo array'
+                        );
                     }
 
-                    $file = file_get_contents($value);
-                    $list[] = new \Laminas\XmlRpc\Value\Base64($file);
+                    $list[] = new Base64($value);
                 }
 
                 return $list;
@@ -58,10 +69,6 @@ class IdDocument
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -75,10 +82,10 @@ class IdDocument
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setPhotos($resolvedOptions['photos'])
-            ->setType($resolvedOptions['type'])
-        ;
+        return (new self(
+            $resolvedOptions['photos'],
+            $resolvedOptions['type']
+        ));
     }
 
     /**
@@ -90,9 +97,7 @@ class IdDocument
     }
 
     /**
-     * @param array $photos
-     *
-     * @return self
+     * @param Base64[] $photos
      */
     public function setPhotos(array $photos): self
     {
@@ -101,19 +106,11 @@ class IdDocument
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     *
-     * @return self
-     */
     public function setType(int $type): self
     {
         $this->type = $type;

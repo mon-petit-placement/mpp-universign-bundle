@@ -13,136 +13,90 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionRequest
 {
-    /**
-     * @var string
-     */
-    protected $profile;
+    protected ?string $profile;
 
-    /**
-     * @var string
-     */
-    protected $customId;
+    protected ?string $customId;
 
     /**
      * @var array<Signer>
      */
-    protected $signers;
+    protected array $signers;
 
     /**
      * @var array<Document>
      */
-    protected $documents;
+    protected array $documents;
 
-    /**
-     * @var bool
-     */
-    protected $mustContactFirstSigner;
+    protected bool $mustContactFirstSigner;
 
-    /**
-     * @var bool
-     */
-    protected $finalDocSent;
+    protected bool $finalDocSent;
 
-    /**
-     * @var bool
-     */
-    protected $finalDocRequesterSent;
+    protected bool $finalDocRequesterSent;
 
-    /**
-     * @var bool
-     */
-    protected $finalDocObserverSent;
+    protected bool $finalDocObserverSent;
 
-    /**
-     * @var string
-     */
-    protected $description;
+    protected ?string $description;
 
-    /**
-     * @var string
-     */
-    protected $certificateType;
+    protected string $certificateType;
 
-    /**
-     * @var string
-     */
-    protected $language;
+    protected string $language;
 
-    /**
-     * @var int
-     */
-    protected $handwrittenSignatureMode;
+    protected ?int $handwrittenSignatureMode;
 
-    /**
-     * @var string
-     */
-    protected $chainingMode;
+    protected string $chainingMode;
 
-    /**
-     * @var array
-     */
-    protected $finalDocCCeMails;
+    protected ?array $finalDocCCeMails;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $autoValidationRedirection;
+    protected ?RedirectionConfig $autoValidationRedirection;
 
-    /**
-     * @var string
-     */
-    protected $redirectPolicy;
+    protected string $redirectPolicy;
 
-    /**
-     * @var int
-     */
-    protected $redirectWait;
+    protected int $redirectWait;
 
-    /**
-     * @var bool
-     */
-    protected $autoSendAgreements;
+    protected ?bool $autoSendAgreements;
 
-    /**
-     * @var string
-     */
-    protected $operator;
+    protected ?string $operator;
 
-    /**
-     * @var string
-     */
-    protected $registrationCallbackURL;
+    protected ?string $registrationCallbackURL;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $successRedirection;
+    protected ?RedirectionConfig $successRedirection;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $failRedirection;
+    protected ?RedirectionConfig $failRedirection;
 
-    /**
-     * @var RedirectionConfig
-     */
-    protected $cancelRedirection;
+    protected ?RedirectionConfig $cancelRedirection;
 
-    /**
-     * @var string
-     */
-    protected $invitationMessage;
+    protected ?string $invitationMessage;
 
     public function __construct()
     {
+        $this->profile = null;
+        $this->customId = null;
         $this->signers = [];
         $this->documents = [];
+        $this->mustContactFirstSigner = false;
+        $this->finalDocSent = false;
+        $this->finalDocRequesterSent = false;
+        $this->finalDocObserverSent = false;
+        $this->description = null;
+        $this->certificateType = CertificateType::SIMPLE;
+        $this->language = 'en';
+        $this->handwrittenSignatureMode = null;
+        $this->chainingMode = 'email';
+        $this->finalDocCCeMails = null;
+        $this->autoValidationRedirection = null;
+        $this->redirectPolicy = 'dashboard';
+        $this->redirectWait = 5;
+        $this->autoSendAgreements = null;
+        $this->operator = null;
+        $this->autoSendAgreements = null;
+        $this->registrationCallbackURL = null;
+        $this->successRedirection = null;
+        $this->cancelRedirection = null;
+        $this->failRedirection = null;
+        $this->invitationMessage = null;
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('profile', null)->setAllowedTypes('profile', ['null', 'string'])
@@ -205,10 +159,6 @@ class TransactionRequest
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -250,11 +200,6 @@ class TransactionRequest
         ;
     }
 
-    /**
-     * @param string|null $profile
-     *
-     * @return self
-     */
     public function setProfile(?string $profile): self
     {
         $this->profile = $profile;
@@ -262,19 +207,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getProfile(): ?string
     {
         return $this->profile;
     }
 
-    /**
-     * @param string|null $customId
-     *
-     * @return self
-     */
     public function setCustomId(?string $customId): self
     {
         $this->customId = $customId;
@@ -282,19 +219,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCustomId(): ?string
     {
         return $this->customId;
     }
 
-    /**
-     * @param Signer $signer
-     *
-     * @return self
-     */
     public function addSigner(Signer $signer): self
     {
         $this->signers[] = $signer;
@@ -304,8 +233,6 @@ class TransactionRequest
 
     /**
      * @param array<Signer> $signers
-     *
-     * @return self
      */
     public function setSigners(array $signers): self
     {
@@ -322,12 +249,6 @@ class TransactionRequest
         return $this->signers;
     }
 
-    /**
-     * @param string   $name
-     * @param Document $document
-     *
-     * @return self
-     */
     public function addDocument(string $name, Document $document): self
     {
         $this->documents[$name] = $document;
@@ -337,8 +258,6 @@ class TransactionRequest
 
     /**
      * @param array<Document> $documents
-     *
-     * @return self
      */
     public function setDocuments(array $documents): self
     {
@@ -347,11 +266,6 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return Document
-     */
     public function getDocument(string $name): Document
     {
         return $this->documents[$name];
@@ -365,89 +279,54 @@ class TransactionRequest
         return $this->documents;
     }
 
-    /**
-     * @param bool|null $mustContactFirstSigner
-     *
-     * @return self
-     */
-    public function setMustContactFirstSigner(?bool $mustContactFirstSigner): self
+    public function setMustContactFirstSigner(bool $mustContactFirstSigner): self
     {
         $this->mustContactFirstSigner = $mustContactFirstSigner;
 
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getMustContactFirstSigner(): ?bool
+    public function getMustContactFirstSigner(): bool
     {
         return $this->mustContactFirstSigner;
     }
 
-    /**
-     * @param bool|null $finalDocSent
-     *
-     * @return self
-     */
-    public function setFinalDocSent(?bool $finalDocSent): self
+    public function setFinalDocSent(bool $finalDocSent): self
     {
         $this->finalDocSent = $finalDocSent;
 
         return $this;
     }
 
-    /**
-     * @param bool|null
-     */
-    public function getFinalDocSent(): ?bool
+    public function getFinalDocSent(): bool
     {
         return $this->finalDocSent;
     }
 
-    /**
-     * @param bool|null $finalDocRequesterSent
-     *
-     * @return self
-     */
-    public function setFinalDocRequesterSent(?bool $finalDocRequesterSent): self
+    public function setFinalDocRequesterSent(bool $finalDocRequesterSent): self
     {
         $this->finalDocRequesterSent = $finalDocRequesterSent;
 
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getFinalDocRequesterSent(): ?bool
+    public function getFinalDocRequesterSent(): bool
     {
         return $this->finalDocRequesterSent;
     }
 
-    /**
-     * @param bool|null $finalDocObserverSent
-     *
-     * @return self
-     */
-    public function setFinalDocObserverSent(?bool $finalDocObserverSent): self
+    public function setFinalDocObserverSent(bool $finalDocObserverSent): self
     {
         $this->finalDocObserverSent = $finalDocObserverSent;
 
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getFinalDocObserverSent(): ?bool
+    public function getFinalDocObserverSent(): bool
     {
         return $this->finalDocObserverSent;
     }
 
-    /**
-     * @param string|null $descripton
-     */
     public function setDescription(?string $description): self
     {
         $this->description = $description;
@@ -455,59 +334,35 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string|null $certificateType
-     *
-     * @return self
-     */
-    public function setCertificateType(?string $certificateType): self
+    public function setCertificateType(string $certificateType): self
     {
         $this->certificateType = $certificateType;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getCertificateType(): ?string
+    public function getCertificateType(): string
     {
         return $this->certificateType;
     }
 
-    /**
-     * @param string|null $language
-     *
-     * @return self
-     */
-    public function setLanguage(?string $language): self
+    public function setLanguage(string $language): self
     {
         $this->language = $language;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getLanguage(): ?string
+    public function getLanguage(): string
     {
         return $this->language;
     }
 
-    /**
-     * @param int|null $handwrittenSignatureMode
-     *
-     * @return self
-     */
     public function setHandwrittenSignatureMode(?int $handwrittenSignatureMode): self
     {
         $this->handwrittenSignatureMode = $handwrittenSignatureMode;
@@ -515,39 +370,23 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getHandwrittenSignatureMode(): ?int
     {
         return $this->handwrittenSignatureMode;
     }
 
-    /**
-     * @param string|null $chainingMode
-     *
-     * @return self
-     */
-    public function setChainingMode(?string $chainingMode): self
+    public function setChainingMode(string $chainingMode): self
     {
         $this->chainingMode = $chainingMode;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getChainingMode(): ?string
+    public function getChainingMode(): string
     {
         return $this->chainingMode;
     }
 
-    /**
-     * @param array|null $finalDocCCeMails
-     *
-     * @return self
-     */
     public function setFinalDocCCeMails(?array $finalDocCCeMails): self
     {
         $this->finalDocCCeMails = $finalDocCCeMails;
@@ -555,19 +394,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getFinalDocCCemails(): ?array
     {
         return $this->finalDocCCeMails;
     }
 
-    /**
-     * @param RedirectionConfig|null $autoValidationRedirection
-     *
-     * @return self
-     */
     public function setAutoValidationRedirection(?RedirectionConfig $autoValidationRedirection): self
     {
         $this->autoValidationRedirection = $autoValidationRedirection;
@@ -575,59 +406,35 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return RedirectionConfig|null
-     */
     public function getAutoValidationRedirection(): ?RedirectionConfig
     {
         return $this->autoValidationRedirection;
     }
 
-    /**
-     * @param string|null $redirectPolicy
-     *
-     * @return self
-     */
-    public function setRedirectPolicy(?string $redirectPolicy): self
+    public function setRedirectPolicy(string $redirectPolicy): self
     {
         $this->redirectPolicy = $redirectPolicy;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRedirectPolicy(): ?string
+    public function getRedirectPolicy(): string
     {
         return $this->redirectPolicy;
     }
 
-    /**
-     * @param int|null $redirectWait
-     *
-     * @return self
-     */
-    public function setRedirectWait(?int $redirectWait): self
+    public function setRedirectWait(int $redirectWait): self
     {
         $this->redirectWait = $redirectWait;
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getRedirectWait(): ?int
+    public function getRedirectWait(): int
     {
         return $this->redirectWait;
     }
 
-    /**
-     * @param bool|null $autoSendAgreements
-     *
-     * @return self
-     */
     public function setAutoSendAgreements(?bool $autoSendAgreements): self
     {
         $this->autoSendAgreements = $autoSendAgreements;
@@ -635,19 +442,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getAutoSendAgreements(): ?bool
     {
         return $this->autoSendAgreements;
     }
 
-    /**
-     * @param string|null $operator
-     *
-     * @return self
-     */
     public function setOperator(?string $operator): self
     {
         $this->operator = $operator;
@@ -655,19 +454,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getOperator(): ?string
     {
         return $this->operator;
     }
 
-    /**
-     * @param string|null $registrationCallbackURL
-     *
-     * @return self
-     */
     public function setRegistrationCallbackURL(?string $registrationCallbackURL): self
     {
         $this->registrationCallbackURL = $registrationCallbackURL;
@@ -675,19 +466,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRegistrationCallbackURL(): ?string
     {
         return $this->registrationCallbackURL;
     }
 
-    /**
-     * @param RedirectionConfig|null $successRedirection
-     *
-     * @return self
-     */
     public function setSuccessRedirection(?RedirectionConfig $successRedirection): self
     {
         $this->successRedirection = $successRedirection;
@@ -695,19 +478,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return RedirectionConfig|null
-     */
     public function getSuccessRedirection(): ?RedirectionConfig
     {
         return $this->successRedirection;
     }
 
-    /**
-     * @param RedirectionConfig|null $cancelRedirection
-     *
-     * @return self
-     */
     public function setCancelRedirection(?RedirectionConfig $cancelRedirection): self
     {
         $this->cancelRedirection = $cancelRedirection;
@@ -715,19 +490,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return RedirectionConfig|null
-     */
-    public function getCancelRedirection(): ? RedirectionConfig
+    public function getCancelRedirection(): ?RedirectionConfig
     {
         return $this->cancelRedirection;
     }
 
-    /**
-     * @param RedirectionConfig|null $failRedirection
-     *
-     * @return self
-     */
     public function setFailRedirection(?RedirectionConfig $failRedirection): self
     {
         $this->failRedirection = $failRedirection;
@@ -735,19 +502,11 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return RedirectionConfig|null
-     */
     public function getFailRedirection(): ?RedirectionConfig
     {
         return $this->failRedirection;
     }
 
-    /**
-     * @param string|null $invitationMessage
-     *
-     * @return self
-     */
     public function setInvitationMessage(?string $invitationMessage): self
     {
         $this->invitationMessage = $invitationMessage;
@@ -755,9 +514,6 @@ class TransactionRequest
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getInvitationMessage(): ?string
     {
         return $this->invitationMessage;

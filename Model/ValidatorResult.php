@@ -8,51 +8,34 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ValidatorResult
 {
-    const STATUS_PENDING = 0;
-    const STATUS_VALID = 1;
-    const STATUS_INVALID = 2;
+    public const STATUS_PENDING = 0;
+    public const STATUS_VALID = 1;
+    public const STATUS_INVALID = 2;
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected string $id;
 
-    /**
-     * @var int
-     */
-    protected $status;
+    protected int $status;
 
-    /**
-     * @var null|int
-     */
-    protected $reason;
+    protected ?int $reason;
 
-    /**
-     * @var null|string
-     */
-    protected $reasonMessage;
+    protected ?string $reasonMessage;
 
-    /**
-     * @var null|array
-     */
-    protected $result;
+    protected ?array $result;
 
-    public function __construct()
+    public function __construct(string $id, int $status)
     {
+        $this->id = $id;
+        $this->status = $status;
         $this->reason = null;
         $this->reasonMessage = null;
         $this->result = null;
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired('id')->setAllowedTypes('id', ['string'])
@@ -64,10 +47,6 @@ class ValidatorResult
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -81,28 +60,21 @@ class ValidatorResult
         self::configureData($resolver);
         $resolvedOptions = $resolver->resolve($options);
 
-        return (new self())
-            ->setId($resolvedOptions['id'])
-            ->setStatus($resolvedOptions['status'])
+        return (new self(
+            $resolvedOptions['id'],
+            $resolvedOptions['status'],
+        ))
             ->setReason($resolvedOptions['reason'])
             ->setReasonMessage($resolvedOptions['reasonMessage'])
             ->setResult($resolvedOptions['result'])
         ;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return self
-     */
     public function setId(string $id): self
     {
         $this->id = $id;
@@ -110,19 +82,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     *
-     * @return self
-     */
     public function setStatus(int $status): self
     {
         $this->status = $status;
@@ -130,19 +94,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getReason(): ?int
     {
         return $this->reason;
     }
 
-    /**
-     * @param int|null $reason
-     *
-     * @return self
-     */
     public function setReason(?int $reason): self
     {
         $this->reason = $reason;
@@ -150,19 +106,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getReasonMessage(): ?string
     {
         return $this->reasonMessage;
     }
 
-    /**
-     * @param string|null $reasonMessage
-     *
-     * @return self
-     */
     public function setReasonMessage(?string $reasonMessage): self
     {
         $this->reasonMessage = $reasonMessage;
@@ -170,19 +118,11 @@ class ValidatorResult
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getResult(): ?array
     {
         return $this->result;
     }
 
-    /**
-     * @param array|null $result
-     *
-     * @return self
-     */
     public function setResult(?array $result): self
     {
         $this->result = $result;

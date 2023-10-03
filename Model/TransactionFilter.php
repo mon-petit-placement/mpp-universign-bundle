@@ -8,130 +8,64 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionFilter
 {
-    /**
-     * @var string
-     */
-    protected $requesterEmail;
+    protected ?string $requesterEmail;
 
-    /**
-     * @var string
-     */
-    protected $profile;
+    protected ?string $profile;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notBefore;
+    protected ?\DateTimeInterface $notBefore;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notAfter;
+    protected ?\DateTimeInterface $notAfter;
 
-    /**
-     * @var int
-     */
-    protected $startRange;
+    protected ?int $startRange;
 
-    /**
-     * @var int
-     */
-    protected $stopRange;
+    protected ?int $stopRange;
 
-    /**
-     * @var string
-     */
-    protected $signerId;
+    protected ?string $signerId;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notBeforeCompletion;
+    protected ?\DateTimeInterface $notBeforeCompletion;
 
-    /**
-     * @var \Laminas\XmlRpc\Value\DateTime
-     */
-    protected $notAfterCompletion;
+    protected ?\DateTimeInterface $notAfterCompletion;
 
-    /**
-     * @var int
-     */
-    protected $status;
+    protected ?int $status;
 
-    /**
-     * @var bool
-     */
-    protected $withAffiliated;
+    protected ?bool $withAffiliated;
 
-    /**
-     * @return TransactionFilter
-     */
-    public function initiateTransactionFilter(): TransactionFilter
+    public function __construct()
     {
-        return new self();
+        $this->requesterEmail = null;
+        $this->profile = null;
+        $this->notBefore = null;
+        $this->notAfter = null;
+        $this->startRange = null;
+        $this->stopRange = null;
+        $this->signerId = null;
+        $this->notBeforeCompletion = null;
+        $this->notAfterCompletion = null;
+        $this->status = null;
+        $this->withAffiliated = null;
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('requesterEmail', null)->setAllowedTypes('requesterEmail', ['string', 'null'])
             ->setDefault('profile', null)->setAllowedTypes('profile', ['string', 'null'])
-            ->setDefault('notBefore', null)->setAllowedTypes('notBefore', ['DateTime', 'null'])->setNormalizer('notBefore', function (Options $option, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
-            ->setDefault('notAfter', null)->setAllowedTypes('notAfter', ['DateTime', 'null'])->setNormalizer('notAfter', function (Options $options, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
+            ->setDefault('notBefore', null)->setAllowedTypes('notBefore', [\DateTimeInterface::class, 'null'])
+            ->setDefault('notAfter', null)->setAllowedTypes('notAfter', [\DateTimeInterface::class, 'null'])
             ->setDefault('startRange', null)->setAllowedTypes('startRange', ['int', 'null'])
             ->setDefault('stopRange', null)->setAllowedTypes('stopRange', ['int', 'null'])
             ->setDefault('signerId', null)->setAllowedTypes('signerId', ['string', 'null'])
-            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', ['DateTime', 'null'])->setNormalizer('notBeforeCompletion', function (Options $options, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
-            ->setDefault('notAfterCompletion', null)->setAllowedTypes('notAfterCompletion', ['DateTime', 'null'])->setNormalizer('notAfterCompletion', function (Options $options, $value) {
-                if (null === $value) {
-                    return null;
-                }
-                $value = $value->format('Ymd\TH:i:s');
-                $date = new \Laminas\XmlRpc\Value\DateTime($value);
-
-                return $date;
-            })
+            ->setDefault('notBeforeCompletion', null)->setAllowedTypes('notBeforeCompletion', [\DateTimeInterface::class, 'null'])
+            ->setDefault('notAfterCompletion', null)->setAllowedTypes('notAfterCompletion', [\DateTimeInterface::class, 'null'])
             ->setDefault('status', null)->setAllowedTypes('status', ['int', 'null'])
             ->setDefault('withAffiliated', null)->setAllowedTypes('withAffiliated', ['bool', 'null']);
     }
 
     /**
-     * @param array $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -160,11 +94,6 @@ class TransactionFilter
         ;
     }
 
-    /**
-     * @param string|null $requesterEmail
-     *
-     * @return self
-     */
     public function setRequesterEmail(?string $requesterEmail): self
     {
         $this->requesterEmail = $requesterEmail;
@@ -172,19 +101,11 @@ class TransactionFilter
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRequesterEmail(): ?string
     {
         return $this->requesterEmail;
     }
 
-    /**
-     * @param string|null
-     *
-     * @return self
-     */
     public function setProfile(?string $profile): self
     {
         $this->profile = $profile;
@@ -192,59 +113,35 @@ class TransactionFilter
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getProfile(): ?string
     {
         return $this->profile;
     }
 
-    /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notBefore
-     *
-     * @return self
-     */
-    public function setNotBefore(?\Laminas\XmlRpc\Value\DateTime $notBefore): self
+    public function setNotBefore(?\DateTimeInterface $notBefore): self
     {
         $this->notBefore = $notBefore;
 
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
-     */
-    public function getNotBefore(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotBefore(): ?\DateTimeInterface
     {
         return $this->notBefore;
     }
 
-    /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notAfter
-     *
-     * @return self
-     */
-    public function setNotAfter(?\Laminas\XmlRpc\Value\DateTime $notAfter): self
+    public function setNotAfter(?\DateTimeInterface $notAfter): self
     {
         $this->notAfter = $notAfter;
 
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
-     */
-    public function getNotAfter(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotAfter(): ?\DateTimeInterface
     {
         return $this->notAfter;
     }
 
-    /**
-     * @param int|null $startRange
-     *
-     * @return self
-     */
     public function setStartRange(?int $startRange): self
     {
         $this->startRange = $startRange;
@@ -252,19 +149,11 @@ class TransactionFilter
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getStartRange(): ?int
     {
         return $this->startRange;
     }
 
-    /**
-     * @param int|null $stopRange
-     *
-     * @return self
-     */
     public function setStopRange(?int $stopRange): self
     {
         $this->stopRange = $stopRange;
@@ -272,19 +161,11 @@ class TransactionFilter
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getStopRange(): ?int
     {
         return $this->stopRange;
     }
 
-    /**
-     * @param string|null
-     *
-     * @return self
-     */
     public function setSignerId(?string $signerId): self
     {
         $this->signerId = $signerId;
@@ -292,59 +173,35 @@ class TransactionFilter
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSignerId(): ?string
     {
         return $this->signerId;
     }
 
-    /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notBeforeCompletion
-     *
-     * @return self
-     */
-    public function setNotBeforeCompletion(?\Laminas\XmlRpc\Value\DateTime $notBeforeCompletion): self
+    public function setNotBeforeCompletion(?\DateTimeInterface $notBeforeCompletion): self
     {
         $this->notBeforeCompletion = $notBeforeCompletion;
 
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
-     */
-    public function getNotBeforeCompletion(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotBeforeCompletion(): ?\DateTimeInterface
     {
         return $this->notBeforeCompletion;
     }
 
-    /**
-     * @param \Laminas\XmlRpc\Value\DateTime|null $notAfterCompletion
-     *
-     * @return self
-     */
-    public function setNotAfterCompletion(?\Laminas\XmlRpc\Value\DateTime $notAfterCompletion): self
+    public function setNotAfterCompletion(?\DateTimeInterface $notAfterCompletion): self
     {
         $this->notAfterCompletion = $notAfterCompletion;
 
         return $this;
     }
 
-    /**
-     * @return \Laminas\XmlRpc\Value\DateTime|null
-     */
-    public function getNotAfterCompletion(): ?\Laminas\XmlRpc\Value\DateTime
+    public function getNotAfterCompletion(): ?\DateTimeInterface
     {
         return $this->notAfterCompletion;
     }
 
-    /**
-     * @param int|null $status
-     *
-     * @return self
-     */
     public function setStatus(?int $status): self
     {
         $this->status = $status;
@@ -352,19 +209,11 @@ class TransactionFilter
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getStatus(): ?int
     {
         return $this->status;
     }
 
-    /**
-     * @param bool|null $withAffiliated
-     *
-     * @return self
-     */
     public function setWithAffiliated(?bool $withAffiliated): self
     {
         $this->withAffiliated = $withAffiliated;
@@ -372,9 +221,6 @@ class TransactionFilter
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getWithAffiliated(): ?bool
     {
         return $this->withAffiliated;

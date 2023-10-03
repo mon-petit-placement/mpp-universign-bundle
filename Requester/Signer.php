@@ -2,10 +2,6 @@
 
 namespace Mpp\UniversignBundle\Requester;
 
-use Laminas\XmlRpc\Client;
-use Laminas\XmlRpc\Client\Exception\FaultException;
-use Laminas\XmlRpc\Value\Base64;
-use Laminas\XmlRpc\Value\DateTime;
 use Mpp\UniversignBundle\Model\InitiatorInfo;
 use Mpp\UniversignBundle\Model\RedirectionConfig;
 use Mpp\UniversignBundle\Model\SignerInfo;
@@ -13,34 +9,30 @@ use Mpp\UniversignBundle\Model\SignOptions;
 use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
+use Mpp\UniversignBundle\Model\XmlRpc\Base64;
+use PhpXmlRpc\Encoder;
+use PhpXmlRpc\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Signer extends XmlRpcRequester implements SignerInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var Router
-     */
-    protected $router;
+    protected Router $router;
 
-    /**
-     * @var array
-     */
-    protected $entrypoint;
+    protected array $entrypoint;
 
-    /**
-     * @var array
-     */
-    protected $options;
+    protected array $options;
 
-    public function __construct(LoggerInterface $logger, Router $router, array $entrypoint, array $options, array $clientOptions)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        Router $router,
+        array $entrypoint,
+        array $options,
+        array $clientOptions
+    ) {
         $this->logger = $logger;
         $this->router = $router;
         $this->entrypoint = $entrypoint;
@@ -49,17 +41,11 @@ class Signer extends XmlRpcRequester implements SignerInterface
         parent::__construct($clientOptions);
     }
 
-    /**
-     * @return string;
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->entrypoint['sign'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function initiateTransactionRequest(array $options = []): TransactionRequest
     {
         $defaultOptions = [];
@@ -120,80 +106,76 @@ class Signer extends XmlRpcRequester implements SignerInterface
         return $transaction;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function requestTransaction(TransactionRequest $transactionRequest): TransactionResponse
     {
         $transactionResponse = new TransactionResponse();
 
-        $flattenedTransactionRequest = self::flatten($transactionRequest);
+        $flattenedTransactionRequest = $this->flatten($transactionRequest);
         $flattenedTransactionRequest['documents'] = array_values($flattenedTransactionRequest['documents']);
 
         try {
-            $response = $this->xmlRpcClient->call('requester.requestTransaction', [$flattenedTransactionRequest]);
+            $response = $this->send('requester.requestTransaction', $this->flatten([$flattenedTransactionRequest]));
             $this->logger->info('[Universign - requester.requestTransaction] SUCCESS');
             $transactionResponse
                 ->setId($response['id'])
                 ->setUrl($response['url'])
                 ->setState(TransactionResponse::STATE_SUCCESS)
             ;
-        } catch (FaultException $fe) {
+        } catch (Exception $e) {
             $transactionResponse
                 ->setState(TransactionResponse::STATE_ERROR)
-                ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
+                ->setErrorCode($e->getCode())
+                ->setErrorMessage($e->getMessage())
             ;
 
-            $this->logger->error(sprintf('[Universign - requester.requestTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+            $this->logger->error(
+                sprintf('[Universign - requester.requestTransaction] ERROR (%s): %s', $e->getCode(), $e->getMessage())
+            );
         }
 
         return $transactionResponse;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDocuments(string $documentId): array
     {
         $documents = [];
 
         try {
-            $documents = $this->xmlRpcClient->call('requester.getDocuments', $documentId);
+            $documents = $this->send('requester.getDocuments', $documentId);
             $this->logger->info('[Universign - requester.getDocuments] SUCCESS');
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - requester.getDocuments] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf('[Universign - requester.getDocuments] ERROR (%s): %s', $e->getCode(), $e->getMessage())
+            );
         }
 
         return $documents;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDocumentsByCustomId(string $customId): array
     {
         $documents = [];
 
         try {
-            $documents = $this->xmlRpcClient->call('requester.getDocumentsByCustomId', $customId);
+            $documents = $this->send('requester.getDocumentsByCustomId', $customId);
             $this->logger->info('[Universign - requester.getDocumentsByCustomId] SUCCESS');
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - requester.getDocumentsByCustomId] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(sprintf(
+                '[Universign - requester.getDocumentsByCustomId] ERROR (%s): %s',
+                $e->getCode(),
+                $e->getMessage()
+            ));
         }
 
         return $documents;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTransactionInfo(string $transactionId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
 
         try {
-            $response = $this->xmlRpcClient->call('requester.getTransactionInfo', $transactionId);
+            $response = $this->send('requester.getTransactionInfo', $transactionId);
             $this->logger->info('[Universign - requester.getTransactionInfo] SUCCESS');
             $transactionInfo
                 ->setState(TransactionInfo::STATE_SUCCESS)
@@ -211,28 +193,27 @@ class Signer extends XmlRpcRequester implements SignerInterface
             foreach ($response['signerInfos'] as $signerInfo) {
                 $transactionInfo->addSignerInfo(SignerInfo::createFromArray($signerInfo));
             }
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - requester.getTransactionInfo] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf('[Universign - requester.getTransactionInfo] ERROR (%s): %s', $e->getCode(), $e->getMessage())
+            );
 
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
-                ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
+                ->setErrorCode($e->getCode())
+                ->setErrorMessage($e->getMessage())
             ;
         }
 
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTransactionInfoByCustomId(string $customId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
 
         try {
-            $response = $this->xmlRpcClient->call('requester.getTransactionInfoByCustomId', $customId);
+            $response = $this->send('requester.getTransactionInfoByCustomId', $customId);
             $this->logger->info('[Universign - requester.getTransactionInfoByCustomId] SUCCESS');
             $transactionInfo
                 ->setState(TransactionInfo::STATE_SUCCESS)
@@ -247,90 +228,90 @@ class Signer extends XmlRpcRequester implements SignerInterface
                 ->setRedirectPolicy($response['redirectPolicy'] ?? null)
                 ->setRedirectWait($response['redirectWait'] ?? null)
             ;
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - requester.getTransactionInfoByCustomId] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(sprintf(
+                '[Universign - requester.getTransactionInfoByCustomId] ERROR (%s): %s',
+                $e->getCode(),
+                $e->getMessage()
+            ));
 
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
-                ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
+                ->setErrorCode($e->getCode())
+                ->setErrorMessage($e->getMessage())
             ;
         }
 
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function relaunchTransaction(string $transactionId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
 
         try {
-            $response = $this->xmlRpcClient->call('requester.relaunchTransaction', $transactionId);
+            $response = $this->send('requester.relaunchTransaction', $transactionId);
             $this->logger->info('[Universign - requester.relaunchTransaction] SUCCESS');
             $transactionInfo->setState(TransactionInfo::STATE_SUCCESS);
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - requester.relaunchTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(sprintf(
+                '[Universign - requester.relaunchTransaction] ERROR (%s): %s',
+                $e->getCode(),
+                $e->getMessage()
+            ));
 
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
-                ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
+                ->setErrorCode($e->getCode())
+                ->setErrorMessage($e->getMessage())
             ;
         }
 
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function cancelTransaction(string $transactionId): TransactionInfo
     {
         $transactionInfo = new TransactionInfo();
 
         try {
-            $response = $this->xmlRpcClient->call('requester.cancelTransaction', $transactionId);
+            $response = $this->send('requester.cancelTransaction', $transactionId);
             $this->logger->info('[Universign - requester.cancelTransaction] SUCCESS');
             $transactionInfo->setState(TransactionInfo::STATE_SUCCESS);
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - requester.cancelTransaction] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf('[Universign - requester.cancelTransaction] ERROR (%s): %s', $e->getCode(), $e->getMessage())
+            );
 
             $transactionInfo
                 ->setState(TransactionInfo::STATE_ERROR)
-                ->setErrorCode($fe->getCode())
-                ->setErrorMessage($fe->getMessage())
+                ->setErrorCode($e->getCode())
+                ->setErrorMessage($e->getMessage())
             ;
         }
 
         return $transactionInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function sign(Base64 $document): ?string
     {
         $response = null;
         $data = [
-            'document' => new Base64($document),
+            'document' => $document,
         ];
 
         try {
-            $response = $this->xmlRpcClient->call('signer.sign', self::flatten($data));
+            $response = $this->send('signer.sign', $this->flatten($data));
             $this->logger->info('[Universign - signer.sign] SUCCESS');
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - signer.sign] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf('[Universign - signer.sign] ERROR (%s): %s', $e->getCode(), $e->getMessage())
+            );
         }
 
         return $response;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function signWithOptions(Base64 $document, SignOptions $options): ?string
     {
         $response = null;
@@ -340,10 +321,12 @@ class Signer extends XmlRpcRequester implements SignerInterface
         ];
 
         try {
-            $response = $this->xmlRpcClient->call('signer.signWithOptions', self::flatten($data));
+            $response = $this->send('signer.signWithOptions', $this->flatten($data));
             $this->logger->info('[Universign - signer.signWithOptions] SUCCESS');
-        } catch (FaultException $fe) {
-            $this->logger->error(sprintf('[Universign - signer.signWithOptions] ERROR (%s): %s', $fe->getCode(), $fe->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf('[Universign - signer.signWithOptions] ERROR (%s): %s', $e->getCode(), $e->getMessage())
+            );
         }
 
         return $response;

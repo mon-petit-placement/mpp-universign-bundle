@@ -4,36 +4,22 @@ namespace Mpp\UniversignBundle\Event;
 
 class UniversignCallbackEvent
 {
-    const STATUS_READY = 0;
-    const STATUS_EXPIRED = 1;
-    const STATUS_COMPLETED = 2;
-    const STATUS_CANCELED = 3;
-    const STATUS_ERROR = 4;
+    public const STATUS_READY = 0;
+    public const STATUS_EXPIRED = 1;
+    public const STATUS_COMPLETED = 2;
+    public const STATUS_CANCELED = 3;
+    public const STATUS_ERROR = 4;
     /**
      * All signatories have signed BUT waiting for Universign registration authority validation.
      */
-    const STATUS_SIGNED = 5;
+    public const STATUS_SIGNED = 5;
 
-    /**
-     * @var string
-     */
-    private $transactionId;
+    private string $transactionId;
 
-    /**
-     * @var int|null
-     */
-    private $indexSigner;
+    private ?int $indexSigner;
 
-    /**
-     * @var int
-     */
-    private $status;
+    private int $status;
 
-    /**
-     * @param string $transactionId
-     * @param int|null $indexSigner
-     * @param int $status
-     */
     public function __construct(string $transactionId, ?int $indexSigner, int $status)
     {
         $this->transactionId = $transactionId;
@@ -41,25 +27,16 @@ class UniversignCallbackEvent
         $this->status = $status;
     }
 
-    /**
-     * @retrun string
-     */
-    public function getTransactionId()
+    public function getTransactionId(): string
     {
         return $this->transactionId;
     }
 
-    /**
-     * @return int
-     */
     public function getIndexSigner(): ?int
     {
         return $this->indexSigner;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;

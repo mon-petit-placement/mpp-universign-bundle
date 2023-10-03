@@ -8,18 +8,18 @@ services:
 
     Mpp\UniversignBundle\Requester\Signer:
         arguments:
-            - '@logger'
-            - '@router'
-            - '%mpp_universign.entrypoint%'
-            - '%mpp_universign.options%'
-            - '%mpp_universign.client_options%'
+            $logger: '@logger'
+            $router: '@router'
+            $entrypoint: '%mpp_universign.entrypoint%'
+            $options: '%mpp_universign.options%'
+            $clientOptions: '%mpp_universign.client_options%'
 
     Mpp\UniversignBundle\Requester\RegistrationAuthority:
         arguments:
-            - '@logger'
-            - '@router'
-            - '%mpp_universign.entrypoint%'
-            - '%mpp_universign.client_options%'
+            $logger: '@logger'
+            $router: '@router'
+            $entrypoint: '%mpp_universign.entrypoint%'
+            $clientOptions: '%mpp_universign.client_options%'
 
     Mpp\UniversignBundle\Requester\SignerInterface: '@Mpp\UniversignBundle\Requester\Signer'
     Mpp\UniversignBundle\Requester\RegistrationAuthorityInterface: '@Mpp\UniversignBundle\Requester\RegistrationAuthority'

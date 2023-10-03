@@ -13,75 +13,36 @@ class TransactionInfo
     public const STATUS_FAILED = 'failed';
     public const STATUS_COMPLETED = 'completed';
 
-    /**
-     * @var string
-     */
-    protected $state;
+    protected ?string $state;
 
-    /**
-     * @var string
-     */
-    protected $errorMessage;
+    protected ?string $errorMessage;
 
-    /**
-     * @var int
-     */
-    protected $errorCode;
+    protected int $errorCode;
 
-    /**
-     * @var string
-     */
-    protected $status;
+    protected ?string $status;
 
     /**
      * @var array<SignerInfo>
      */
-    protected $signerInfos;
+    protected array $signerInfos;
 
-    /**
-     * @var int
-     */
-    protected $currentSigner;
+    protected ?int $currentSigner;
 
-    /**
-     * @var \DateTime
-     */
-    protected $creationDate;
+    protected ?\DateTime $creationDate;
 
-    /**
-     * @var string
-     */
-    protected $description;
+    protected ?string $description;
 
-    /**
-     * @var InitiatorInfo
-     */
-    protected $initiatorInfo;
+    protected InitiatorInfo $initiatorInfo;
 
-    /**
-     * @var bool
-     */
-    protected $eachField;
+    protected ?bool $eachField;
 
-    /**
-     * @var string
-     */
-    protected $customerId;
+    protected ?string $customerId;
 
-    /**
-     * @var string
-     */
-    protected $transactionId;
+    protected ?string $transactionId;
 
-    /**
-     * @var string
-     */
-    protected $redirectPolicy;
+    protected ?string $redirectPolicy;
 
-    /**
-     * @var int
-     */
-    protected $redirectWait;
+    protected ?int $redirectWait;
 
     public function __construct()
     {
@@ -101,11 +62,6 @@ class TransactionInfo
         $this->errorCode = 0;
     }
 
-    /**
-     * @param string|null $state
-     *
-     * @return self
-     */
     public function setState(?string $state): self
     {
         $this->state = $state;
@@ -113,19 +69,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getState(): ?string
     {
         return $this->state;
     }
 
-    /**
-     * @param string|null $errorMessage
-     *
-     * @return self
-     */
     public function setErrorMessage(?string $errorMessage): self
     {
         $this->errorMessage = $errorMessage;
@@ -133,39 +81,23 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getErrorMessage(): ?string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getErrorCode(): int
     {
         return $this->errorCode;
     }
 
-    /**
-     * @param int $errorCode
-     *
-     * @return TransactionInfo
-     */
-    public function setErrorCode(int $errorCode): TransactionInfo
+    public function setErrorCode(int $errorCode): self
     {
         $this->errorCode = $errorCode;
 
         return $this;
     }
 
-    /**
-     * @param string|null $status
-     *
-     * @return self
-     */
     public function setStatus(?string $status): self
     {
         $this->status = $status;
@@ -173,32 +105,22 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getStatus(): ?string
     {
         return $this->status;
     }
 
     /**
-     * @param array|null $signerInfos
-     *
-     * @return self
+     * @param array<SignerInfo> $signerInfos
      */
-    public function setSignerInfos(?array $signerInfos): self
+    public function setSignerInfos(array $signerInfos): self
     {
         $this->signerInfos = $signerInfos;
 
         return $this;
     }
 
-    /**
-     * @param SignerInfo|null $signerInfo
-     *
-     * @return self
-     */
-    public function addSignerInfo(?SignerInfo $signerInfo): self
+    public function addSignerInfo(SignerInfo $signerInfo): self
     {
         $this->signerInfos[] = $signerInfo;
 
@@ -206,18 +128,13 @@ class TransactionInfo
     }
 
     /**
-     * @return array|null
+     * @return array<SignerInfo>
      */
-    public function getSignerInfos(): ?array
+    public function getSignerInfos(): array
     {
         return $this->signerInfos;
     }
 
-    /**
-     * @param int|null $currentSigner
-     *
-     * @return self
-     */
     public function setCurrentSigner(?int $currentSigner): self
     {
         $this->currentSigner = $currentSigner;
@@ -225,19 +142,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getCurrentSigner(): ?int
     {
         return $this->currentSigner;
     }
 
-    /**
-     * @param \DateTime|null $creationDate
-     *
-     * @return self
-     */
     public function setCreationDate(?\DateTime $creationDate): self
     {
         $this->creationDate = $creationDate;
@@ -245,19 +154,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getCreationDate(): ?\DateTime
     {
         return $this->creationDate;
     }
 
-    /**
-     * @param string|null $description
-     *
-     * @return self
-     */
     public function setDescription(?string $description): self
     {
         $this->description = $description;
@@ -265,19 +166,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param InitiatorInfo|null $initiatorInfo
-     *
-     * @return self
-     */
     public function setInitiatorInfo(?InitiatorInfo $initiatorInfo): self
     {
         $this->initiatorInfo = $initiatorInfo;
@@ -285,19 +178,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return InitiatorInfo|null
-     */
     public function getInitiatorInfo(): ?InitiatorInfo
     {
         return $this->initiatorInfo;
     }
 
-    /**
-     * @param bool|null $eachField
-     *
-     * @return self
-     */
     public function setEachField(?bool $eachField): self
     {
         $this->eachField = $eachField;
@@ -305,19 +190,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getEachField(): ?bool
     {
         return $this->eachField;
     }
 
-    /**
-     * @param string|null $customerId
-     *
-     * @return self
-     */
     public function setCustomerId(?string $customerId): self
     {
         $this->customerId = $customerId;
@@ -325,19 +202,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCustomerId(): ?string
     {
         return $this->customerId;
     }
 
-    /**
-     * @param string|null $transactionId
-     *
-     * @return self
-     */
     public function setTransactionId(?string $transactionId): self
     {
         $this->transactionId = $transactionId;
@@ -345,19 +214,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getTransactionId(): ?string
     {
         return $this->transactionId;
     }
 
-    /**
-     * @param string|null $redirectPolicy
-     *
-     * @return self
-     */
     public function setRedirectPolicy(?string $redirectPolicy): self
     {
         $this->redirectPolicy = $redirectPolicy;
@@ -365,19 +226,11 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRedirectPolicy(): ?string
     {
         return $this->redirectPolicy;
     }
 
-    /**
-     * @param int|null $redirectWait
-     *
-     * @return self
-     */
     public function setRedirectWait(?int $redirectWait): self
     {
         $this->redirectWait = $redirectWait;
@@ -385,9 +238,6 @@ class TransactionInfo
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getRedirectWait(): ?int
     {
         return $this->redirectWait;

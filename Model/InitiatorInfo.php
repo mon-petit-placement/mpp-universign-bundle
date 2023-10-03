@@ -8,30 +8,24 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
 use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InitiatorInfo
 {
-    /**
-     * @var string
-     */
-    protected $email;
+    protected ?string $email;
 
-    /**
-     * @var string
-     */
-    protected $firstName;
+    protected ?string $firstName;
 
-    /**
-     * @var string
-     */
-    protected $lastName;
+    protected ?string $lastName;
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public static function configureData(OptionsResolver $resolver)
+    public function __construct()
+    {
+        $this->email = null;
+        $this->firstName = null;
+        $this->lastName = null;
+    }
+
+    public static function configureData(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefault('email', null)->setAllowedTypes('email', ['null', 'string'])
@@ -41,10 +35,6 @@ class InitiatorInfo
     }
 
     /**
-     * @param array|null $options
-     *
-     * @return self
-     *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the language specified validation rules
      * @throws MissingOptionsException   If a required option is missing
@@ -52,7 +42,7 @@ class InitiatorInfo
      * @throws NoSuchOptionException     If a lazy option reads an unavailable option
      * @throws AccessException           If called from a lazy option or normalizer
      */
-    public static function createFromArray(?array $options): self
+    public static function createFromArray(array $options): ?self
     {
         if (null === $options) {
             return null;
@@ -69,11 +59,6 @@ class InitiatorInfo
         ;
     }
 
-    /**
-     * @param string|null $email
-     *
-     * @return self
-     */
     public function setEmail(?string $email): self
     {
         $this->email = $email;
@@ -81,19 +66,11 @@ class InitiatorInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string|null $firstName
-     *
-     * @return self
-     */
     public function setFirstName(?string $firstName): self
     {
         $this->firstName = $firstName;
@@ -101,19 +78,11 @@ class InitiatorInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param string|null $lastName
-     *
-     * @return self
-     */
     public function setLastName(?string $lastName): self
     {
         $this->lastName = $lastName;
@@ -121,9 +90,6 @@ class InitiatorInfo
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastName(): ?string
     {
         return $this->lastName;
