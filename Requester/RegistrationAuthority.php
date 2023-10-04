@@ -6,7 +6,6 @@ use Mpp\UniversignBundle\Model\MatchingFilter;
 use Mpp\UniversignBundle\Model\MatchingResult;
 use Mpp\UniversignBundle\Model\ValidationRequest;
 use Mpp\UniversignBundle\Model\ValidatorResult;
-use PhpXmlRpc\Encoder;
 use PhpXmlRpc\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;

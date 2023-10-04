@@ -105,7 +105,7 @@ class Signer
                 return RegistrationRequest::createFromArray($value);
             })
             ->setDefault('validationSessionId', null)->setAllowedTypes('validationSessionId', ['null', 'string'])
-            ->setDefault('redirectPolicy', null)->setAllowedValues('redirectPolicy', ['null', 'dashboard', 'quick'])
+            ->setDefault('redirectPolicy', null)->setAllowedValues('redirectPolicy', [null, 'dashboard', 'quick'])
             ->setDefault('redirectWait', 5)->setAllowedTypes('redirectWait', ['int'])->setNormalizer('redirectWait', function (Options $options, $value) {
                 if ('quick' === $options['redirectPolicy']) {
                     return null;

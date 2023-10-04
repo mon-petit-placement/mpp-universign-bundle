@@ -32,7 +32,7 @@ class TransactionInfo
 
     protected ?string $description;
 
-    protected InitiatorInfo $initiatorInfo;
+    protected ?InitiatorInfo $initiatorInfo;
 
     protected ?bool $eachField;
 

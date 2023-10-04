@@ -44,7 +44,7 @@ class Document
         $this->content = null;
         $this->url = null;
         $this->fileName = null;
-        $this->signatureFields = null;
+        $this->signatureFields = [];
         $this->checkBoxTexts = null;
         $this->metaData = null;
         $this->title = null;
