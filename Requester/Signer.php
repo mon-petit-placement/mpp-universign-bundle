@@ -10,7 +10,6 @@ use Mpp\UniversignBundle\Model\TransactionInfo;
 use Mpp\UniversignBundle\Model\TransactionRequest;
 use Mpp\UniversignBundle\Model\TransactionResponse;
 use Mpp\UniversignBundle\Model\XmlRpc\Base64;
-use PhpXmlRpc\Encoder;
 use PhpXmlRpc\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
