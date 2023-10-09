@@ -113,7 +113,7 @@ class Signer extends XmlRpcRequester implements SignerInterface
         $flattenedTransactionRequest['documents'] = array_values($flattenedTransactionRequest['documents']);
 
         try {
-            $response = $this->send('requester.requestTransaction', $this->flatten([$flattenedTransactionRequest]));
+            $response = $this->send('requester.requestTransaction', [$flattenedTransactionRequest]);
             $this->logger->info('[Universign - requester.requestTransaction] SUCCESS');
             $transactionResponse
                 ->setId($response['id'])
