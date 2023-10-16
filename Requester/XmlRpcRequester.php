@@ -80,6 +80,10 @@ abstract class XmlRpcRequester
     {
         $response = $this->xmlRpcClient->send($this::buildRequest($method, $this->flatten($params)));
 
+        if (!empty($response->faultString())) {
+            throw new \UnexpectedValueException('Error while sending informations to universign : ' . $response->faultString());
+        }
+
         return $response->value();
     }
 
