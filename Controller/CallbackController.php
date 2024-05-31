@@ -22,9 +22,7 @@ class CallbackController extends AbstractController
         $this->dispatcher = $dispatcher;
     }
 
-    /**
-     * @Route("/universign/callback", name="mpp_universign_callback", methods="GET")
-     */
+    #[Route('/universign/callback', name: 'mpp_universign_callback', methods: 'GET')]
     public function process(Request $request): Response
     {
         $status = $request->query->get('status');
