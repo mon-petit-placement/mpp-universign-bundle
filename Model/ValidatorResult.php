@@ -43,6 +43,7 @@ class ValidatorResult
             ->setDefault('reason', null)->setAllowedTypes('reason', ['int', 'null'])
             ->setDefault('reasonMessage', null)->setAllowedTypes('reasonMessage', ['string', 'null'])
             ->setDefault('result', null)->setAllowedTypes('result', ['array', 'null'])
+            ->setDefault('externalId', null)->setAllowedTypes('externalId', ['string', 'null'])
         ;
     }
 
