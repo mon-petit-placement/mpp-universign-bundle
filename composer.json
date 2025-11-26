@@ -21,7 +21,7 @@
     "symfony/dependency-injection": "^6.0 || ^7.0",
     "symfony/event-dispatcher": "^6.0 || ^7.0",
     "symfony/framework-bundle": "^6.0 || ^7.0",
-    "symfony/monolog-bundle": "*",
+    "symfony/monolog-bundle": "^3.0 || ^4.0",
     "ext-json": "*",
     "phpxmlrpc/phpxmlrpc": "^4.9",
     "symfony/options-resolver": "^6.3 || ^7.0"
