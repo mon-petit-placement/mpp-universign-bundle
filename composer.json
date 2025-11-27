@@ -16,15 +16,15 @@
       "homepage": "https://www.itefficience.com"
     }
   ],
-  "require": {
-    "php": ">=7.4",
-    "symfony/dependency-injection": "^4.0 | ^5.0 | ^6.0",
-    "symfony/event-dispatcher": "*",
-    "symfony/framework-bundle": "^4.0 | ^5.0 | ^6.0",
-    "symfony/monolog-bundle": "*",
+    "require": {
+    "php": ">=8.1",
+    "symfony/dependency-injection": "^6.0 || ^7.0",
+    "symfony/event-dispatcher": "^6.0 || ^7.0",
+    "symfony/framework-bundle": "^6.0 || ^7.0",
+    "symfony/monolog-bundle": "^3.0 || ^4.0",
     "ext-json": "*",
     "phpxmlrpc/phpxmlrpc": "^4.9",
-    "symfony/options-resolver": "^6.3"
+    "symfony/options-resolver": "^6.3 || ^7.0"
   },
   "autoload":{
     "psr-4":{
