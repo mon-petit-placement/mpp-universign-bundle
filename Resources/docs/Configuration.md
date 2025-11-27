@@ -3,7 +3,6 @@ Configuration
 
 **[⬆ back to readme](../../README.md)**
 
-
 ```yaml
 // config/packages/mpp_universign.yaml
 mpp_universign:
@@ -20,6 +19,6 @@ mpp_universign:
 // routes/mpp_universign.yaml
 mpp_universign:
     resource: "@MppUniversignBundle/Controller/*.php"
-    type: annotation
+    type: attribute
     prefix: /api/v1
 ```
