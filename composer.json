@@ -34,8 +34,5 @@
       "Resources/",
       "Tests/"
     ]
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.5"
   }
 }
